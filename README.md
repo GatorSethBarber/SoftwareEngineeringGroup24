@@ -12,11 +12,12 @@ and how to play by ear (playing a song, then letting the user play the song on a
 it is to the original song). What do you think of this idea? If you have any other ideas, please let me know.
 
 We can have a combination of two different ideas: *apps* and *courses*:
- *apps*:     Stand alone applications, like a tuner
- *courses*: Series of activities that a user works through: For example, recognize all natural notes, 
+* *apps*:     Stand alone applications, like a tuner
+* *courses*: Series of activities that a user works through: For example, recognize all natural notes, 
              recognize sharps and flats, recognize common intervals, recognize chords
 
-Database needs: Store users, store progress, deliver webpages
+Database needs: Store users, store progress, deliver webpages.\
+Frontend needs: Setup users, mark completion, provide training, etc.
 
 ## Jacob's Idea
 Jacob's idea goes here.
