@@ -1,10 +1,11 @@
-Project Name:
-Project Description:
-Project Members: Seth Barber, Jacob Simmons-Rosen, Vi Tran, Tuyet Phan
+#Project Name
+Name goes here
 
-Front-End Engineers: Jacob Simmons-Rosen, Vi Tran
-Back-End Engineers: Seth Barber, Tuyet Phan
+#Project Members
+**Front-End Engineers: Jacob Simmons-Rosen, Tuyet Phan
+**Back-EndEngineers: Seth Barber, Tuyet Phan
 
+#Project Description
 Seth's Idea
 Also, I had an idea for a music application, where we can teach ear training (training people to recognize notes and intervals by ear) 
 and how to play by ear (playing a song, then letting the user play the song on any instrument they like, then testing to see how close 
