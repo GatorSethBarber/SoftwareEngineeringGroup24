@@ -2,8 +2,8 @@
 Name goes here
 
 #Project Members
-**Front-End Engineers: Jacob Simmons-Rosen, Tuyet Phan
-**Back-EndEngineers: Seth Barber, Tuyet Phan
+**Front-End Engineers**: Jacob Simmons-Rosen, Tuyet Phan
+**Back-EndEngineers**: Seth Barber, Tuyet Phan
 
 #Project Description
 Seth's Idea
