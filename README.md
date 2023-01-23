@@ -33,6 +33,15 @@ Vi's idea goes here.
 *Solution*: With giftcardxchange.com, users upload their gift cards and perform exchanges with other users. They also have the option to sell their gift cards. The prices are up to the user's discretion. There will be a secure user login page and a profile page for each user, including a credibility score given by other users. After the user exchanges or sells a gift card, advertisements from the gift card company are displayed. We will also have a page that provides businesses with different options to advertise their products on our web application, such as a payment plan based on how frequently they would like to showcase their products. 
 Potential source to code the validity of gift card numbers: https://rosettacode.org/wiki/Luhn_test_of_credit_card_numbers
 
+Two views for each gift card:
+1) View of requester:
+   * Sees the gift card amount and company. Can click a button to make a request.
+   * Cannot try to exchange their gift card with two gift cards simultaneously
+2) View of owner (off of "Your Wallet"):
+   * Sees the gift card amount, company, and number.
+   * Underneath card information, sees a list of requests for that gift card and what
+     is being offered in exchange. Can accept one of these requests or reject requests.
+
 2. *Name*: Domino Peer Learning
 
 *Problem*: Students teaching students enhance their own learning. That's because it involves active dialogue and collaboration with one another. But it is difficult to find someone to participate in peer learning. 
