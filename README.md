@@ -34,6 +34,9 @@ Potential source to code the validity of gift card numbers: https://rosettacode.
           * Underneath card information, sees a list of requests for that gift card and what is being offered in exchange. Can accept one of these requests or        reject requests.
   * Business page with different options for companies to advertise their products
       * Payment plans for monthly, quarterly, or annually
+  * Description about business 
+  * Social media icons such as facebook, instagram, twitter
+  
       
 *Back End API request needs*:
   * User
