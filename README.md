@@ -7,26 +7,6 @@ Name goes here
 **Back-End Engineers**: Seth Barber, Tuyet(Snow) Phan
 
 # Project Description
-## Seth's Idea
-Also, I had an idea for a music application, where we can teach ear training (training people to recognize notes and intervals by ear) 
-and how to play by ear (playing a song, then letting the user play the song on any instrument they like, then testing to see how close 
-it is to the original song). What do you think of this idea? If you have any other ideas, please let me know.
-
-We can have a combination of two different ideas: *apps* and *courses*:
-* *apps*:     Stand alone applications, like a tuner
-* *courses*: Series of activities that a user works through: For example, recognize all natural notes, 
-             recognize sharps and flats, recognize common intervals, recognize chords
-
-Database needs: Store users, store progress, deliver webpages.\
-Frontend needs: Setup users, mark completion, provide training, etc.
-
-## Jacob's Idea
-Jacob's idea goes here.
-
-## Vi's Idea
-Vi's idea goes here.
-
-## Snow's Idea
 1. *Name*: Gift Card Xchange 
 
 *Problem*: Sometimes we are given gift cards to a place we rarely shop for. What do we do with the unwanted gift cards then? What if there’s a website that allows us to exchange gift cards at face value and with no hidden fees? 
@@ -88,13 +68,3 @@ Potential source to code the validity of gift card numbers: https://rosettacode.
 
 *Back end*:
   * Match students and notify them of other students who are taking the same course
-
-
-3. *Name*: Volunteer with Me! 
-
-*Solution*: Volunteer with Me! is a social network that will allow people to help a charitable organization and befriend new people along the way. Users can create a profile and select which charities they would like to volunteer for. There will be a calendar that displays all of the charitable events. Whenever their chosen charity organization event is soon approaching, the user will be notified of the place, date, and time. There is also an option to connect and chat with other people who are interested in the same charitable organization. 
-
-
-4. *Name*: We Create
-
-*Solution*: We will create a mock software company that will provide websites and mobile application developments to businesses or individuals. wecreate.com is an online service provider to small businesses or interested individuals who are looking to create a brand for themselves. There will be an about page as well as a sample of work page, showcasing mock websites or software created for former clients. The website will also implement a pop-up messenger whenever someone visits the website.
