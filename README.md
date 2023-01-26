@@ -1,7 +1,7 @@
 # Project Name
 Gift Card Xchange
 
-# Project Members
+# Project Members (Group 24)
 **Front-End Engineers**: Jacob Simmons-Rosen, Vi Tran 
 
 **Back-End Engineers**: Seth Barber, Tuyet Phan
