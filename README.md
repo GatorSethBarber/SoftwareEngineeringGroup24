@@ -55,3 +55,8 @@ Potential source to code the validity of gift card numbers: https://rosettacode.
       * Request to GET gift card information
       * Request to PUT gift card
       * Request to DELETE Gift Card (if it has been redeemed)
+      
+User information
+* Username
+* Password
+* Email
