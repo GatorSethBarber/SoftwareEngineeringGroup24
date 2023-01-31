@@ -2,7 +2,6 @@
 
 This is the documentation for Gift Card Xchange
 
-
 # Users
 
 ## User Creation
