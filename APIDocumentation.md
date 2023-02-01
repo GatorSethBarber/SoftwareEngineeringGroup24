@@ -18,7 +18,7 @@ Note: First name is optional.
 
 ## User Information Access
 
-URL: /user/get/username
+URL: /user/get/{username}/{password}
 
 Response:
 * Header: JSON
@@ -29,14 +29,14 @@ Response:
 Can access one or more distinct pieces of information by placing the names after the username
 
 URL examples: 
-* /user/get/{username}/email
-* /user/get/username/{name}/{password}
+* /user/get/{username}/{password}/email
+* /user/get/{username}/{password}/{name}/{password}
 
 ## Updating User Information
 
 Note: not finished.
 
-URL: /user/update/username
+URL: /user/update/{username}/{password}
 
 # Gift Cards
 
