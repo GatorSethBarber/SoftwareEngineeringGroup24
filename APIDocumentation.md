@@ -1,6 +1,18 @@
 # API Documentation Overview
 
-This is the documentation for Gift Card Xchange
+This is the documentation for Gift Card Xchange.
+
+Important HTTP Verbs:
+* GET: Get information
+* PUT: Update information
+* POST: Create information
+* DELETE: Delete information.
+
+Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) and what they will be used for in the project.
+* 200 ok: means that the operation (mainly for GET and PUT) was successful
+* 201 created: Means that an objected was created (hopefully use for PUSH)
+* 400 bad request: Use for bad syntax in PUT (creation)
+* 404 not found: Will use for error in GET or POST requests
 
 # Users
 
@@ -10,31 +22,43 @@ The following are the necessar API calls. Names in curly braces stand for variab
 
 ## User Creation
 
-Request: PUT
+Verb: POST
+
+Response Header: (Content-Type, application/json)
 
 URL: /user/new/{username}/{email}/{password}/{last name}/{first name}
 
-Note: First name is optional.
+Note: First name is optional. This also may be changed to use query instead
 
 ## User Information Access
 
 URL: /user/get/{username}/{password}
 
+Verb: GET
+
+Response Header: (Content-Type, application/json)
+
 Response:
 * Header: JSON
 * JSON: {username: ..., email: ..., password: ..., name: [..., ...]}
+
+***Note: The following have not been implemented as of now***
 
 ## Access One Piece of Username
 
 Can access one or more distinct pieces of information by placing the names after the username
 
+Verb: GET
+
 URL examples: 
 * /user/get/{username}/{password}/email
-* /user/get/{username}/{password}/{name}/{password}
+* /user/get/{username}/{password}/name
 
 ## Updating User Information
 
 Note: not finished.
+
+Verb: PUT
 
 URL: /user/update/{username}/{password}
 
@@ -44,19 +68,19 @@ All gift cards have a gift card number, amount, company, owner, and, potentially
 
 ## Gift Card Creation
 
-Request: PUT
+Request Verb: POST
 
 URL: /card/new/{username}/{card information}/{amount}/{card information}/{expiration date}
 
 ## Swap Cards
 
-Request: PUSH
+Verb: PUT
 
 URL: /card/{username 1}/{username 2}/{card number 1}/{card number 2}
 
 ## Get all Gift Cards for a User
 
-Request :GET
+Verb: GET
 
 URL: /card/{username}
 
@@ -67,6 +91,8 @@ Response:
 ## Get Matching Gift Cards
 
 Get all (basic information about) the gift cards that match certain search conditions
+
+Verb: GET
 
 URL example: /card/?company="Amazon"&minAmount="15.00"
 
