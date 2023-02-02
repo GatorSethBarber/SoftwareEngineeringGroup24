@@ -1,3 +1,4 @@
+// main reference: https://gorm.io/docs/index.html
 package main
 
 import (

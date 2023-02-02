@@ -1,3 +1,5 @@
+// main reference: https://blog.logrocket.com/routing-go-gorilla-mux/
+
 package main
 
 import (
