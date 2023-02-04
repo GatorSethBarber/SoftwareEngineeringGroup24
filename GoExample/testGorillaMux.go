@@ -24,7 +24,7 @@ var BioData = make([]Bio, 0) // Slice used as data store
 func Run() {
 	router := mux.NewRouter()
 	router.HandleFunc("/create", create).Methods("POST")
-	router.HandleFunc("/read", read).Methods("GET")
+	router.HandleFunc("/read/{name}", read).Methods("GET")
 	router.HandleFunc("/update", update).Methods("PUT")
 	router.HandleFunc("/delete", delete_).Methods("DELETE")
 
