@@ -28,6 +28,10 @@ Response Header: (Content-Type, application/json)
 
 URL: /user/new/{username}/{email}/{password}/{last name}/{first name}
 
+Alternate:
+* URL: /user/new
+* body should include username, email, password, lastName, firstName
+
 Note: First name is optional. This also may be changed to use query instead
 
 ## User Information Access
