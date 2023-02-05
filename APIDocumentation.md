@@ -18,7 +18,9 @@ Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HT
 
 All users must have a username, email, password, and full name consisting of a first and last name (or just last name if they have only one name). These are all provided by the user. Additionally, a userID is created in the back end, but this is never used by the user.
 
-The following are the necessar API calls. Names in curly braces stand for variables provided by the front end. The http://localhost:port is ommitted.
+The following are the necessar API calls. Names in curly braces stand for variables provided by the front end. The http://localhost:8080 is ommitted.
+
+Please use port 4020 for the Angular server.
 
 ## User Creation
 
@@ -45,6 +47,8 @@ Response Header: (Content-Type, application/json)
 Response:
 * Header: JSON
 * JSON: {username: ..., email: ..., password: ..., name: [..., ...]}
+
+If user does not exist, returns a 404 error code in the response.
 
 ***Note: The following have not been implemented as of now***
 
