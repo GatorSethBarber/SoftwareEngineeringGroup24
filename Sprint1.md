@@ -6,7 +6,7 @@ Summary Here
 
 Specifics here
 * First
-* Second
+* Create a home page accessible by registered and unregistered users allowing them to browse available gift cards.
 
 ## Back End
 
