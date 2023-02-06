@@ -10,8 +10,8 @@ Important HTTP Verbs:
 
 Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) and what they will be used for in the project.
 * 200 ok: means that the operation (mainly for GET and PUT) was successful
-* 201 created: Means that an objected was created (hopefully use for PUSH)
-* 400 bad request: Use for bad syntax in PUT (creation)
+* 201 created: Means that an objected was created (use for successful POST)
+* 400 bad request: Use for bad syntax in POST (creation)
 * 404 not found: Will use for error in GET or POST requests
 
 # Users
