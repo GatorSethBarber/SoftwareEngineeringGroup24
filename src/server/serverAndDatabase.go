@@ -80,7 +80,7 @@ func createUser(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	
+
 	writer.WriteHeader(http.StatusCreated)
 
 	// and pass it back to the browser
@@ -103,6 +103,8 @@ func getUserInformation(username string, password string) (User, error) {
 
 	return user, theError
 }
+
+// Example change to push
 
 // GET request
 func read(writer http.ResponseWriter, request *http.Request) {
