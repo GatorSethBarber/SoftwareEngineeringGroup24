@@ -57,6 +57,7 @@ func RunServer() {
 
 	// Currently, only have basic routing
 	router.HandleFunc("/user/get/read/{username}/{password}", read).Methods("GET")
+	router.HandleFunc("/user/new", createUser).Methods("POST")
 
 	portNum := 8080
 	err := http.ListenAndServe(":"+strconv.Itoa(portNum), router)
@@ -84,7 +85,7 @@ func createUser(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusCreated)
 
 	// and pass it back to the browser
-	if err := json.NewEncoder(writer).Encode(user).Error; err != nil {
+	if err := json.NewEncoder(writer).Encode(user); err != nil {
 		panic("Cannot encode")
 	}
 
