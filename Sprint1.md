@@ -11,7 +11,7 @@ Specifics here
 ## Back End
 
 Specifics here
-* First
+* Implement API to get user information (username, password, email, first and last names) based upon provided username and password.
 * Second
 
 # What We Accomplished
@@ -27,7 +27,7 @@ Specifics here
 ## Back End
 
 Specifics here
-* First
+* Implemented API so that using a URL of the form http://localhost:8080/{username}/{password} user information is returned.
 * Second
 
 # What Did not Work Out
