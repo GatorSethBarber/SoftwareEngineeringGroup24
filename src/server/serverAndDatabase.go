@@ -67,15 +67,28 @@ func RunServer() {
 	fmt.Println("Listening at port", portNum)
 }
 
-/*
-func createUser(username, password, email, firstName, lastName string) {
-	database.Create(&User{Username: username, Password: password, Email: email, FirstName: firstName, LastName: lastName})
-}
+func createUser(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	var user User
 
-func createUser(user User) {
-	database.Create(&user)
+	// data in body will be converted to the structure of the user
+	if err := json.NewDecoder(request.Body).Decode(&user); err != nil {
+		panic("Cannot decode")
+	}
+
+	if err := database.Create(&user).Error; err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	
+	writer.WriteHeader(http.StatusCreated)
+
+	// and pass it back to the browser
+	if err := json.NewEncoder(writer).Encode(user).Error; err != nil {
+		panic("Cannot encode")
+	}
+
 }
-*/
 
 // Get user information from database
 // Returns the user and the error that occurred (if no error, nil)
