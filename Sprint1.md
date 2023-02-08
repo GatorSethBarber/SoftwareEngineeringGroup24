@@ -29,6 +29,7 @@ We designed and created the front end for logging on and signing up new users. W
 Specifics here
 * Created the login page and sign up page for users.
 * Created the home page for users to see gift cards available.
+* Front-end Demo Video: https://www.youtube.com/watch?v=YQzWIjpzJUM
 
 ## Back End
 
@@ -37,6 +38,7 @@ Specifics here
 * Designed API for accessing user information and creating new standard users. Also started working on the API for the rest of the project, covering creation and accessing of gift cards, swapping gift cards, etc. The API plans are available at APIDocumentation.md.
 * Implemented API so that using a URL of the form http://localhost:8080/{username}/{password} user information is returned.
 * Developed the create user feature that allows new user's data such as username, email, password, first name, and last name to be stored in the database. Also, developed safety measures that would deny access to the user's account if the user's data are invalid, such as an incorrect password. Additionally, implemented a feature for a unique username and password, or an error message would display.
+* Back-end Demo Video: https://www.youtube.com/watch?v=rpbXW9H5hVU
 
 # What Did not Work Out
 
