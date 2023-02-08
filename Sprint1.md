@@ -2,6 +2,11 @@
 
 To jumpstart the Gift Card Xchange project, we fomulated three user stories for sprint 1. From those user stories, we dissected what features to build. We planned to develop a page that displays available gift cards to attract viewers. We also planned to create a sign-up and login button to allow viewers to sign up and become registered users. After logging in, we want the users to have access to their dashboard. 
 
+The following are the exact details of the user stories:
+1. As a new user, I want to create an account to gain access to functionality.
+2. As a signed-up user, I want to log-in to my account so I can access homepage/dashboard.
+3. As a public viewer, I want to see what cards are available so I can decide whether to sign up.
+
 ## Front End
 
 Specifics here
@@ -48,4 +53,4 @@ Specifics here
 * We were unable to implement the back end for allowing people to see which cards are available. This is primarily because doing so would require implementation of the entire database, which was temporarily put off. However, the design process for the database was completed and the design process for the API is mostly done.
 
 # Conclusion
-For Sprint 1 of the Gift Card Xchange project, we accomplished two out of the three user stories in our design. We successfully designed the first page that features gift cards and how many of them are available, such as Starbucks (0), Target (4), Best Buy (63), and Kohl's (21). Furthermore, we produced a login button which, after clicking, a log in window pops up for viewers to either sign up or enter their login information. We also developed the create new users and the retrieve data features with back-end implementations. The database stores all the user's information, including their username, password, email, and full name. Even though we accomplished some features of front-end and back-end independently, unfortunately, we were unsuccessful in connecting the two ends. We experienced difficulty trying to connect the front-end to the database of the back-end. We will continue to try to resolve this matter and move forward with executing new features in the upcoming sprint. 
+For Sprint 1 of the Gift Card Xchange project, we accomplished two out of the three user stories in our design. We successfully designed the first page that features gift cards and how many of them are available, such as Starbucks (0), Target (4), Best Buy (63), and Kohl's (21). Furthermore, we produced a login button which, after clicking, a login window pops up for viewers to either sign up or enter their login information. We also developed the create new users and the retrieve data features with back-end implementations. The database stores all the user's information, including their username, password, email, and full name. Even though we accomplished some features of the front-end and back-end independently, unfortunately, we were unsuccessful in connecting the two ends. We experienced difficulty trying to connect the front-end to the database of the back-end. We also did not build a resulting webpage after the user press login to view their dashboard. We will continue to try to resolve these matters and move forward with executing new features in the upcoming sprint. 
