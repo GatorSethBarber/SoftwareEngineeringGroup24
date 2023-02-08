@@ -39,7 +39,7 @@ Despite the successes we met with in Sprint 1, we did experience some serious se
 ## Front End
 
 Specifics here
-* We were unable to log-in to access dashboard.
+* I, Vi, did the test run by entering the username and password and then pressing the login button. The system saved both values, but I was unable to design another page that directs to the user's dashboard after logging in. 
 
 ## Back End
 
