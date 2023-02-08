@@ -1,6 +1,6 @@
 # What We Planned
 
-To jumpstart the Gift Card Xchange project, we fomulated three user stories for sprint 1. From those user stories, we dissected what features to build. We planned to develop a page that displays available gift cards to attract viewers. We also planned to create a sign-up and login button to allow viewers to sign up and become registered users. After logging in, we want the users to have access to their dashboard. 
+To jumpstart the Gift Card Xchange project, we fomulated three user stories for Sprint 1. From those user stories, we dissected what features to build. We planned to develop a page that displays available gift cards to attract viewers. We also planned to create a sign-up and login button to allow viewers to sign up and become registered users. After logging in, we want the users to have access to their dashboard. 
 
 The following are the exact details of the user stories:
 1. As a new user, I want to create an account to gain access to functionality.
@@ -18,6 +18,7 @@ Specifics here
 Specifics here
 * Design database incorporating users and gift cards
 * Design and implement API to get user information (username, password, email, first and last names) based upon provided username and password.
+* Design and implement API to create new users based on provided username, password, email, and first and last names. The API should prevent users with the same username or same email.
 
 # What We Accomplished
 
