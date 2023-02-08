@@ -1,0 +1,57 @@
+<div class="signup-page">
+  <div class="form">
+    <div class="signup">
+      <div class="signup-header">
+        <h3>Sign Up</h3>
+      </div>
+    </div>
+    <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmmitted()">
+      <input
+        type="text"
+        id="login_username"
+        placeholder="First Name"
+        formControlName="firstName"
+        required
+      />
+
+      <input
+        type="text"
+        id="login_username"
+        placeholder="Last Name"
+        required
+        formControlName="lastName"
+      />
+
+      <input
+        type="text"
+        id="email"
+        placeholder="Email"
+        required
+        formControlName="email"
+      />
+      <input
+        type="text"
+        id="login__password"
+        placeholder="Password"
+        required
+        formControlName="passWord"
+      />
+
+      <button type="submit">Create account</button>
+      <p class="message" style="font-size: 10px">
+        By clicking the Submit,you agree to our
+        <a href="#" style="text-decoration: underline">terms and use</a> and
+        <a href="#" style="text-decoration: underline">privacy policy</a>
+      </p>
+      <p class="message">
+        Already have an account?
+        <a
+          routerLink="/login"
+          style="font-family: var(--grotesk); font-size: 12px"
+        >
+          Log in</a
+        >
+      </p>
+    </form>
+  </div>
+</div>

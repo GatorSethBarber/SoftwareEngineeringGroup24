@@ -1,0 +1,36 @@
+<div class="login-page">
+  <div class="form">
+    <div class="login">
+      <div class="login-header">
+        <h3><b>Login to your account</b></h3>
+      </div>
+    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input
+        required
+        formControlName="userName"
+        type="text"
+        id="userName"
+        placeholder="Username"
+        formControlName="userName"
+      />
+
+      <input
+        required
+        formControlName="passWord"
+        type="text"
+        id="passWord"
+        placeholder="Password"
+        formControlName="passWord"
+      />
+
+      <button type="submit">Log In</button>
+      <p class="message">
+        Not a member?
+        <a routerLink="/register" style="text-decoration: underline"
+          >Sign up now</a
+        >
+      </p>
+    </form>
+  </div>
+</div>
