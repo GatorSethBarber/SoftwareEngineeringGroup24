@@ -14,6 +14,9 @@ Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HT
 * 400 bad request: Use for bad syntax in POST (creation)
 * 404 not found: Will use for error in GET or POST requests
 
+For reference, the ER diagram for the database is included below.
+![ER Diagram for database](https://github.com/GatorSethBarber/SoftwareEngineeringGroup24/image(2).png "ER Diagram")
+
 # Users
 
 All users must have a username, email, password, and full name consisting of a first and last name (or just last name if they have only one name). These are all provided by the user. Additionally, a userID is created in the back end, but this is never used by the user.
