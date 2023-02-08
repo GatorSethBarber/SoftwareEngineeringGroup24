@@ -5,8 +5,8 @@ Summary Here
 ## Front End
 
 Specifics here
-* First
 * Create a home page accessible by registered and unregistered users allowing them to browse available gift cards.
+* Create a login page and register page for users either login to their account or create a new account if they don't have one.
 
 ## Back End
 
