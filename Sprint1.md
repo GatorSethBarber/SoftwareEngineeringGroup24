@@ -21,8 +21,8 @@ We designed and created the front end for logging on and signing up new users. W
 ## Front End
 
 Specifics here
-* First
-* Second
+* Created the login page and sign up page for users.
+* Created the home page for users to see gift cards available.
 
 ## Back End
 
@@ -39,8 +39,7 @@ Despite the successes we met with in Sprint 1, we did experience some serious se
 ## Front End
 
 Specifics here
-* First
-* Second
+* We were unable to log-in to access dashboard.
 
 ## Back End
 
