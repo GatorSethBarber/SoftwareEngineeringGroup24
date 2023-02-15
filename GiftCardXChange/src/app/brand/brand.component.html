@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-3 mx-auto my-6 pt-2" *ngFor="let brand of brands">
-            <button routerLink="/card" [state]="{ brandName: brand.name }" type="button" (click)="onSelect(brand)" class="col-md-3 mx-auto my-6 card pt-2" style="width: 18rem;">
+            <button routerLink="/card" [state]="{ brandName: brand.name }" type="button" class="col-md-3 mx-auto my-6 card pt-2" style="width: 18rem;">
                 <img [src]="brand.img" class="card-img-top" />
                 <div class="card-body">
                     <h5 class="card-title">{{brand.name}}</h5>
