@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"gorm.io/driver/sqlite"
@@ -52,20 +51,11 @@ func ConnectToDatabase() *gorm.DB {
 
 // Set up a server using a function
 func RunServer() {
-	fmt.Println("Starting to run server")
-	router := mux.NewRouter()
-
-	// Currently, only have basic routing
-	router.HandleFunc("/user/get/read/{username}/{password}", read).Methods("GET")
-	router.HandleFunc("/user/new", createUser).Methods("POST")
-
-	portNum := 8080
-	err := http.ListenAndServe(":"+strconv.Itoa(portNum), router)
-	if err != nil {
-		log.Fatalln("There's an error with the server,", err)
+	host := "localhost:8080"
+	if err := http.ListenAndServe(host, httpHandler()); err != nil {
+		log.Fatalf("Failed to listen on %s: %v", host, err)
 	}
-
-	fmt.Println("Listening at port", portNum)
+	fmt.Println("Starting to run server")
 }
 
 func createUser(writer http.ResponseWriter, request *http.Request) {
