@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Brand } from '../brand';
 import { BRANDS } from '../mock-brands'
 
@@ -8,11 +9,20 @@ import { BRANDS } from '../mock-brands'
   styleUrls: ['./brand.component.css']
 })
 export class BrandComponent {
-  // brand: Brand = {
-  //   id: 1,
-  //   name: 'Starbucks',
-  //   quantity: 0,
-  //   img: '../assets/images/starbucks.png',
-  // };
+
+  public state = '';
+
+  constructor() { }
+
+  ngOnInit() {
+    this.state = window.history.state.brandName;
+  }
+  
   brands = BRANDS;
+  selectedBrand?: Brand;
+
+  onSelect(brand: Brand): void {
+    this.selectedBrand = brand;
+  }
+
 }

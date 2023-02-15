@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="row">
+        <h2>All Cards for {{ state }}</h2>
+        <table class="table">
+            <thead>
+                <th scope="col">Amount</th>
+                <th scope="col">Expiration Date</th>
+                <th scope="col">User</th>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let card of cards">
+                    <tr *ngIf="(card.brand == state)">
+                        <td>${{ card.amount }}</td>
+                        <td>{{ card.expiryDate }}</td>
+                        <td>{{ card.userID }}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>
