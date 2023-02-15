@@ -1,18 +1,24 @@
 # What We Planned
 
-Summary Here
+To jumpstart the Gift Card Xchange project, we fomulated three user stories for Sprint 1. From those user stories, we dissected what features to build. We planned to develop a page that displays available gift cards to attract viewers. We also planned to create a sign-up and login button to allow viewers to sign up and become registered users. After logging in, we want the users to have access to their dashboard. 
+
+The following are the exact details of the user stories:
+1. As a new user, I want to create an account to gain access to functionality.
+2. As a signed-up user, I want to log-in to my account so I can access homepage/dashboard.
+3. As a public viewer, I want to see what cards are available so I can decide whether to sign up.
 
 ## Front End
 
 Specifics here
-* First
 * Create a home page accessible by registered and unregistered users allowing them to browse available gift cards.
+* Create a login page and register page for users either login to their account or create a new account if they don't have one.
 
 ## Back End
 
 Specifics here
 * Design database incorporating users and gift cards
 * Design and implement API to get user information (username, password, email, first and last names) based upon provided username and password.
+* Design and implement API to create new users based on provided username, password, email, and first and last names. The API should prevent users with the same username or same email.
 
 # What We Accomplished
 
@@ -21,8 +27,9 @@ We designed and created the front end for logging on and signing up new users. W
 ## Front End
 
 Specifics here
-* First
-* Second
+* Created the login page and sign up page for users.
+* Created the home page for users to see gift cards available.
+* Front-end Demo Video: https://www.youtube.com/watch?v=YQzWIjpzJUM
 
 ## Back End
 
@@ -30,7 +37,8 @@ Specifics here
 * Deigned the database and created an ER diagram for it (see ERDiagram.png)
 * Designed API for accessing user information and creating new standard users. Also started working on the API for the rest of the project, covering creation and accessing of gift cards, swapping gift cards, etc. The API plans are available at APIDocumentation.md.
 * Implemented API so that using a URL of the form http://localhost:8080/{username}/{password} user information is returned.
-* Second
+* Developed the create user feature that allows new user's data such as username, email, password, first name, and last name to be stored in the database. Also, developed safety measures that would deny access to the user's account if the user's data are invalid, such as an incorrect password. Additionally, implemented a feature for a unique username and password, or an error message would display.
+* Back-end Demo Video: https://www.youtube.com/watch?v=rpbXW9H5hVU
 
 # What Did not Work Out
 
@@ -39,14 +47,13 @@ Despite the successes we met with in Sprint 1, we did experience some serious se
 ## Front End
 
 Specifics here
-* First
-* Second
+* I, Vi, did the test run by entering the username and password and then pressing the login button. The system saved both values, but I was unable to design another page that directs to the user's dashboard after logging in. 
 
 ## Back End
 
 Specifics here
-* First
+* I, Tuyet, had difficulty running my go program. I continuously had the following message: "cc1.exe: sorry, unimplemented: 64-bit mode not compiled in". I searched online for answers and tried different suggestions. I installed MinGW-w64 and added it to my path, but this did not work. Then, I installed TDM-GCC Compiler and added that to my path, but I still got the same error message. Afterwards, I installed another version of MinGW--the minimalist GNU for Windows. I installed all the necessary files in that program, but it still did not work. Finally, I transfered my code for create to my back-end partner, Seth. He edited the code, and it successfully compiled. Currently, I still have the same issue with Visual Studio Code outputing "unimplemented: 64-bit mode not compiled".
 * We were unable to implement the back end for allowing people to see which cards are available. This is primarily because doing so would require implementation of the entire database, which was temporarily put off. However, the design process for the database was completed and the design process for the API is mostly done.
 
 # Conclusion
-Concluding summary here.
+For Sprint 1 of the Gift Card Xchange project, we accomplished two out of the three user stories in our design. We successfully designed the first page that features gift cards and how many of them are available, such as Starbucks (0), Target (4), Best Buy (63), and Kohl's (21). Furthermore, we produced a login button which, after clicking, a login window pops up for viewers to either sign up or enter their login information. We also developed the create new users and the retrieve data features with back-end implementations. The database stores all the user's information, including their username, password, email, and full name. Even though we accomplished some features of the front-end and back-end independently, unfortunately, we were unsuccessful in connecting the two ends. We experienced difficulty trying to connect the front-end to the database of the back-end. We also did not build a resulting webpage after the user press login to view their dashboard. We will continue to try to resolve these matters and move forward with executing new features in the upcoming sprint. 
