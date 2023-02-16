@@ -25,15 +25,14 @@ Please use port 4020 for the Angular server.
 
 ## User Creation
 
+URL: /user/new
+* body should include username, email, password, lastName, firstName
+
 Verb: POST
 
-Response Header: (Content-Type, application/json)
-
-URL: /user/new/{username}/{email}/{password}/{last name}/{first name}
-
-Alternate:
-* URL: /user/new
-* body should include username, email, password, lastName, firstName
+Response:
+* Header: (Content-Type, application/json)
+* JSON of new user
 
 Note: First name is optional. This also may be changed to use query instead
 
@@ -51,9 +50,7 @@ Response:
 
 If user does not exist, returns a 404 error code in the response.
 
-***Note: The following have not been implemented as of now***
-
-## Access One Piece of Username
+## Access One Piece of Username (Unimplemented)
 
 Can access one or more distinct pieces of information by placing the names after the username
 
@@ -63,7 +60,7 @@ URL examples:
 * /user/get/{username}/{password}/email
 * /user/get/{username}/{password}/name
 
-## Updating User Information
+## Updating User Information (Unimplemented)
 
 Note: not finished.
 
@@ -75,19 +72,22 @@ URL: /user/update/{username}/{password}
 
 All gift cards have a gift card number, amount, company, owner, and, potentially, an expiration date.
 
-## Gift Card Creation
+## Gift Card Creation Implementation Underway
 
 Request Verb: POST
 
-URL: /card/new/{username}/{card information}/{amount}/{card information}/{expiration date}
+URL: /card/new/{username}/{password}
 
-## Swap Cards
+Body: 
+* {cardNumber, amount, companyName, expirationDate}
+
+## Swap Cards (Unimplemented)
 
 Verb: PUT
 
 URL: /card/{username 1}/{username 2}/{card number 1}/{card number 2}
 
-## Get all Gift Cards for a User
+## Get all Gift Cards for a User (Unimplemented)
 
 Verb: GET
 
@@ -95,16 +95,22 @@ URL: /card/{username}
 
 Response: 
 * Header: application/JSON
-* JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expiratioDate: ...}, ...]
+* JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
 
-## Get Matching Gift Cards
+## Get Matching Gift Cards: Implementation Underway
 
 Get all (basic information about) the gift cards that match certain search conditions
 
 Verb: GET
 
 URL example: /card/?company="Amazon"&minAmount="15.00"
+Potential Search Keys:
+* company: The name ofthe company
+* minAmount: The minimum amount for the card
+* maxAmount: The maximum amount for the card
+* exact: Defaults to true, which means company name must be matched exactly. If set to "false", then will allow matching on both sides.
 
-Respons:
+
+Response:
 * Header: application/JSON
 * JSON: [{username: ..., company: ..., amount: ..., expirationDate:...}, ...]
