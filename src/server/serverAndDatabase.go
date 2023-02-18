@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -58,27 +56,15 @@ func RunServer() {
 	fmt.Println("Starting to run server")
 }
 
-func createUser(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-	var user User
+func databaseCreateUser(newUser *User) error {
+	var returnError error
+	returnError = nil
 
-	// data in body will be converted to the structure of the user
-	if err := json.NewDecoder(request.Body).Decode(&user); err != nil {
-		panic("Cannot decode")
+	if err := database.Create(newUser).Error; err != nil {
+		returnError = err
 	}
 
-	if err := database.Create(&user).Error; err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	writer.WriteHeader(http.StatusCreated)
-
-	// and pass it back to the browser
-	if err := json.NewEncoder(writer).Encode(user); err != nil {
-		panic("Cannot encode")
-	}
-
+	return returnError
 }
 
 // Get user information from database
@@ -94,56 +80,6 @@ func getUserInformation(username string, password string) (User, error) {
 
 	return user, theError
 }
-
-// Example change to push
-
-// GET request
-func read(writer http.ResponseWriter, request *http.Request) {
-	params := mux.Vars(request)
-
-	// Maybe do some error checking here on username and password
-
-	user, err := getUserInformation(params["username"], params["password"])
-
-	// Assume only error is not finding the record, so return that the record is not found
-	if err != nil {
-		fmt.Println(err)
-		writer.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	writer.Header().Set("Content-Type", "application/json")
-
-	// Try to encode the user
-	encodeErr := json.NewEncoder(writer).Encode(&user)
-	if encodeErr != nil {
-		log.Fatalln("There was an error encoding the struct.")
-	}
-}
-
-// Recommendation:
-// If success, can either do writer.WriteHeader(http.StatusCreated) or leave it alone
-// If bad input, writer.WriteHeader(http.StatusBadRequest)
-
-// // Example POST request
-// func create(writer http.ResponseWriter, request *http.Request) {
-// 	writer.Header().Set("Content-Type", "application/json")
-// 	writer.WriteHeader(http.StatusOK)
-// 	var human Bio
-// 	err := json.NewDecoder(request.Body).Decode(&human)
-
-// 	// Check for error
-// 	if err != nil {
-// 		log.Fatalln("There was an error decoding the request body into the struct")
-// 	}
-
-// 	BioData = append(BioData, human)
-// 	err = json.NewEncoder(writer).Encode(&human)
-
-// 	if err != nil {
-// 		log.Fatalln("There was an error encoding the initialized struct")
-// 	}
-// }
 
 /********  Database setup *************/
 func initialSetup(database *gorm.DB) {
