@@ -46,7 +46,7 @@ Response Header: (Content-Type, application/json)
 
 Response:
 * Header: JSON
-* JSON: {username: ..., email: ..., password: ..., name: [..., ...]}
+* JSON: {username: ..., email: ..., password: ..., firstName: ..., lastName: ...}
 
 If user does not exist, returns a 404 error code in the response.
 
