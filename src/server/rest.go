@@ -24,6 +24,7 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/user/new", requestCreateUser).Methods("POST")
 
 	// Routes for gift card
+	// TODO: consider altering /card/get to split into verified and not verified
 	router.HandleFunc("/card/new/{username}/{password}", requestCreateCard).Methods("POST")
 	router.HandleFunc("/card/get", requestGetCard).Methods("GET")
 
