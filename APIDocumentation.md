@@ -46,7 +46,7 @@ Response Header: (Content-Type, application/json)
 
 Response:
 * Header: JSON
-* JSON: {username: ..., email: ..., password: ..., name: [..., ...]}
+* JSON: {username: ..., email: ..., password: ..., firstName: ..., lastName: ...}
 
 If user does not exist, returns a 404 error code in the response.
 
@@ -86,6 +86,12 @@ Body:
 Verb: PUT
 
 URL: /card/{username 1}/{username 2}/{card number 1}/{card number 2}
+
+Alternative:
+* We have another data table with requests pending per card.
+* If user approves of request, then they send via the URL: /card/swap/{username2}/{password2}/{card number 1}/{card identifier 2}
+* If pending request for those two cards, swap occurs and returns a 200 code.
+* Otherwise, nothing happens and returns a 400 error code.
 
 ## Get all Gift Cards for a User (Unimplemented)
 
