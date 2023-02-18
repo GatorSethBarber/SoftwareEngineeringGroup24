@@ -53,6 +53,7 @@ type tempCard struct {
 	companyName string
 	expiration  time.Time
 	amount      float32
+	cardNumber  string
 }
 
 var tempCards []tempCard
@@ -61,6 +62,7 @@ type jsonCard struct {
 	CompanyName string  `json:"company"`
 	Expiration  string  `json:"expirationDate"`
 	Amount      float32 `json:"amount"`
+	CardNumber  string  `json:"cardNumber"`
 }
 
 func stringToDate(dateAsString string) (time.Time, error) {
@@ -69,6 +71,11 @@ func stringToDate(dateAsString string) (time.Time, error) {
 
 func dateToString(dateAsTime time.Time) string {
 	return dateAsTime.Format("2006-01-02")
+}
+
+// TODO: Consider altering amount to string so that no overflow/underflow errors
+func checkCardNumberAndAmount(cardNumber string, amount float32) bool {
+	return len(cardNumber) > 1 && amount > 0.0
 }
 
 func requestCreateCard(writer http.ResponseWriter, request *http.Request) {
@@ -89,21 +96,30 @@ func requestCreateCard(writer http.ResponseWriter, request *http.Request) {
 
 	// Data in body will be converted to the structure of the user
 	if err := json.NewDecoder(request.Body).Decode(&frontEndCard); err != nil {
-		panic("Cannot decode") // TODO: Change this so that it returns a StatusBadRequest instead
+		// panic("Cannot decode")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	// TODO: Check for company here
 
 	// TODO: Check that card has not already been inserted!
+	found := false
+	for _, backEndCard := range tempCards {
+		if backEndCard.cardNumber == frontEndCard.CardNumber {
+			found = true
+			break
+		}
+	}
 
 	// However, for right now, just build the new struct
 	experAsTime, err := stringToDate(frontEndCard.Expiration)
-	if err != nil {
+	if err != nil || !checkCardNumberAndAmount(frontEndCard.CardNumber, frontEndCard.Amount) || found {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	backEndCard := tempCard{user.ID, frontEndCard.CompanyName, experAsTime, frontEndCard.Amount}
+	backEndCard := tempCard{user.ID, frontEndCard.CompanyName, experAsTime, frontEndCard.Amount, frontEndCard.CardNumber}
 	tempCards = append(tempCards, backEndCard)
 
 	writer.WriteHeader(http.StatusCreated)
@@ -139,7 +155,7 @@ func requestGetCard(writer http.ResponseWriter, request *http.Request) {
 	backEndCard := tempCards[index]
 
 	// Change backEndCard into frontEndCard
-	frontEndCard := jsonCard{backEndCard.companyName, dateToString(backEndCard.expiration), backEndCard.amount}
+	frontEndCard := jsonCard{backEndCard.companyName, dateToString(backEndCard.expiration), backEndCard.amount, ""}
 
 	// Encode frontEndCard
 	writer.WriteHeader(http.StatusOK)
