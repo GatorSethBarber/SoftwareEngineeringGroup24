@@ -22,6 +22,15 @@ type User struct {
 	LastName  string `json:"lastname"`
 }
 
+type GiftCard struct {
+	gorm.Model
+	Name              string `gorm:"unique" json:"name"`
+	CardNumber        uint32 `gorm:"primary_key"`
+	Amount            int    `gorm:"not null"` // an amount must be displayed
+	AvailabilityCount uint   `gorm:"not null"`
+	UserID            uint   `gorm:"not null"`
+}
+
 func main() {
 	fmt.Println("Starting Process")
 
@@ -66,6 +75,29 @@ func databaseCreateUser(newUser *User) error {
 
 	return returnError
 }
+func Insert(giftcard GiftCard) (database *gorm.DB) {
+	// var result := db.Create(&GiftCard)
+	database.Create(&GiftCard{Name: "Amazon", CardNumber: 1, Amount: 50, AvailabilityCount: 55})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Walmart", CardNumber: 3, Amount: 50, AvailabilityCount: 20})
+	database.Create(&GiftCard{Name: "Target", CardNumber: 4, Amount: 75, AvailabilityCount: 32})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
+
+	return database
+}
 
 // Get user information from database
 // Returns the user and the error that occurred (if no error, nil)
@@ -83,7 +115,9 @@ func getUserInformation(username string, password string) (User, error) {
 
 /********  Database setup *************/
 func initialSetup(database *gorm.DB) {
-	database.AutoMigrate(&User{})
+	//database.AutoMigrate(&User{})
+
+	database.AutoMigrate(&User{}, &GiftCard{})
 	// testMakeUsers(database)
 }
 
@@ -99,4 +133,26 @@ func makeTestUsers(database *gorm.DB) {
 	}
 
 	database.CreateInBatches(&users, 50)
+}
+
+func populateGiftCards(database *gorm.DB) {
+	giftcards := []GiftCard{
+		{Name: "Amazon", CardNumber: 1, Amount: 50, AvailabilityCount: 55},
+		{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40},
+		{Name: "Walmart", CardNumber: 3, Amount: 50, AvailabilityCount: 20},
+		{Name: "Target", CardNumber: 4, Amount: 75, AvailabilityCount: 32},
+		{Name: "Starbucks", CardNumber: 5, Amount: 25, AvailabilityCount: 10},
+		{Name: "Disney", CardNumber: 6, Amount: 100, AvailabilityCount: 15},
+		{Name: "Google Play", CardNumber: 7, Amount: 75, AvailabilityCount: 18},
+		{Name: "eBay", CardNumber: 8, Amount: 50, AvailabilityCount: 23},
+		{Name: "iTunes", CardNumber: 9, Amount: 50, AvailabilityCount: 10},
+		{Name: "Chick-fil-A", CardNumber: 10, Amount: 25, AvailabilityCount: 55},
+		{Name: "American Express", CardNumber: 11, Amount: 250, AvailabilityCount: 19},
+		{Name: "Sephora", CardNumber: 12, Amount: 200, AvailabilityCount: 45},
+		{Name: "Home Depot", CardNumber: 13, Amount: 100, AvailabilityCount: 30},
+		{Name: "Nike", CardNumber: 14, Amount: 70, AvailabilityCount: 12},
+		{Name: "Etsy", CardNumber: 15, Amount: 135, AvailabilityCount: 47},
+	}
+
+	database.CreateInBatches(&giftcards, 100)
 }
