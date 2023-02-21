@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -61,6 +60,7 @@ var tempCards []tempCard
 
 type jsonCard struct {
 	CompanyName string  `json:"company"`
+	Username    string  `json:"username"`
 	Expiration  string  `json:"expirationDate"`
 	Amount      float32 `json:"amount"`
 	CardNumber  string  `json:"cardNumber"`
@@ -72,6 +72,31 @@ func stringToDate(dateAsString string) (time.Time, error) {
 
 func dateToString(dateAsTime time.Time) string {
 	return dateAsTime.Format("2006-01-02")
+}
+
+func cardBackToFront(backEndCard *GiftCard, keepCardNumber bool) (jsonCard, error) {
+	// Get card number
+	useCardNumber := ""
+	if keepCardNumber {
+		useCardNumber = backEndCard.CardNumber
+	}
+
+	// Get username
+	username, err := getUserName(backEndCard.UserID)
+	if err != nil {
+		return jsonCard{}, err
+	}
+
+	expiration := dateToString(backEndCard.Expiration)
+
+	return jsonCard{
+		CompanyName: backEndCard.CompanyName,
+		Username:    username,
+		Expiration:  expiration,
+		Amount:      backEndCard.Amount,
+		CardNumber:  useCardNumber,
+	}, nil
+
 }
 
 // TODO: Consider altering amount to string so that no overflow/underflow errors
@@ -104,24 +129,25 @@ func requestCreateCard(writer http.ResponseWriter, request *http.Request) {
 
 	// TODO: Check for company here
 
-	// TODO: Check that card has not already been inserted!
-	found := false
-	for _, backEndCard := range tempCards {
-		if backEndCard.cardNumber == frontEndCard.CardNumber {
-			found = true
-			break
-		}
-	}
-
 	// However, for right now, just build the new struct
 	experAsTime, err := stringToDate(frontEndCard.Expiration)
-	if err != nil || !checkCardNumberAndAmount(frontEndCard.CardNumber, frontEndCard.Amount) || found {
+	if err != nil || !checkCardNumberAndAmount(frontEndCard.CardNumber, frontEndCard.Amount) {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	backEndCard := tempCard{user.ID, frontEndCard.CompanyName, experAsTime, frontEndCard.Amount, frontEndCard.CardNumber}
-	tempCards = append(tempCards, backEndCard)
+	backEndCard := GiftCard{
+		UserID:      user.ID,
+		CompanyName: frontEndCard.CompanyName,
+		CardNumber:  frontEndCard.CardNumber,
+		Amount:      frontEndCard.Amount,
+		Expiration:  experAsTime,
+	}
+
+	// If there is an error, signifies card already present.
+	if err := databaseCreateCard(&backEndCard); err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+	}
 
 	writer.WriteHeader(http.StatusCreated)
 
@@ -133,37 +159,44 @@ func requestCreateCard(writer http.ResponseWriter, request *http.Request) {
 func requestGetCard(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
-	if !request.URL.Query().Has("index") {
+	// TODO: Add functionality for minAmount and maxAmount
+	if !request.URL.Query().Has("companyName") {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	stringIndex := request.URL.Query().Get("index")
+	companyName := request.URL.Query().Get("companyName")
 
-	// The following code gets a certain card by index
-	// TODO: Change this when database functionality is implemented
-	index, err := strconv.Atoi(stringIndex)
+	// Get the cards belonging to a certain company
+	cards, err := databaseGetCardsByCompany(companyName)
 	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if index > len(tempCards) || index <= 0 {
 		writer.WriteHeader(http.StatusNotFound)
 		return
 	}
-	index--
 
-	backEndCard := tempCards[index]
+	// Transforrm the nack end cards into front end cards
+	var frontCards []jsonCard
+	for _, card := range cards {
+		newCard, err := cardBackToFront(&card, false)
+		if err != nil {
+			panic("Got incorrect data for card")
+		}
+		frontCards = append(frontCards, newCard)
+	}
 
-	// Change backEndCard into frontEndCard
-	frontEndCard := jsonCard{backEndCard.companyName, dateToString(backEndCard.expiration), backEndCard.amount, ""}
+	// If no cards, return a 404
+	// TODO: Determine if this is the best approach
+	if len(frontCards) < 1 {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
 
 	// Encode frontEndCard
 	writer.WriteHeader(http.StatusOK)
 
-	encodeErr := json.NewEncoder(writer).Encode(&frontEndCard)
+	encodeErr := json.NewEncoder(writer).Encode(&frontCards)
 	if encodeErr != nil {
-		log.Fatalln("There was an error encoding the struct.")
+		log.Fatalln("There was an error encoding the struct for cards.")
 	}
 
 }

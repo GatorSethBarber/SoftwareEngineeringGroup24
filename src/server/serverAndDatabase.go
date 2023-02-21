@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"time"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -24,11 +26,12 @@ type User struct {
 
 type GiftCard struct {
 	gorm.Model
-	Name              string `gorm:"unique" json:"name"`
-	CardNumber        uint32 `gorm:"primary_key"`
-	Amount            int    `gorm:"not null"` // an amount must be displayed
-	AvailabilityCount uint   `gorm:"not null"`
-	UserID            uint   `gorm:"not null"`
+	UserID            uint    `gorm:"not null"`
+	CompanyName       string  `gorm:"not null"`
+	CardNumber        string  `gorm:"unique"`
+	Amount            float32 `gorm:"not null"` // an amount must be displayed
+	Expiration        time.Time
+	AvailabilityCount uint `gorm:"not null"`
 }
 
 func main() {
@@ -38,7 +41,6 @@ func main() {
 
 	// Do not run more than once
 	// initialSetup(database)
-	// makeTestUsers(database)
 
 	RunServer()
 
@@ -75,29 +77,6 @@ func databaseCreateUser(newUser *User) error {
 
 	return returnError
 }
-func Insert(giftcard GiftCard) (database *gorm.DB) {
-	// var result := db.Create(&GiftCard)
-	database.Create(&GiftCard{Name: "Amazon", CardNumber: 1, Amount: 50, AvailabilityCount: 55})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Walmart", CardNumber: 3, Amount: 50, AvailabilityCount: 20})
-	database.Create(&GiftCard{Name: "Target", CardNumber: 4, Amount: 75, AvailabilityCount: 32})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-	database.Create(&GiftCard{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40})
-
-	return database
-}
 
 // Get user information from database
 // Returns the user and the error that occurred (if no error, nil)
@@ -113,12 +92,55 @@ func getUserInformation(username string, password string) (User, error) {
 	return user, theError
 }
 
+/*
+Get the username based on the id stored in the database.
+*/
+func getUserName(userID uint) (string, error) {
+	var user User
+	var theError error
+	if err := database.Where("users.id = ?", userID).First(&user).Error; err != nil {
+		fmt.Println(err)
+		theError = err
+	}
+
+	return user.Username, theError
+}
+
+func databaseCreateCard(giftcard *GiftCard) error {
+	// var result := db.Create(&GiftCard)
+
+	var returnError error
+	returnError = nil
+
+	if err := database.Create(giftcard).Error; err != nil {
+		returnError = err
+	}
+
+	return returnError
+}
+
+/*
+Get the cards where the company name is equal to a given value.
+*/
+func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
+	var cards []GiftCard
+	var theError error
+	if err := database.Where("company_name = ?", companyName).Find(&cards).Error; err != nil {
+		theError = err
+	}
+
+	return cards, theError
+}
+
 /********  Database setup *************/
+
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
 
-	database.AutoMigrate(&User{}, &GiftCard{})
-	// testMakeUsers(database)
+	database.AutoMigrate(&GiftCard{}, &User{})
+
+	makeTestUsers(database)
+	populateGiftCards(database)
 }
 
 // Make a bunch of users
@@ -135,23 +157,36 @@ func makeTestUsers(database *gorm.DB) {
 	database.CreateInBatches(&users, 50)
 }
 
+/*
+type GiftCard struct {
+	gorm.Model
+	UserID            uint       `gorm:"not null"`
+	CompanyName       string     `gorm:"unique"`
+	CardNumber        uint32     `gorm:"primary_key"`
+	Amount            float32        `gorm:"not null"` // an amount must be displayed
+	Expiration        time.Time
+	AvailabilityCount uint       `gorm:"not null"`
+}
+*/
+
 func populateGiftCards(database *gorm.DB) {
+	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
 	giftcards := []GiftCard{
-		{Name: "Amazon", CardNumber: 1, Amount: 50, AvailabilityCount: 55},
-		{Name: "Visa", CardNumber: 2, Amount: 50, AvailabilityCount: 40},
-		{Name: "Walmart", CardNumber: 3, Amount: 50, AvailabilityCount: 20},
-		{Name: "Target", CardNumber: 4, Amount: 75, AvailabilityCount: 32},
-		{Name: "Starbucks", CardNumber: 5, Amount: 25, AvailabilityCount: 10},
-		{Name: "Disney", CardNumber: 6, Amount: 100, AvailabilityCount: 15},
-		{Name: "Google Play", CardNumber: 7, Amount: 75, AvailabilityCount: 18},
-		{Name: "eBay", CardNumber: 8, Amount: 50, AvailabilityCount: 23},
-		{Name: "iTunes", CardNumber: 9, Amount: 50, AvailabilityCount: 10},
-		{Name: "Chick-fil-A", CardNumber: 10, Amount: 25, AvailabilityCount: 55},
-		{Name: "American Express", CardNumber: 11, Amount: 250, AvailabilityCount: 19},
-		{Name: "Sephora", CardNumber: 12, Amount: 200, AvailabilityCount: 45},
-		{Name: "Home Depot", CardNumber: 13, Amount: 100, AvailabilityCount: 30},
-		{Name: "Nike", CardNumber: 14, Amount: 70, AvailabilityCount: 12},
-		{Name: "Etsy", CardNumber: 15, Amount: 135, AvailabilityCount: 47},
+		{UserID: 1, CompanyName: "Amazon", CardNumber: "123456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 55},
+		{UserID: 1, CompanyName: "Visa", CardNumber: "223456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 40},
+		{UserID: 1, CompanyName: "Walmart", CardNumber: "323456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 20},
+		{UserID: 1, CompanyName: "Target", CardNumber: "423456789", Amount: 75.0, Expiration: useDate, AvailabilityCount: 32},
+		{UserID: 2, CompanyName: "Starbucks", CardNumber: "523456789", Amount: 25.0, Expiration: useDate, AvailabilityCount: 10},
+		{UserID: 2, CompanyName: "Disney", CardNumber: "623456789", Amount: 100.0, Expiration: useDate, AvailabilityCount: 15},
+		{UserID: 2, CompanyName: "Google Play", CardNumber: "723456789", Amount: 75.0, Expiration: useDate, AvailabilityCount: 18},
+		{UserID: 2, CompanyName: "eBay", CardNumber: "823456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 23},
+		{UserID: 3, CompanyName: "iTunes", CardNumber: "923456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 10},
+		{UserID: 4, CompanyName: "Chick-fil-A", CardNumber: "103456789", Amount: 25.0, Expiration: useDate, AvailabilityCount: 55},
+		{UserID: 4, CompanyName: "American", CardNumber: "113456789", Amount: 250.0, Expiration: useDate, AvailabilityCount: 19},
+		{UserID: 4, CompanyName: "Sephora", CardNumber: "124356789", Amount: 200.0, Expiration: useDate, AvailabilityCount: 45},
+		{UserID: 5, CompanyName: "Home Depot", CardNumber: "133456789", Amount: 100.0, Expiration: useDate, AvailabilityCount: 30},
+		{UserID: 5, CompanyName: "Nike", CardNumber: "143456789", Amount: 70.0, Expiration: useDate, AvailabilityCount: 12},
+		{UserID: 5, CompanyName: "Etsy", CardNumber: "153456789", Amount: 135.0, Expiration: useDate, AvailabilityCount: 47},
 	}
 
 	database.CreateInBatches(&giftcards, 100)
