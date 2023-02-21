@@ -26,12 +26,11 @@ type User struct {
 
 type GiftCard struct {
 	gorm.Model
-	UserID            uint    `gorm:"not null"`
-	CompanyName       string  `gorm:"not null"`
-	CardNumber        string  `gorm:"unique"`
-	Amount            float32 `gorm:"not null"` // an amount must be displayed
-	Expiration        time.Time
-	AvailabilityCount uint `gorm:"not null"`
+	UserID      uint    `gorm:"not null"`
+	CompanyName string  `gorm:"not null"`
+	CardNumber  string  `gorm:"unique"`
+	Amount      float32 `gorm:"not null"` // an amount must be displayed
+	Expiration  time.Time
 }
 
 func main() {
@@ -172,21 +171,21 @@ type GiftCard struct {
 func populateGiftCards(database *gorm.DB) {
 	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
 	giftcards := []GiftCard{
-		{UserID: 1, CompanyName: "Amazon", CardNumber: "123456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 55},
-		{UserID: 1, CompanyName: "Visa", CardNumber: "223456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 40},
-		{UserID: 1, CompanyName: "Walmart", CardNumber: "323456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 20},
-		{UserID: 1, CompanyName: "Target", CardNumber: "423456789", Amount: 75.0, Expiration: useDate, AvailabilityCount: 32},
-		{UserID: 2, CompanyName: "Starbucks", CardNumber: "523456789", Amount: 25.0, Expiration: useDate, AvailabilityCount: 10},
-		{UserID: 2, CompanyName: "Disney", CardNumber: "623456789", Amount: 100.0, Expiration: useDate, AvailabilityCount: 15},
-		{UserID: 2, CompanyName: "Google Play", CardNumber: "723456789", Amount: 75.0, Expiration: useDate, AvailabilityCount: 18},
-		{UserID: 2, CompanyName: "eBay", CardNumber: "823456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 23},
-		{UserID: 3, CompanyName: "iTunes", CardNumber: "923456789", Amount: 50.0, Expiration: useDate, AvailabilityCount: 10},
-		{UserID: 4, CompanyName: "Chick-fil-A", CardNumber: "103456789", Amount: 25.0, Expiration: useDate, AvailabilityCount: 55},
-		{UserID: 4, CompanyName: "American", CardNumber: "113456789", Amount: 250.0, Expiration: useDate, AvailabilityCount: 19},
-		{UserID: 4, CompanyName: "Sephora", CardNumber: "124356789", Amount: 200.0, Expiration: useDate, AvailabilityCount: 45},
-		{UserID: 5, CompanyName: "Home Depot", CardNumber: "133456789", Amount: 100.0, Expiration: useDate, AvailabilityCount: 30},
-		{UserID: 5, CompanyName: "Nike", CardNumber: "143456789", Amount: 70.0, Expiration: useDate, AvailabilityCount: 12},
-		{UserID: 5, CompanyName: "Etsy", CardNumber: "153456789", Amount: 135.0, Expiration: useDate, AvailabilityCount: 47},
+		{UserID: 1, CompanyName: "Amazon", CardNumber: "123456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Visa", CardNumber: "223456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Walmart", CardNumber: "323456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Target", CardNumber: "423456789", Amount: 75.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Starbucks", CardNumber: "523456789", Amount: 25.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Disney", CardNumber: "623456789", Amount: 100.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Google Play", CardNumber: "723456789", Amount: 75.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "eBay", CardNumber: "823456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 3, CompanyName: "iTunes", CardNumber: "923456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 4, CompanyName: "Chick-fil-A", CardNumber: "103456789", Amount: 25.0, Expiration: useDate},
+		{UserID: 4, CompanyName: "American", CardNumber: "113456789", Amount: 250.0, Expiration: useDate},
+		{UserID: 4, CompanyName: "Sephora", CardNumber: "124356789", Amount: 200.0, Expiration: useDate},
+		{UserID: 5, CompanyName: "Home Depot", CardNumber: "133456789", Amount: 100.0, Expiration: useDate},
+		{UserID: 5, CompanyName: "Nike", CardNumber: "143456789", Amount: 70.0, Expiration: useDate},
+		{UserID: 5, CompanyName: "Etsy", CardNumber: "153456789", Amount: 135.0, Expiration: useDate},
 	}
 
 	database.CreateInBatches(&giftcards, 100)

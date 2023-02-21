@@ -147,6 +147,7 @@ func requestCreateCard(writer http.ResponseWriter, request *http.Request) {
 	// If there is an error, signifies card already present.
 	if err := databaseCreateCard(&backEndCard); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	writer.WriteHeader(http.StatusCreated)
