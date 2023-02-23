@@ -36,6 +36,9 @@ Response:
 
 Note: First name is optional. This also may be changed to use query instead
 
+If a user with the given username or email already exists, a status code of 400 (bad request) is returned.
+Otherwise, a response containing the user's information is returned with a status code of 201 (created)
+
 ## User Information Access
 
 URL: /user/get/{username}/{password}
