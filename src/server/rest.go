@@ -48,16 +48,6 @@ func httpHandler() http.Handler {
 		)(router))
 }
 
-type tempCard struct {
-	userID      uint
-	companyName string
-	expiration  time.Time
-	amount      float32
-	cardNumber  string
-}
-
-var tempCards []tempCard
-
 type jsonCard struct {
 	CompanyName string  `json:"company"`
 	Username    string  `json:"username"`
@@ -66,12 +56,18 @@ type jsonCard struct {
 	CardNumber  string  `json:"cardNumber"`
 }
 
+/*
+Parse a YYYY-MM string to time.Time
+*/
 func stringToDate(dateAsString string) (time.Time, error) {
-	return time.Parse("2006-01-02", dateAsString)
+	return time.Parse("2006-01", dateAsString)
 }
 
+/*
+Parse a time.Time to a YYYY-MM string
+*/
 func dateToString(dateAsTime time.Time) string {
-	return dateAsTime.Format("2006-01-02")
+	return dateAsTime.Format("2006-01")
 }
 
 func cardBackToFront(backEndCard *GiftCard, keepCardNumber bool) (jsonCard, error) {
