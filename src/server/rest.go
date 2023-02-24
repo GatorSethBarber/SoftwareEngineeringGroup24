@@ -70,6 +70,24 @@ func dateToString(dateAsTime time.Time) string {
 	return dateAsTime.Format("2006-01")
 }
 
+/*
+Check incoming user information to make sure it is good
+*/
+func checkUserInfo(newUser User) bool {
+	// Require username, password, and last name
+	if newUser.Username == "" || newUser.Password == "" || newUser.LastName == "" {
+		return false
+	}
+
+	// Currently, just check if email is present (may change this)
+	if newUser.Email == "" {
+		return false
+	}
+
+	// If get here, all good
+	return true
+}
+
 func cardBackToFront(backEndCard *GiftCard, keepCardNumber bool) (jsonCard, error) {
 	// Get card number
 	useCardNumber := ""
@@ -228,11 +246,18 @@ func requestCreateUser(writer http.ResponseWriter, request *http.Request) {
 
 	// Data in body will be converted to the structure of the user
 	if err := json.NewDecoder(request.Body).Decode(&user); err != nil {
-		panic("Cannot decode")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if !checkUserInfo(user) {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	if err := databaseCreateUser(&user); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	writer.WriteHeader(http.StatusCreated)
