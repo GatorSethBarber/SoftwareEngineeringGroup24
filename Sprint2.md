@@ -23,8 +23,12 @@ Moving forward with Sprint 2, we fixed what we did not accomplished in Sprint 1.
 
 
 ## Back End
-* Unit Tests
-  * List below
+### Unit Tests in Go
+The testing of all functionality outside of router paths is done in Go. There are two files that contain unit tests, both of which are in src/server/
+* rest_test.go: This tests the functions associated with the processing of information.
+* serverAndDatabase_test.go: These tests test the functionality of the database.
+### Testing the REST API
+This is done through an end-to-end Cypress spec.
 
 
 # Conclusion
