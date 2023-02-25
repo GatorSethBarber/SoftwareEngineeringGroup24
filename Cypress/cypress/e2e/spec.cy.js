@@ -45,4 +45,41 @@ describe('Test POST User', () => {
       expect(response.status).to.equal(400)
     })
   })
+
+  it('POST with already taken email', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/user/new',
+      body: {
+        "username": "Widsith",
+        "email": "waves.and.toes@northerners.com",
+        "password": "ihavebeenwiththekingof",
+        "firstName": "firstName",
+        "lastName": "Widsith"
+      },
+      headers: {
+        'content-type': 'application/json'
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
+
+  it ('POST with missing info', () => {
+    cy.request({
+      method: 'POST', 
+      url: 'http://localhost:8080/user/new',
+      body: {
+        "username": "Widsith",
+        "email": "short.poem@the-anglo.com"
+      },
+      headers: {
+        'content-type': 'application/json'
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
 })
