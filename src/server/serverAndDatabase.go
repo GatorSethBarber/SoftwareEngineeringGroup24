@@ -171,21 +171,21 @@ type GiftCard struct {
 func populateGiftCards(database *gorm.DB) {
 	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
 	giftcards := []GiftCard{
-		{UserID: 1, CompanyName: "Amazon", CardNumber: "123456789", Amount: 50.0, Expiration: useDate},
-		{UserID: 1, CompanyName: "Visa", CardNumber: "223456789", Amount: 50.0, Expiration: useDate},
-		{UserID: 1, CompanyName: "Walmart", CardNumber: "323456789", Amount: 50.0, Expiration: useDate},
-		{UserID: 1, CompanyName: "Target", CardNumber: "423456789", Amount: 75.0, Expiration: useDate},
-		{UserID: 2, CompanyName: "Starbucks", CardNumber: "523456789", Amount: 25.0, Expiration: useDate},
-		{UserID: 2, CompanyName: "Disney", CardNumber: "623456789", Amount: 100.0, Expiration: useDate},
-		{UserID: 2, CompanyName: "Google Play", CardNumber: "723456789", Amount: 75.0, Expiration: useDate},
-		{UserID: 2, CompanyName: "eBay", CardNumber: "823456789", Amount: 50.0, Expiration: useDate},
-		{UserID: 3, CompanyName: "iTunes", CardNumber: "923456789", Amount: 50.0, Expiration: useDate},
-		{UserID: 4, CompanyName: "Chick-fil-A", CardNumber: "103456789", Amount: 25.0, Expiration: useDate},
-		{UserID: 4, CompanyName: "American", CardNumber: "113456789", Amount: 250.0, Expiration: useDate},
-		{UserID: 4, CompanyName: "Sephora", CardNumber: "124356789", Amount: 200.0, Expiration: useDate},
-		{UserID: 5, CompanyName: "Home Depot", CardNumber: "133456789", Amount: 100.0, Expiration: useDate},
-		{UserID: 5, CompanyName: "Nike", CardNumber: "143456789", Amount: 70.0, Expiration: useDate},
-		{UserID: 5, CompanyName: "Etsy", CardNumber: "153456789", Amount: 135.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Bestbuy", CardNumber: "123456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Target", CardNumber: "223456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Starbucks", CardNumber: "323456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "Kohls", CardNumber: "423456789", Amount: 75.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Bestbuy", CardNumber: "523456789", Amount: 25.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Target", CardNumber: "623456789", Amount: 100.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Starbucks", CardNumber: "723456789", Amount: 75.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "Kohls", CardNumber: "823456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 3, CompanyName: "Bestbuy", CardNumber: "923456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 4, CompanyName: "Target", CardNumber: "103456789", Amount: 25.0, Expiration: useDate},
+		{UserID: 4, CompanyName: "Starbucks", CardNumber: "113456789", Amount: 250.0, Expiration: useDate},
+		{UserID: 4, CompanyName: "Starbucks", CardNumber: "124356789", Amount: 200.0, Expiration: useDate},
+		{UserID: 5, CompanyName: "Starbucks", CardNumber: "133456789", Amount: 100.0, Expiration: useDate},
+		{UserID: 5, CompanyName: "Starbucks", CardNumber: "143456789", Amount: 70.0, Expiration: useDate},
+		{UserID: 5, CompanyName: "Kohls", CardNumber: "153456789", Amount: 135.0, Expiration: useDate},
 	}
 
 	database.CreateInBatches(&giftcards, 100)

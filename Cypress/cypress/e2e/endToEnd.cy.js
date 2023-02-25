@@ -6,6 +6,6 @@ describe('template spec', () => {
 
 describe('Sample test', () => {
   it('passes', () => {
-    cy.visit('http://localhost:8080/brand')
+    cy.visit('http://localhost:8080')
   })
 })
