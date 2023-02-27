@@ -29,7 +29,7 @@ type GiftCard struct {
 	UserID      uint    `gorm:"not null"`
 	CompanyName string  `gorm:"not null"`
 	CardNumber  string  `gorm:"unique"`
-	Amount      float32 `gorm:"not null"` // an amount must be displayed
+	Amount      float32 `gorm:"not null"`
 	Expiration  time.Time
 }
 
