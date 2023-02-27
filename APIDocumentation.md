@@ -112,11 +112,11 @@ Get all (basic information about) the gift cards that match certain search condi
 
 Verb: GET
 
-URL example: /card/?company="Amazon"&minAmount="15.00"
+URL example: /card/get?companyName=Starbucks
 Potential Search Keys:
-* company: The name ofthe company
-* minAmount: The minimum amount for the card
-* maxAmount: The maximum amount for the card
+* companyName: The name ofthe company
+* minAmount: The minimum amount for the card (unimplemented)
+* maxAmount: The maximum amount for the card (unimplemented)
 * exact: Defaults to true, which means company name must be matched exactly. If set to "false", then will allow matching on both sides.
 
 
