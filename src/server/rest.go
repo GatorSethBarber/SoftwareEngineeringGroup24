@@ -19,7 +19,7 @@ func httpHandler() http.Handler {
 	// Your REST API requests go here
 
 	// Routes for user
-	router.HandleFunc("/user/get/read/{username}/{password}", requestGetUserInfo).Methods("GET")
+	router.HandleFunc("/user/get/{username}/{password}", requestGetUserInfo).Methods("GET")
 	router.HandleFunc("/user/new", requestCreateUser).Methods("POST")
 
 	// Routes for gift card

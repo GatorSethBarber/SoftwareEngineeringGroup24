@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { AuthService } from './auth.service';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,7 @@ import { MatSortModule } from '@angular/material/sort';
   exports: [
     RouterModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
