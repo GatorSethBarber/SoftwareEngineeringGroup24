@@ -13,6 +13,7 @@
         id="userName"
         placeholder="Username"
         formControlName="userName"
+        data-cy="username-input"
       />
 
       <input
@@ -22,12 +23,13 @@
         id="passWord"
         placeholder="Password"
         formControlName="passWord"
+        data-cy="password-input"
       />
 
-      <button type="submit">Log In</button>
+      <button type="submit" data-cy="login-button">Log In</button>
       <p class="message">
         Not a member?
-        <a routerLink="/register" style="text-decoration: underline"
+        <a routerLink="/register" style="text-decoration: underline" data-cy="register-link"
           >Sign up now</a
         >
       </p>
