@@ -12,6 +12,7 @@
         placeholder="First Name"
         formControlName="firstName"
         required
+        data-cy="firstName-input"
       />
 
       <input
@@ -20,6 +21,7 @@
         placeholder="Last Name"
         required
         formControlName="lastName"
+        data-cy="lastName-input"
       />
 
       <input
@@ -28,6 +30,7 @@
         placeholder="Email"
         required
         formControlName="email"
+        data-cy="email-input"
       />
       <input
         type="text"
@@ -35,9 +38,10 @@
         placeholder="Password"
         required
         formControlName="passWord"
+        data-cy="password-input"
       />
 
-      <button type="submit">Create account</button>
+      <button type="submit" data-cy="create-button">Create account</button>
       <p class="message" style="font-size: 10px">
         By clicking the Submit,you agree to our
         <a routerLink="/register" style="text-decoration: underline">terms and use</a> and
@@ -48,6 +52,7 @@
         <a
           routerLink="/login"
           style="font-family: var(--grotesk); font-size: 12px"
+          data-cy="login-link"
         >
           Log in</a
         >
