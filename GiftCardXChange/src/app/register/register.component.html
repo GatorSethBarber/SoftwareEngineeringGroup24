@@ -8,12 +8,40 @@
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
       <input
         type="text"
+        id="username"
+        placeholder="Username"
+        formControlName="userName"
+        required
+      />
+      <div
+        [hidden]="f.username.valid"
+        *ngIf="f.username.invalid && (f.username.dirty || f.username.touched)"
+        class="alert alert-danger"
+      >
+        <div *ngIf="f.username.errors?.['required']">
+          Please enter your username.
+        </div>
+      </div>
+
+      <input
+        type="text"
         id="login_username"
         placeholder="First Name"
         formControlName="firstName"
         data-cy="username-input"
         required
       />
+      <div
+        [hidden]="f.firstName.valid"
+        *ngIf="
+          f.firstName.invalid && (f.firstName.dirty || f.firstName.touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="f.firstName.errors?.['required']">
+          Please enter your first name.
+        </div>
+      </div>
 
       <input
         type="text"
