@@ -65,7 +65,7 @@
         Please enter your password.
       </div>
 
-      <div *ngIf="f.passWord.errors?.['minlength']">
+      <div *ngIf="f.passWord.errors?.['minlength']" class="invalid-feedback d-block">
         Password should be minimum 6 characters long.
       </div>
 

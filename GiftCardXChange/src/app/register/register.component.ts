@@ -45,7 +45,7 @@ export class RegisterComponent {
       (res: any) => {
         alert('Yay!!! Welcome');
         this.signUpForm.reset();
-        this.router.navigate(['brand']);
+        this.router.navigate(['login']);
       },
       (err) => alert('hmmhmm something wrong')
     );
