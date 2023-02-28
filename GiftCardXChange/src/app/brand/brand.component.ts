@@ -22,7 +22,7 @@ export class BrandComponent {
     this.state = window.history.state.brandName;
 
     this.brands.forEach(brand => {
-      this.AuthService.brandCards({ CompanyName: brand.name }).subscribe(
+      this.AuthService.brandCards({ CompanyName: brand.name.replace(/\s+/g, '') }).subscribe(
         (res) => {
           brand.quantity = res.length;
         },

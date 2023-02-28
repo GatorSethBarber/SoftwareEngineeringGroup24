@@ -51,7 +51,7 @@ export class CardsComponent {
 
     console.log(this.chosenBrand.name)
 
-    this.AuthService.brandCards({CompanyName: this.chosenBrand.name}).subscribe(
+    this.AuthService.brandCards({CompanyName: this.chosenBrand.name.replace(/\s+/g, '')}).subscribe(
       (res) => {
         console.log(res);
         this.dataSource = res;
