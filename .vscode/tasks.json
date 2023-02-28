@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "command": "npx concurrently \"cd GiftCardXChange && ng serve  --open\" \"cd src/server && go run .\"",
+      "command": "make dev",
       "type": "shell",
       "label": "project run",
       "runOptions": {
