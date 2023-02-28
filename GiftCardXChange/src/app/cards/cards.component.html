@@ -23,13 +23,13 @@
                 <!-- Expiration date column -->
                 <ng-container matColumnDef="expiryDate">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
-                    <td mat-cell *matCellDef="let card">{{card.expiryDate}}</td>
+                    <td mat-cell *matCellDef="let card">{{card.expirationDate}}</td>
                 </ng-container>
 
                 <!-- UserID column -->
                 <ng-container matColumnDef="userID">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
-                    <td mat-cell *matCellDef="let card">{{card.userID}}</td>
+                    <td mat-cell *matCellDef="let card">{{card.username}}</td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
