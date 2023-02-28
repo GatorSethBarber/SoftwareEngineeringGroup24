@@ -19,6 +19,7 @@ export class AuthService {
   makeRequestHeader(authorize: boolean = false) {
     const header = new HttpHeaders()
       .set('Content-Type', 'application/json')
+      .set('Access-Control-Allow-Method', 'GET, POST')
       .set('Access-Control-Allow-Origin', '*');
 
     if (authorize) {

@@ -1,18 +1,10 @@
 <div class="signup-page">
   <div class="form">
-    <div class="signup">
-      <div class="signup-header">
-        <h3>Sign Up</h3>
-      </div>
+    <div class="signup" font>
+      <h3>Sign Up</h3>
     </div>
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
-      <input
-        type="text"
-        id="username"
-        placeholder="Username"
-        formControlName="userName"
-        required
-      />
+      <input type="text" placeholder="Username" formControlName="username" />
       <div
         [hidden]="f.username.valid"
         *ngIf="f.username.invalid && (f.username.dirty || f.username.touched)"
@@ -22,15 +14,7 @@
           Please enter your username.
         </div>
       </div>
-
-      <input
-        type="text"
-        id="login_username"
-        placeholder="First Name"
-        formControlName="firstName"
-        data-cy="username-input"
-        required
-      />
+      <input type="text" placeholder="First Name" formControlName="firstName" />
       <div
         [hidden]="f.firstName.valid"
         *ngIf="
@@ -48,7 +32,6 @@
         placeholder="Last Name"
         required
         formControlName="lastName"
-        data-cy="lastName-input"
       />
       <div
         [hidden]="f.lastName.valid"
@@ -60,19 +43,19 @@
         </div>
       </div>
 
-      <input
-        type="text"
-        id="email"
-        placeholder="Email"
-        required
-        formControlName="email"
-      />
+      <input type="text" placeholder="Email" required formControlName="email" />
+      <div
+        [hidden]="f.email.valid"
+        *ngIf="f.email.invalid && (f.email.dirty || f.email.touched)"
+        class="alert alert-danger"
+      >
+        Please enter your email.
+      </div>
       <input
         type="text"
         placeholder="Password"
         required
         formControlName="passWord"
-        data-cy="password-input"
       />
       <div
         [hidden]="f.passWord.valid"
@@ -86,7 +69,7 @@
         Password should be minimum 6 characters long.
       </div>
 
-      <button type="submit" data-cy="create-button">Create account</button>
+      <button type="submit">Create account</button>
       <p class="message" style="font-size: 10px">
         By clicking the Submit,you agree to our
         <a routerLink="/register" style="text-decoration: underline"
@@ -102,7 +85,6 @@
         <a
           routerLink="/login"
           style="font-family: var(--grotesk); font-size: 12px"
-          data-cy="login-link"
         >
           Log in</a
         >
