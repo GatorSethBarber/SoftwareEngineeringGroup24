@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Brand } from '../brand';
 import { BRANDS } from '../mock-brands'
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-brand',
@@ -13,8 +14,23 @@ export class BrandComponent {
   brands = BRANDS;
   selectedBrand?: Brand;
 
+  constructor(
+    private AuthService: AuthService
+  ) { }
+
   ngOnInit() {
     this.state = window.history.state.brandName;
+
+    this.brands.forEach(brand => {
+      this.AuthService.brandCards({ CompanyName: brand.name }).subscribe(
+        (res) => {
+          brand.quantity = res.length;
+        },
+        (err) => alert('error getting cards for brands')
+      )
+    });
+
+
   }
 
 }
