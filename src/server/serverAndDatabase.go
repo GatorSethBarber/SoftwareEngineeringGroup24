@@ -171,15 +171,15 @@ type GiftCard struct {
 func populateGiftCards(database *gorm.DB) {
 	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
 	giftcards := []GiftCard{
-		{UserID: 1, CompanyName: "Bestbuy", CardNumber: "123456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 1, CompanyName: "BestBuy", CardNumber: "123456789", Amount: 50.0, Expiration: useDate},
 		{UserID: 1, CompanyName: "Target", CardNumber: "223456789", Amount: 50.0, Expiration: useDate},
 		{UserID: 1, CompanyName: "Starbucks", CardNumber: "323456789", Amount: 50.0, Expiration: useDate},
 		{UserID: 1, CompanyName: "Kohls", CardNumber: "423456789", Amount: 75.0, Expiration: useDate},
-		{UserID: 2, CompanyName: "Bestbuy", CardNumber: "523456789", Amount: 25.0, Expiration: useDate},
+		{UserID: 2, CompanyName: "BestBuy", CardNumber: "523456789", Amount: 25.0, Expiration: useDate},
 		{UserID: 2, CompanyName: "Target", CardNumber: "623456789", Amount: 100.0, Expiration: useDate},
 		{UserID: 2, CompanyName: "Starbucks", CardNumber: "723456789", Amount: 75.0, Expiration: useDate},
 		{UserID: 2, CompanyName: "Kohls", CardNumber: "823456789", Amount: 50.0, Expiration: useDate},
-		{UserID: 3, CompanyName: "Bestbuy", CardNumber: "923456789", Amount: 50.0, Expiration: useDate},
+		{UserID: 3, CompanyName: "BestBuy", CardNumber: "923456789", Amount: 50.0, Expiration: useDate},
 		{UserID: 4, CompanyName: "Target", CardNumber: "103456789", Amount: 25.0, Expiration: useDate},
 		{UserID: 4, CompanyName: "Starbucks", CardNumber: "113456789", Amount: 250.0, Expiration: useDate},
 		{UserID: 4, CompanyName: "Starbucks", CardNumber: "124356789", Amount: 200.0, Expiration: useDate},

@@ -26,7 +26,7 @@ export class BrandComponent {
         (res) => {
           brand.quantity = res.length;
         },
-        (err) => alert('error getting cards for brands')
+        (err) => alert('Error getting cards for brand: ' + brand.name)
       )
     });
 

@@ -56,7 +56,7 @@ export class CardsComponent {
         console.log(res);
         this.dataSource = res;
       },
-      (err) => alert('error getting cards for brands')
+      (err) => alert('Error getting card for brand: ' + this.chosenBrand.name)
     )
   }
 
