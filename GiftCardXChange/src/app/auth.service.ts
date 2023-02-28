@@ -45,6 +45,18 @@ export class AuthService {
       { headers }
     );
   }
+
+  brandCards(
+    cardInfo: { companyName: string} | any
+  ): Observable<any> {
+    const headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/card/get`,
+      { params: {
+        companyName: cardInfo.CompanyName,
+      },}
+    );
+  }
   //    register(username:any, email:any ,password:any,firstname:any,lastname:any){
   //   let headers = new HttpHeaders().set('content-type', 'application/json')
   //     .set('Access-Control-Allow-Origin', '*');

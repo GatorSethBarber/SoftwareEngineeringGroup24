@@ -3,6 +3,9 @@
     <div class="signup" font>
       <h3>Sign Up</h3>
     </div>
+    <div class="signup" font>
+      <h3>Sign Up</h3>
+    </div>
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
       <input type="text" placeholder="Username" formControlName="username" />
       <div
@@ -43,14 +46,13 @@
         </div>
       </div>
 
-      <input type="text" placeholder="Email" required formControlName="email" />
-      <div
-        [hidden]="f.email.valid"
-        *ngIf="f.email.invalid && (f.email.dirty || f.email.touched)"
-        class="alert alert-danger"
-      >
-        Please enter your email.
-      </div>
+      <input
+        type="text"
+        id="email"
+        placeholder="Email"
+        required
+        formControlName="email"
+      />
       <input
         type="text"
         placeholder="Password"

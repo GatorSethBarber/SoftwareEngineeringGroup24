@@ -68,3 +68,54 @@ func TestInvalidUserIdGetUserName(t *testing.T) {
 		t.Fatalf("Wanted to get an error, got %v instead.", getUserName)
 	}
 }
+
+func TestValidGiftCardsByCompany(t *testing.T) {
+	database = ConnectToDatabase()
+
+	companyName := "Target"
+	gotGiftCard, err := databaseGetCardsByCompany(companyName)
+
+	wantGiftCards := []GiftCard{
+		UserID:      1,
+		CompanyName: "Target",
+		CardNumber:  "223456789",
+		Amount:      50.0,
+		Expiration:  useDate,
+
+		UserID:      2,
+		CompanyName: "Target",
+		CardNumber:  "623456789",
+		Amount:      100.0,
+		Expiration:  useDate,
+
+		UserID:      4,
+		CompanyName: "Target",
+		CardNumber:  "103456789",
+		Amount:      25.0,
+		Expiration:  useDate,
+	}
+
+	if err != nil {
+		t.Fatalf("Wanted to get the gift card(s), but got an error: %v", err)
+	}
+
+	wantGiftCards.ID = gotGiftCard.ID
+	wantGiftCards.CreatedAt = gotGiftCard.CreatedAt
+	wantGiftCards.UpdatedAt = gotGiftCard.UpdatedAt
+	wantGiftCards.DeletedAt = gotGiftCard.DeletedAt
+
+	if wantGiftCard != gotGiftCard {
+		t.Fatalf("Wanted %v, but got %v instead.", wantGiftCard, gotGiftCard)
+	}
+}
+
+func TestInvalidGiftCardsByCompany(t *testing.T) {
+	database = ConnectToDatabase()
+
+	companyName = "Targit"
+	gotGiftCard, err := databaseGetCardsByCompany(companyName)
+
+	if err == nil {
+		t.Fatalf("Wanted to get an error, but got: %v", gotGiftCard)
+	}
+}

@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 **/node_modules
 **/src/**/*/dist
+=======
+src/server/dist/
+>>>>>>> c3d054b5b0f4297fbbdb3c296e0738bade7ddac8
