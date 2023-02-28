@@ -1,9 +1,7 @@
 <div class="signup-page">
   <div class="form">
-    <div class="signup">
-      <div class="signup-header">
-        <h3>Sign Up</h3>
-      </div>
+    <div class="signup" font>
+      <h3>Sign Up</h3>
     </div>
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
       <input
@@ -60,6 +58,14 @@
         </div>
       </div>
 
+      <input type="text" placeholder="Email" required formControlName="email" />
+      <div
+        [hidden]="f.email.valid"
+        *ngIf="f.email.invalid && (f.email.dirty || f.email.touched)"
+        class="alert alert-danger"
+      >
+        Please enter your email.
+      </div>
       <input
         type="text"
         id="email"
