@@ -119,12 +119,19 @@ The testing of all functionality outside of router paths is done in Go. There ar
   * TestValidCardBackToFrontWithoutNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct for converting to JSON while hiding card number.
   * TestInvalidUserBackToFrontWithoutNumber: Sanity check for cardBackToFront to ensure invalid data is handled properly.
 * serverAndDatabase_test.go: These tests test the functionality of the database.
+  * TestCreateWithAlreadyTakenEmail: Test that emails cannot be duplicated
+  * TestCreateWithAlreadyTakenUsername: Test that usernames cannot be duplicated
+  * TestCreateNewUser: Test that it is possible to create a new user
   * TestValidGetUserInformation: Test getUserInformation to make sure it returns the correct information for valid username and password combination.
   * TestInvalidGetUserInformation: Test getUserInformation to make sure it returns an error when called with an invalid username and password combination.
   * TestValidGetUserName: Test getUserName to ensure that it gets the correct name when called with a valid userID.
   * TestInvalidUserIdGetUserName: Test getUserName to ensure that it returns an error when called with an invalid userID.
   * TestValidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct gift cards are gotten when called with a specific companyName.
   * TestInvalidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct affect happens when databaseGetCardsByCompany is called with a not-present companyName.
+  * TestCompleteData: Test checkUserInfo to ensure it returns true when passed complete data
+  * TestIncompleteData: Test checkUserInfo to ensure it returns false when passed incomplete data
+  * TestInvalidDuplicateCardNumber: Test that duplicate card numbers are not allowed
+  * TestValidCrateCard: Create a new card for the database
 
 ### Testing the REST API in Cypress
 This is done through an end-to-end Cypress spec. The tests are stored in the end to end spec spec.cy.js.
@@ -135,12 +142,15 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
   * POST with already taken username: Tests that attempt to create new user with already taken username has a response status code of 400
   * POST with already taken email: Tests that attempt to create new user with already taken email has a response status code of 400
   * POST with missing info: Tests that attempt to create new user while not fully specifying needed data has a response status code of 400.
+  * POST with valid info: Tests that successful creation of user has status code of 201
 * Test GET gift card information:
   * GET with correct company name:
-  * GET with incorrect user:
+  * GET without passing parameter: Tests that a 400 status code is the response to a request missing the *companyName* query parameter.
+  * Get with unkown company: Tests that a 404 status code is the response to a request with a *companyName* not present in the database.
 * Test POST GiftCard:
   * POST with already taken card number
   * POST with missing card number
+  * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
 
 # Conclusion
 

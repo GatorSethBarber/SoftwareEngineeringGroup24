@@ -82,6 +82,23 @@ describe('Test POST User', () => {
       expect(response.status).to.equal(400)
     })
   })
+
+  it ('POST with valid info', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/user/new',
+      body: {
+        "username": "George",
+        "email": "uniquely1@email.com",
+        "password": "password",
+        "firstName": "George",
+        "lastName": "Washington"
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(201)
+    })
+  })
 })
 
 // added test
@@ -96,19 +113,20 @@ describe('Test GET gift card information', () => {
     })
   })
 
-  /*
-	return jsonCard{
-		CompanyName: backEndCard.CompanyName,
-		Username:    username,
-		Expiration:  expiration,
-		Amount:      backEndCard.Amount,
-		CardNumber:  useCardNumber,
-	}
-  */
-  it('GET with incorrect user', () => {
+  it('GET without passing parameter', () => {
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/card/get',  // FIXME
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
+
+  it('GET with unkown company', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get?companyName=BobsGrill',
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
@@ -123,13 +141,12 @@ describe('Test POST GiftCard', () => {
   it('POST with already taken card number', () => {
     cy.request({
       method: 'POST',
-      url: 'http://localhost:8080/card/new/{username}/{password}',
+      url: 'http://localhost:8080/card/new/Anlaf/password',
       body: {
-        "UserID":       1,
-        "CompanyName":  "Starbuck",
-        "CardNumber":   "223456789",
-        "Amount":       50.0,
-        "Expiration":   useDate
+        "companyName":  "Starbuck",
+        "cardNumber":   "223456789",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
       },
       headers: {
         'content-type': 'application/json'
@@ -143,12 +160,11 @@ describe('Test POST GiftCard', () => {
   it ('POST with missing card number', () => {
     cy.request({
       method: 'POST', 
-      url: 'http://localhost:8080/card/new/{username}/{password}',
+      url: 'http://localhost:8080/card/new/Anlaf/password',
       body: {
-        "UserID":       1,
-        "CompanyName":  "Target",
-        "Amount":       50.0,
-        "Expiration":   useDate
+        "companyName":  "Target",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
       },
       headers: {
         'content-type': 'application/json'
@@ -158,50 +174,20 @@ describe('Test POST GiftCard', () => {
       expect(response.status).to.equal(400)
     })
   })
-})
 
-
-// added test
-/*
-func RunServer() {
-	host := "localhost:8080"
-	if err := http.ListenAndServe(host, httpHandler()); err != nil {
-		log.Fatalf("Failed to listen on %s: %v", host, err)
-	}
-	fmt.Println("Starting to run server")
-}
-*/
-// describe('Test GET User information', () => {
-/*
-func getUserInformation(username string, password string) (User, error) {
-	fmt.Println("Getting with", username, "and", password)
-	var user User
-	var theError error
-	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
-		user = User{}
-		theError = err
-	}
-
-	return user, theError
-}
-*/
-describe('Test Server Routing', () => {
-  it ('GET with correct username and password', () => {
+  it ('POST with valid new card', () => {
     cy.request({
-      method: 'GET',
-      url: 'http://localhost:8080/user/get/read/Anlaf/password'
-    }).then(response => {
-      expect(response.status).to.equal(200)
-    })
-  })
-
-  it('GET with incorrect password', () => {
-    cy.request({
-      method: 'GET',
-      url: 'http://localhost:8080/user/get/read/Analaf/password2',
+      method: 'POST',
+      url: 'http://localhost:8080/card/new/Anlaf/password',
+      body: {
+        "companyName": "Starbucks",
+        "amount": 50.0,
+        "expirationDate": "2027-12",
+        "cardNumber": "111111119"
+      },
       failOnStatusCode: false
     }).then(response => {
-      expect(response.status).to.equal(404)
+      expect(response.status).to.equal(201)
     })
   })
 })
