@@ -104,9 +104,10 @@ Status codes:
 # Testings
 ## Front End 
 * Unit Tests
-  * List below
+  * Angular component tests to check that each component displays and builds correctly
+  * Basic testing to check that brands page gets correct number of brands
 * Cypress Tests
-  * List below
+  * End-to-end test that goes over basic process of registering to check inputs are recorded correctly and navigation works
 
 
 ## Back End
