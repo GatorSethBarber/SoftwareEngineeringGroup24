@@ -3,14 +3,9 @@
     <div class="signup" font>
       <h3>Sign Up</h3>
     </div>
+
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
-      <input
-        type="text"
-        id="username"
-        placeholder="Username"
-        formControlName="userName"
-        required
-      />
+      <input type="text" placeholder="Username" formControlName="username" data-cy="username-input" />
       <div
         [hidden]="f.username.valid"
         *ngIf="f.username.invalid && (f.username.dirty || f.username.touched)"
@@ -20,15 +15,7 @@
           Please enter your username.
         </div>
       </div>
-
-      <input
-        type="text"
-        id="login_username"
-        placeholder="First Name"
-        formControlName="firstName"
-        data-cy="username-input"
-        required
-      />
+      <input type="text" placeholder="First Name" formControlName="firstName" data-cy="firstName-input"/>
       <div
         [hidden]="f.firstName.valid"
         *ngIf="
@@ -58,20 +45,13 @@
         </div>
       </div>
 
-      <input type="text" placeholder="Email" required formControlName="email" />
-      <div
-        [hidden]="f.email.valid"
-        *ngIf="f.email.invalid && (f.email.dirty || f.email.touched)"
-        class="alert alert-danger"
-      >
-        Please enter your email.
-      </div>
       <input
         type="text"
         id="email"
         placeholder="Email"
         required
         formControlName="email"
+        data-cy="email-input"
       />
       <input
         type="text"
@@ -88,7 +68,10 @@
         Please enter your password.
       </div>
 
-      <div *ngIf="f.passWord.errors?.['minlength']">
+      <div
+        *ngIf="f.passWord.errors?.['minlength']"
+        class="invalid-feedback d-block"
+      >
         Password should be minimum 6 characters long.
       </div>
 
@@ -108,7 +91,6 @@
         <a
           routerLink="/login"
           style="font-family: var(--grotesk); font-size: 12px"
-          data-cy="login-link"
         >
           Log in</a
         >

@@ -9,6 +9,8 @@ import { VirtualTimeScheduler } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +31,9 @@ export class LoginComponent {
   });
 
   onSubmit() {
+
+    console.log(this.loginForm.value)
+
     this.AuthService.login(this.loginForm.value).subscribe(
       (res) => {
         console.log(res);

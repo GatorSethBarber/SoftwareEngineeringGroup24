@@ -18,6 +18,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { AuthService } from './auth.service';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +26,7 @@ import { AuthService } from './auth.service';
     NavComponent,
     LoginComponent,
     RegisterComponent,
-    CardsComponent
+    CardsComponent, 
   ],
   imports: [
     BrowserModule,
@@ -39,7 +40,9 @@ import { AuthService } from './auth.service';
     MatFormFieldModule,
     MatPaginatorModule,
     MatSortModule,
-  ],
+
+    ],
+
   exports: [
     RouterModule
   ],

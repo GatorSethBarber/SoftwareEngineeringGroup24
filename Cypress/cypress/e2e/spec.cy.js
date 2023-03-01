@@ -17,7 +17,7 @@ describe('Test GET User information', () => {
   it('GET with incorrect password', () => {
     cy.request({
       method: 'GET',
-      url: 'http://localhost:8080/user/get/Analaf/password2',
+      url: 'http://localhost:8080/user/read/Analaf/password2',
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
@@ -82,6 +82,23 @@ describe('Test POST User', () => {
       expect(response.status).to.equal(400)
     })
   })
+
+  it ('POST with valid info', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/user/new',
+      body: {
+        "username": "George",
+        "email": "uniquely1@email.com",
+        "password": "password",
+        "firstName": "George",
+        "lastName": "Washington"
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(201)
+    })
+  })
 })
 
 // added test
@@ -95,11 +112,21 @@ describe('Test GET gift card information', () => {
       expect(response.status).to.equal(200)
     })
   })
- 
-  it('GET with incorrect company name', () => {
+
+  it('GET without passing parameter', () => {
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/card/get?companyName=Targit',  
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
+
+  it('GET with unkown company', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get?companyName=BobsGrill',
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
@@ -113,13 +140,12 @@ describe('Test POST GiftCard', () => {
   it('POST with already taken card number', () => {
     cy.request({
       method: 'POST',
-      url: 'http://localhost:8080/card/new/{username}/{password}',
+      url: 'http://localhost:8080/card/new/Anlaf/password',
       body: {
-        "UserID":       1,
-        "CompanyName":  "Starbuck",
-        "CardNumber":   "223456789",
-        "Amount":       50.0,
-        "Expiration":   2027-12
+        "companyName":  "Starbuck",
+        "cardNumber":   "223456789",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
       },
       headers: {
         'content-type': 'application/json'
@@ -133,12 +159,11 @@ describe('Test POST GiftCard', () => {
   it ('POST with missing card number', () => {
     cy.request({
       method: 'POST', 
-      url: 'http://localhost:8080/card/new/{username}/{password}',
+      url: 'http://localhost:8080/card/new/Anlaf/password',
       body: {
-        "UserID":       1,
-        "CompanyName":  "Target",
-        "Amount":       50.0,
-        "Expiration":   2027-12
+        "companyName":  "Target",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
       },
       headers: {
         'content-type': 'application/json'
@@ -148,53 +173,20 @@ describe('Test POST GiftCard', () => {
       expect(response.status).to.equal(400)
     })
   })
-})
 
-// added test
-describe('Check Local Server', () => {
-  it('Visits Gift Card XChange', () => {
-    cy.visit('http://localhost:8080')
-  })
-}) 
-
-// added test
-describe('Check Brands Link', () => {
-  it('clicks the link "Brands"', () => {
-    cy.visit('http://localhost:8080')
-
-    cy.contains('Brands').click()
-  })
-})
- 
-// added test
-describe('Check Navigating To A New Page 1', () => {
-  it('clicking "Brands" navigates to a new url', () => {
-    cy.visit('http://localhost:8080')
-
-    cy.contains('Brands').click()
-
-    // Should be on a new URL which includes '/brand'
-    cy.url().should('include', '/brand')
-  })
-})
-
-// added test
-describe('Check Log In Link', () => {
-  it('clicks the link "Log In"', () => {
-    cy.visit('http://localhost:8080')
-
-    cy.contains('Log In').click()
-  })
-})
-
-// added test
-describe('Check Navigating To A New Page 2', () => {
-  it('clicking "Log In" navigates to a new url', () => {
-    cy.visit('http://localhost:8080')
-
-    cy.contains('Log In').click()
-
-    // Should be on a new URL which includes '/brand'
-    cy.url().should('include', '/login')
+  it ('POST with valid new card', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/card/new/Anlaf/password',
+      body: {
+        "companyName": "Starbucks",
+        "amount": 50.0,
+        "expirationDate": "2027-12",
+        "cardNumber": "111111119"
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(201)
+    })
   })
 })

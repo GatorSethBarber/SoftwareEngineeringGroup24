@@ -6,6 +6,8 @@ import { MatSort } from '@angular/material/sort';
 import { CARDS } from '../mock-cards';
 import { BRANDS } from '../mock-brands';
 import { filter } from 'rxjs';
+import { AuthService } from '../auth.service';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-cards',
@@ -35,7 +37,8 @@ export class CardsComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private AuthService: AuthService
   ) {  }
 
   ngOnInit() {
@@ -46,6 +49,13 @@ export class CardsComponent {
          this.chosenBrand = brand;
       }
     });
+
+    this.AuthService.brandCards({CompanyName: this.chosenBrand.name.replace(/\s+/g, '')}).subscribe(
+      (res) => {
+        this.dataSource = res;
+      },
+      (err) => alert('Error getting card for brand: ' + this.chosenBrand.name)
+    )
   }
 
   ngAfterViewInit() {

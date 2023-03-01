@@ -9,8 +9,11 @@ import { VirtualTimeScheduler } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
+
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
@@ -45,7 +48,7 @@ export class RegisterComponent {
       (res: any) => {
         alert('Yay!!! Welcome');
         this.signUpForm.reset();
-        this.router.navigate(['brand']);
+        this.router.navigate(['login']);
       },
       (err) => alert('hmmhmm something wrong')
     );

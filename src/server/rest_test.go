@@ -149,3 +149,22 @@ func TestInvalidUserBackToFrontWithoutNumber(t *testing.T) {
 		t.Fatalf("Wanted to get an error, but got  %v", gotCard)
 	}
 }
+
+// Test checkUserInfo
+func TestCompleteData(t *testing.T) {
+	user := User{Username: "Hello", Password: "password", LastName: "Howard", Email: "abc@123.com"}
+	want := true
+	get := checkUserInfo(user)
+	if want != get {
+		t.Fatalf("Wanted to get %v, but got %v", want, get)
+	}
+}
+
+func TestIncompleteData(t *testing.T) {
+	user := User{Username: "Hello", Password: "", LastName: "Howard", Email: "abc@123.com"}
+	want := false
+	get := checkUserInfo(user)
+	if want != get {
+		t.Fatalf("Wanted to get %v, but got %v", want, get)
+	}
+}

@@ -2,26 +2,12 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "start",
-      "path": "GiftCardXChange",
-      "dependsOn": ["go run"],
-      "problemMatcher": [],
-      "label": "ng serve",
-      "detail": "ng serve",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "command": "make dev",
+      "type": "shell",
+      "label": "project run",
       "runOptions": {
         "runOn": "folderOpen"
       }
-    },
-
-    {
-      "command": "go run .",
-      "type": "shell",
-      "label": "cd src/server &&go run"
     }
   ]
 }
