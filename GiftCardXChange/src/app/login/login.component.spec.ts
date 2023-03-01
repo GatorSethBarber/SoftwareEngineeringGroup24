@@ -1,16 +1,25 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';;
 import { LoginComponent } from './login.component';
-import { HttpClientModule } from '@angular/common/http';
-
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { AuthService } from '../auth.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      declarations: [ LoginComponent ]
+      imports: [HttpClientTestingModule,
+      ReactiveFormsModule, FormsModule,  RouterTestingModule],
+      declarations: [ LoginComponent ],
+      providers:[AuthService],
+      schemas: [
+        NO_ERRORS_SCHEMA
+      ],
     })
     .compileComponents();
 
@@ -19,7 +28,26 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('Login successfful', () => {
+    let loginElement: DebugElement;
+    let debugElement = fixture.debugElement;
+    let authService = debugElement.injector.get(AuthService);
+    let loginSpy = spyOn(authService , 'login').and.callThrough();
+    loginElement = fixture.debugElement.query(By.css('form'));
+ /   / to set values
+  component.loginForm.controls['userName'].setValue('SethTheBarber');
+  component.loginForm.controls['passWord'].setValue('password');
+  loginElement.triggerEventHandler('ngSubmit', null);
+  expect(loginSpy).toHaveBeenCalled();
   });
+
+  it('Submit method', ()=>{
+    let loginSpy = spyOn(component, 'onSubmit');
+    let el = fixture.debugElement.query(By.css('button')).nativeElement;
+    el.click();
+    expect(loginSpy).toHaveBeenCalledTimes(1);
+  })
+
+
+
 });

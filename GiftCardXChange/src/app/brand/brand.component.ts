@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { Brand } from '../brand';
 import { BRANDS } from '../mock-brands'
 import { AuthService } from '../auth.service';
-
+import { HttpClient } from '@angular/common/http';
+import { any } from 'cypress/types/bluebird';
 @Component({
   selector: 'app-brand',
   templateUrl: './brand.component.html',
@@ -15,10 +16,12 @@ export class BrandComponent {
   selectedBrand?: Brand;
 
   constructor(
-    private AuthService: AuthService
+    private AuthService: AuthService, 
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
+  
     this.state = window.history.state.brandName;
 
     this.brands.forEach(brand => {
@@ -30,7 +33,7 @@ export class BrandComponent {
       )
     });
 
-
   }
+  
 
 }

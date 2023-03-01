@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientModule } from '@angular/common/http';
 import { BrandComponent } from './brand.component';
 import { AuthService } from '../auth.service';
 import { By } from '@angular/platform-browser'

@@ -7,6 +7,7 @@ import { CARDS } from '../mock-cards';
 import { BRANDS } from '../mock-brands';
 import { filter } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-cards',
