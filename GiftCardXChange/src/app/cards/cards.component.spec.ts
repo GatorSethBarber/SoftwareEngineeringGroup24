@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from "@angular/router/testing";
 import { CardsComponent } from './cards.component';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 describe('CardsComponent', () => {
   let component: CardsComponent;
@@ -10,14 +13,14 @@ describe('CardsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule],
       declarations: [ CardsComponent ],
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
-    
+      imports: [ RouterTestingModule, HttpClientModule ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
+
     })
     .compileComponents();
+
+    window.history.pushState({brandName: 'Starbucks'}, '', '');
 
     fixture = TestBed.createComponent(CardsComponent);
     component = fixture.componentInstance;

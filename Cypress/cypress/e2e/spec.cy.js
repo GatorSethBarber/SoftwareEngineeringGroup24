@@ -8,7 +8,7 @@ describe('Test GET User information', () => {
   it ('GET with correct username and password', () => {
     cy.request({
       method: 'GET',
-      url: 'http://localhost:8080/user/get/read/Anlaf/password'
+      url: 'http://localhost:8080/user/get/Anlaf/password'
     }).then(response => {
       expect(response.status).to.equal(200)
     })
@@ -17,7 +17,7 @@ describe('Test GET User information', () => {
   it('GET with incorrect password', () => {
     cy.request({
       method: 'GET',
-      url: 'http://localhost:8080/user/get/read/Analaf/password2',
+      url: 'http://localhost:8080/user/read/Analaf/password2',
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
