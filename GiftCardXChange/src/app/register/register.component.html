@@ -7,7 +7,7 @@
       <h3>Sign Up</h3>
     </div>
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
-      <input type="text" placeholder="Username" formControlName="username" />
+      <input type="text" placeholder="Username" formControlName="username" data-cy="username-input" />
       <div
         [hidden]="f.username.valid"
         *ngIf="f.username.invalid && (f.username.dirty || f.username.touched)"
@@ -17,7 +17,7 @@
           Please enter your username.
         </div>
       </div>
-      <input type="text" placeholder="First Name" formControlName="firstName" />
+      <input type="text" placeholder="First Name" formControlName="firstName" data-cy="firstName-input"/>
       <div
         [hidden]="f.firstName.valid"
         *ngIf="
@@ -35,6 +35,7 @@
         placeholder="Last Name"
         required
         formControlName="lastName"
+        data-cy="lastName-input"
       />
       <div
         [hidden]="f.lastName.valid"
@@ -52,12 +53,14 @@
         placeholder="Email"
         required
         formControlName="email"
+        data-cy="email-input"
       />
       <input
         type="text"
         placeholder="Password"
         required
         formControlName="passWord"
+        data-cy="password-input"
       />
       <div
         [hidden]="f.passWord.valid"
@@ -71,7 +74,7 @@
         Password should be minimum 6 characters long.
       </div>
 
-      <button type="submit">Create account</button>
+      <button type="submit" data-cy="create-button">Create account</button>
       <p class="message" style="font-size: 10px">
         By clicking the Submit,you agree to our
         <a routerLink="/register" style="text-decoration: underline"
