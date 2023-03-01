@@ -5,6 +5,10 @@ Moving forward with Sprint 2, we fixed what we did not accomplished in Sprint 1.
 For the front end, we wanted to be able to get data from the back end to display the correct information as well as increase the fludity of the login process and add ways to
 display cards for each individual brands in a new component.
 ## User Stories
+* As a user, I want to create an acount to gain access to functionality
+* As a signed-up user, I want to log-in to my account so I can access home page
+* As a user, I want to see a page for a certain gift card displaying the company it is for, its dollar amount, and the username and rating of the other user trading it.
+* As a user, I want to view all the gift cards associated with a certain company grouped by value so it will be easier for me to trade.
 
 # What We Accomplished
 ## Front End
@@ -14,6 +18,7 @@ display cards for each individual brands in a new component.
 * Fixed existence angular component unit tests
 * Added functionality to brands page to get card count in real time
 * Created routing capabilities to integrate Golang
+* User are able to create an account and login to their account to access the home page
 
 
 ## Back End
