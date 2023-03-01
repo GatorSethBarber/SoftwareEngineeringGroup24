@@ -2,11 +2,18 @@
 Moving forward with Sprint 2, we fixed what we did not accomplished in Sprint 1. We continued to integrate the front and back end and create the user dashboard after login.
 
 # What We Planned
+For the front end, we wanted to be able to get data from the back end to display the correct information as well as increase the fludity of the login process and add ways to
+display cards for each individual brands in a new component.
 ## User Stories
 
 # What We Accomplished
 ## Front End
-* Describe below
+* Added capability of displaying all available cards for a brand
+* Added sorting/filtering functionality to card table
+* Created preliminary Cypress integration and began E2E tests
+* Fixed existence angular component unit tests
+* Added functionality to brands page to get card count in real time
+* Created routing capabilities to integrate Golang
 
 
 ## Back End

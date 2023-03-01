@@ -7,6 +7,7 @@ import { CARDS } from '../mock-cards';
 import { BRANDS } from '../mock-brands';
 import { filter } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-cards',
@@ -49,11 +50,8 @@ export class CardsComponent {
       }
     });
 
-    console.log(this.chosenBrand.name)
-
     this.AuthService.brandCards({CompanyName: this.chosenBrand.name.replace(/\s+/g, '')}).subscribe(
       (res) => {
-        console.log(res);
         this.dataSource = res;
       },
       (err) => alert('Error getting card for brand: ' + this.chosenBrand.name)

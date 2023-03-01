@@ -3,9 +3,7 @@
     <div class="signup" font>
       <h3>Sign Up</h3>
     </div>
-    <div class="signup" font>
-      <h3>Sign Up</h3>
-    </div>
+
     <form [formGroup]="signUpForm" (ngSubmit)="signUpSubmitted()">
       <input type="text" placeholder="Username" formControlName="username" data-cy="username-input" />
       <div
@@ -70,7 +68,10 @@
         Please enter your password.
       </div>
 
-      <div *ngIf="f.passWord.errors?.['minlength']" class="invalid-feedback d-block">
+      <div
+        *ngIf="f.passWord.errors?.['minlength']"
+        class="invalid-feedback d-block"
+      >
         Password should be minimum 6 characters long.
       </div>
 
