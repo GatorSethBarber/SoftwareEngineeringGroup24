@@ -75,37 +75,47 @@ func TestValidGiftCardsByCompany(t *testing.T) {
 	companyName := "Target"
 	gotGiftCard, err := databaseGetCardsByCompany(companyName)
 
+	/*
+		// batch size 100
+		result := db.Where("processed = ?", false).FindInBatches(&results, 100, func(tx *gorm.DB, batch int) error {
+		for _, result := range results {
+		// batch processing found records
+		}
+	*/
+
 	wantGiftCards := []GiftCard{
 		UserID:      1,
 		CompanyName: "Target",
 		CardNumber:  "223456789",
 		Amount:      50.0,
-		Expiration:  useDate,
+		Expiration:  "2027-12",
 
 		UserID:      2,
 		CompanyName: "Target",
 		CardNumber:  "623456789",
 		Amount:      100.0,
-		Expiration:  useDate,
+		Expiration:  "2027-12",
 
 		UserID:      4,
 		CompanyName: "Target",
 		CardNumber:  "103456789",
 		Amount:      25.0,
-		Expiration:  useDate,
+		Expiration:  "2027-12",
 	}
 
 	if err != nil {
 		t.Fatalf("Wanted to get the gift card(s), but got an error: %v", err)
 	}
 
-	wantGiftCards.ID = gotGiftCard.ID
-	wantGiftCards.CreatedAt = gotGiftCard.CreatedAt
-	wantGiftCards.UpdatedAt = gotGiftCard.UpdatedAt
-	wantGiftCards.DeletedAt = gotGiftCard.DeletedAt
+	for _, giftcard := range wantGiftCards {
+		wantGiftCards.ID = gotGiftCard.ID
+		wantGiftCards.CreatedAt = gotGiftCard.CreatedAt
+		antGiftCards.UpdatedAt = gotGiftCard.UpdatedAt
+		wantGiftCards.DeletedAt = gotGiftCard.DeletedAt
+	}
 
-	if wantGiftCard != gotGiftCard {
-		t.Fatalf("Wanted %v, but got %v instead.", wantGiftCard, gotGiftCard)
+	if wantGiftCards != gotGiftCard {
+		t.Fatalf("Wanted %v, but got %v instead.", wantGiftCards, gotGiftCard)
 	}
 }
 
