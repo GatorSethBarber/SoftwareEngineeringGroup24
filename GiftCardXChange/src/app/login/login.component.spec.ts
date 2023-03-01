@@ -34,7 +34,7 @@ describe('LoginComponent', () => {
     let authService = debugElement.injector.get(AuthService);
     let loginSpy = spyOn(authService , 'login').and.callThrough();
     loginElement = fixture.debugElement.query(By.css('form'));
- /   / to set values
+   // to set values
   component.loginForm.controls['userName'].setValue('SethTheBarber');
   component.loginForm.controls['passWord'].setValue('password');
   loginElement.triggerEventHandler('ngSubmit', null);

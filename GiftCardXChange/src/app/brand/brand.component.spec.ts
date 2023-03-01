@@ -3,7 +3,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrandComponent } from './brand.component';
 import { AuthService } from '../auth.service';
 import { By } from '@angular/platform-browser'
-import { HttpClientModule } from '@angular/common/http';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('BrandComponent', () => {

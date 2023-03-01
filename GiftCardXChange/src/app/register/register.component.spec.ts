@@ -4,7 +4,7 @@ import { RegisterComponent } from './register.component';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { By } from '@angular/platform-browser';
-fdescribe('RegisterComponent', () => {
+describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
 
