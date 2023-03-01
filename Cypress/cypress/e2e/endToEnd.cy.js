@@ -46,4 +46,51 @@ describe('Log-In Test', () => {
   })
 })
 
+describe('Login Test', () => {
+  beforeEach(() =>{
+   cy.visit('http://localhost:4200');
+  })
+  it('registers new user', () => {
+   cy.get('login-link').click()
+   cy.url().should('include', '/login')
 
+   cy.get('register-link').click()
+   cy.url().should('include', '/register')
+
+   cy.window()
+     .its('console')
+     .then((console) => {
+       cy.spy(console, 'log').as('log')
+     })
+
+     cy.log('filling out username') // if you really need this
+     cy.get('[formControl="userName"]').type('SethTheBarber').should('have.value', 'SethTheBarber')
+
+     cy.log('filling out first name') // if you really need this
+     cy.get('[formControlName="firstName"]').type('Seth').should('have.value', 'Seth')
+ 
+     cy.log('filling out last name') // if you really need this
+     cy.get('[formControl="lastName"]').type('Barber').should('have.value', 'Barber')
+
+     cy.log('filling out email') // if you really need this
+     cy.get('[formControl="email"]').type('not.my.email@stfaux.com').should('have.value', 'not.my.email@stfaux.com')
+
+     cy.log('filling out password') // if you really need this
+     cy.get('[formControl="lastName"]').type('password').should('have.value', 'password')
+ 
+     cy.log('submitting form') // if you really need this
+     cy.get('form').submit()
+
+ })
+
+ it('user login ', () => {
+   cy.get('login-link').click()
+   cy.url().should('include', '/login')
+   cy.get('[formControlName="userName"]').type('SethTheBarber').should('have.value', 'SethTheBarber')
+   cy.get('[formControl="lastName"]').type('password').should('have.value', 'password')
+   cy.get('button').click();
+ })
+
+
+
+})
