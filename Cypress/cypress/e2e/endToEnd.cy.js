@@ -1,6 +1,6 @@
 describe('Log-In Test', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080');
+    cy.visit('http://localhost:4200');
 
   })
   it('registers new user', () => {
