@@ -1,6 +1,6 @@
 describe('Log-In Test', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080');
+    cy.visit('http://localhost:4200');
 
   })
   it('registers new user', () => {
@@ -29,7 +29,7 @@ describe('Log-In Test', () => {
     cy.getByData('password-input').should('have.value', 'password')
 
     cy.getByData('username-input').type('jdoe')
-    cy.getByData('username-input').should('have.value', 'password')
+    cy.getByData('username-input').should('have.value', 'jdoe')
 
     cy.getByData('create-button').click()
 
