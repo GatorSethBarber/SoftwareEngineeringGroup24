@@ -95,20 +95,11 @@ describe('Test GET gift card information', () => {
       expect(response.status).to.equal(200)
     })
   })
-
-  /*
-	return jsonCard{
-		CompanyName: backEndCard.CompanyName,
-		Username:    username,
-		Expiration:  expiration,
-		Amount:      backEndCard.Amount,
-		CardNumber:  useCardNumber,
-	}
-  */
-  it('GET with incorrect user', () => {
+ 
+  it('GET with incorrect company name', () => {
     cy.request({
       method: 'GET',
-      url: 'http://localhost:8080/card/get',  // FIXME
+      url: 'http://localhost:8080/card/get?companyName=Targit',  
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
@@ -117,7 +108,6 @@ describe('Test GET gift card information', () => {
 })
 
 // added test
-// URL: /card/new/{username}/{password}
 // router.HandleFunc("/card/new/{username}/{password}", requestCreateCard).Methods("POST")
 describe('Test POST GiftCard', () => {
   it('POST with already taken card number', () => {
@@ -129,7 +119,7 @@ describe('Test POST GiftCard', () => {
         "CompanyName":  "Starbuck",
         "CardNumber":   "223456789",
         "Amount":       50.0,
-        "Expiration":   useDate
+        "Expiration":   2027-12
       },
       headers: {
         'content-type': 'application/json'
@@ -148,7 +138,7 @@ describe('Test POST GiftCard', () => {
         "UserID":       1,
         "CompanyName":  "Target",
         "Amount":       50.0,
-        "Expiration":   useDate
+        "Expiration":   2027-12
       },
       headers: {
         'content-type': 'application/json'
@@ -160,48 +150,51 @@ describe('Test POST GiftCard', () => {
   })
 })
 
+// added test
+describe('Check Local Server', () => {
+  it('Visits Gift Card XChange', () => {
+    cy.visit('http://localhost:8080')
+  })
+}) 
 
 // added test
-/*
-func RunServer() {
-	host := "localhost:8080"
-	if err := http.ListenAndServe(host, httpHandler()); err != nil {
-		log.Fatalf("Failed to listen on %s: %v", host, err)
-	}
-	fmt.Println("Starting to run server")
-}
-*/
-// describe('Test GET User information', () => {
-/*
-func getUserInformation(username string, password string) (User, error) {
-	fmt.Println("Getting with", username, "and", password)
-	var user User
-	var theError error
-	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
-		user = User{}
-		theError = err
-	}
+describe('Check Brands Link', () => {
+  it('clicks the link "Brands"', () => {
+    cy.visit('http://localhost:8080')
 
-	return user, theError
-}
-*/
-describe('Test Server Routing', () => {
-  it ('GET with correct username and password', () => {
-    cy.request({
-      method: 'GET',
-      url: 'http://localhost:8080/user/get/read/Anlaf/password'
-    }).then(response => {
-      expect(response.status).to.equal(200)
-    })
+    cy.contains('Brands').click()
   })
+})
 
-  it('GET with incorrect password', () => {
-    cy.request({
-      method: 'GET',
-      url: 'http://localhost:8080/user/get/read/Analaf/password2',
-      failOnStatusCode: false
-    }).then(response => {
-      expect(response.status).to.equal(404)
-    })
+// added test
+describe('Check Navigating To A New Page 1', () => {
+  it('clicking "Brands" navigates to a new url', () => {
+    cy.visit('http://localhost:8080')
+
+    cy.contains('Brands').click()
+
+    // Should be on a new URL which includes '/brand'
+    cy.url().should('include', '/brand')
+  })
+})
+
+// added test
+describe('Check Log In Link', () => {
+  it('clicks the link "Log In"', () => {
+    cy.visit('http://localhost:8080')
+
+    cy.contains('Log In').click()
+  })
+})
+
+// added test
+describe('Check Navigating To A New Page 2', () => {
+  it('clicking "Log In" navigates to a new url', () => {
+    cy.visit('http://localhost:8080')
+
+    cy.contains('Log In').click()
+
+    // Should be on a new URL which includes '/brand'
+    cy.url().should('include', '/login')
   })
 })
