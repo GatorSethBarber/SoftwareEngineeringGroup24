@@ -3,4 +3,5 @@ export interface Brand {
     name: string;
     quantity: number;
     img: string;
+   
 }
