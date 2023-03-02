@@ -1,9 +1,8 @@
 # Introduction
-Moving forward with Sprint 2, we fixed what we did not accomplished in Sprint 1. We continued to integrate the front and back end and create the user dashboard after login.
+Moving forward with Sprint 2, we fixed what we did not accomplished in Sprint 1. We continued to integrate the front and back end and executed the new user stories for this sprint. 
 
 # What We Planned
-For the front end, we wanted to be able to get data from the back end to display the correct information as well as increase the fludity of the login process and add ways to
-display cards for each individual brands in a new component.
+For the front end, we wanted to be able to get data from the back end to display the correct information as well as increase the fluidity of the login process and add ways to display cards for each individual brands in a new component. Our plans are described in greater details in the following user stories.
 ## User Stories
 * As a user, I want to create an acount to gain access to functionality
 * As a signed-up user, I want to log-in to my account so I can access home page
@@ -156,15 +155,15 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
   * POST with already taken email: Tests that attempt to create new user with already taken email has a response status code of 400
   * POST with missing info: Tests that attempt to create new user while not fully specifying needed data has a response status code of 400.
   * POST with valid info: Tests that successful creation of user has status code of 201
-* Test GET gift card information:
-  * GET with correct company name:
+* Test GET gift card information: Tests if the correct information is returned when requesting for a particular company name
+  * GET with correct company name: Tests that a 200 status code is the response when requesting for a valid company name
   * GET without passing parameter: Tests that a 400 status code is the response to a request missing the *companyName* query parameter.
   * Get with unkown company: Tests that a 404 status code is the response to a request with a *companyName* not present in the database.
-* Test POST GiftCard:
-  * POST with already taken card number
-  * POST with missing card number
+* Test POST GiftCard: Tests if the gift card is successfully created
+  * POST with already taken card number: Tests that a 400 status code is the response when creating a gift card that has the same number as another gift card
+  * POST with missing card number: Tests that a 400 status code is the response when creating a gift card without its card number
   * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
 
 # Conclusion
-
+We successfully integrated the front to the back end, which allows new users to sign up for Gift Card Xchange. During the registering process, all  the data of the user, such as their username, first name, last name, email, and password, are successfully stored in the database of the back end. Since the users' information are stored in the database, current users can successfully log into the web application. The available gift cards appear after the user logs in. Certain features of the gift cards are implemented, such as the owner of the gift card, the amount on the card, and the expiration date, are displayed on the brand page. Additionally, we created many unit tests and cypress tests for the front and back ends. There are a few front end unit tests and cypress tests that failed. Despite this minor setback, we successfully accomplished all the user stories for sprint 2. We will continue to work on fixing the errors to get the remaining unit and cypress tests for sprint 2 to pass. Lastly, we will implement new user stories and develop new unit and cypress tests for sprint 3. 
 
