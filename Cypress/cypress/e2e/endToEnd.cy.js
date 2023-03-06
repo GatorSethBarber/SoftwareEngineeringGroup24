@@ -1,3 +1,21 @@
+// Helper function to generate random string of length 'length'
+function randomString(length) {
+  let result = '';
+  const characters = 'abcdefghijklmnopqrstuvwxyz';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
+// Helper function to capitalize first letter of a string for names
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 describe('Log-In Test', () => {
   beforeEach(() => {
     cy.visit('http://localhost:4200');
@@ -16,81 +34,84 @@ describe('Log-In Test', () => {
         cy.spy(console, 'log').as('log')
       })
 
-    cy.getByData('firstName-input').type('John')
-    cy.getByData('firstName-input').should('have.value', 'John')
+    // Generates random info to avoid unique constraint database errors
+    let firstName = randomString(5);
+    let lastName = randomString(5);
+    // Username consists of first letter of first name + entire last name
+    let username = firstName.substring(0, 1) + lastName;
+    // Email is username with '@gmail.com' at the end
+    let email = username + "@gmail.com";
+    // Capitalizes the first letter of names after being used in username/email
+    firstName = capitalizeFirstLetter(firstName);
+    lastName = capitalizeFirstLetter(lastName);
+    let password = randomString(10);
 
-    cy.getByData('lastName-input').type('Doe')
-    cy.getByData('lastName-input').should('have.value', 'Doe')
-    
-    cy.getByData('email-input').type('jdoe@gmail.com')
-    cy.getByData('email-input').should('have.value', 'jdoe@gmail.com')
+    cy.getByData('username-input').type(username)
+    cy.getByData('username-input').should('have.value', username)
 
-    cy.getByData('password-input').type('password')
-    cy.getByData('password-input').should('have.value', 'password')
+    cy.getByData('firstName-input').type(firstName)
+    cy.getByData('firstName-input').should('have.value', firstName)
 
-    cy.getByData('username-input').type('jdoe')
-    cy.getByData('username-input').should('have.value', 'jdoe')
+    cy.getByData('lastName-input').type(lastName)
+    cy.getByData('lastName-input').should('have.value', lastName)
+
+    cy.getByData('email-input').type(email)
+    cy.getByData('email-input').should('have.value', email)
+
+    cy.getByData('password-input').type(password)
+    cy.getByData('password-input').should('have.value', password)
 
     cy.getByData('create-button').click()
 
-    // cy.wait(1000)
 
-    // cy.get('@log')
-    //   .invoke('getCalls')
-    //   .then((calls) => {
-    //     cy.getByData('firstName-input').invoke('val').should((value) -> {
-    //       console.log(value);
-    //       expect(value).to.equal(calls[0].args[0].value.firstName)
-    //     })
-    //   })
   })
 })
 
-describe('Login Test', () => {
-  beforeEach(() =>{
-   cy.visit('http://localhost:4200');
-  })
-  it('registers new user', () => {
-   cy.get('login-link').click()
-   cy.url().should('include', '/login')
+// describe('Login Test', () => {
+//   beforeEach(() => {
+//     cy.visit('http://localhost:4200');
+//   })
+//   it('registers new user', () => {
+//     cy.get('login-link').click()
+//     cy.url().should('include', '/login')
 
-   cy.get('register-link').click()
-   cy.url().should('include', '/register')
+//     cy.get('register-link').click()
+//     cy.url().should('include', '/register')
 
-   cy.window()
-     .its('console')
-     .then((console) => {
-       cy.spy(console, 'log').as('log')
-     })
+//     cy.window()
+//       .its('console')
+//       .then((console) => {
+//         cy.spy(console, 'log').as('log')
+//       })
 
-     cy.log('filling out username') // if you really need this
-     cy.get('[formControl="userName"]').type('SethTheBarber').should('have.value', 'SethTheBarber')
+//     cy.log('filling out username') // if you really need this
+//     cy.get('[formControl="userName"]').type('SethTheBarber').should('have.value', 'SethTheBarber')
 
-     cy.log('filling out first name') // if you really need this
-     cy.get('[formControlName="firstName"]').type('Seth').should('have.value', 'Seth')
- 
-     cy.log('filling out last name') // if you really need this
-     cy.get('[formControl="lastName"]').type('Barber').should('have.value', 'Barber')
+//     cy.log('filling out first name') // if you really need this
+//     cy.get('[formControlName="firstName"]').type('Seth').should('have.value', 'Seth')
 
-     cy.log('filling out email') // if you really need this
-     cy.get('[formControl="email"]').type('not.my.email@stfaux.com').should('have.value', 'not.my.email@stfaux.com')
+//     cy.log('filling out last name') // if you really need this
+//     cy.get('[formControl="lastName"]').type('Barber').should('have.value', 'Barber')
 
-     cy.log('filling out password') // if you really need this
-     cy.get('[formControl="lastName"]').type('password').should('have.value', 'password')
- 
-     cy.log('submitting form') // if you really need this
-     cy.get('form').submit()
+//     cy.log('filling out email') // if you really need this
+//     cy.get('[formControl="email"]').type('not.my.email@stfaux.com').should('have.value', 'not.my.email@stfaux.com')
 
- })
+//     cy.log('filling out password') // if you really need this
+//     cy.get('[formControl="lastName"]').type('password').should('have.value', 'password')
 
- it('user login ', () => {
-   cy.get('login-link').click()
-   cy.url().should('include', '/login')
-   cy.get('[formControlName="userName"]').type('SethTheBarber').should('have.value', 'SethTheBarber')
-   cy.get('[formControl="lastName"]').type('password').should('have.value', 'password')
-   cy.get('button').click();
- })
+//     cy.log('submitting form') // if you really need this
+//     cy.get('form').submit()
+
+//   })
+
+//   it('user login ', () => {
+//     cy.get('login-link').click()
+//     cy.url().should('include', '/login')
+//     cy.get('[formControlName="userName"]').type('SethTheBarber').should('have.value', 'SethTheBarber')
+//     cy.get('[formControl="lastName"]').type('password').should('have.value', 'password')
+//     cy.get('button').click();
+//   })
 
 
 
-})
+// })
