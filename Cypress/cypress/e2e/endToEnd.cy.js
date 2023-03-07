@@ -27,12 +27,6 @@ describe('Log-In Test', () => {
     cy.getByData('register-link').click();
     cy.url().should('include', '/register');
     
-    cy.window()
-      .its('console')
-      .then((console) => {
-        cy.spy(console, 'log').as('log');
-      })
-
     // Generates random info to avoid unique constraint database errors
     let firstName = randomString(5);
     let lastName = randomString(5);
@@ -77,5 +71,32 @@ describe('Log-In Test', () => {
         reject(new Error('window.alert wasn\'t called within 4s'));
       }, 4000);
     }), { log: false });
-  })
+  });
+
+  it('logs-in to an existing user', () => {
+    cy.getByData('login-link').click();
+    cy.url().should('include', '/login');
+
+    cy.getByData('username-input').type('Anlaf');
+    cy.getByData('username-input').should('have.value', 'Anlaf');
+
+    cy.getByData('password-input').type('password');
+    cy.getByData('password-input').should('have.value', 'password');
+
+    cy.wrap(new Promise((resolve, reject) => {
+      cy.getByData('login-button').click();
+
+      cy.on('window:alert', msg => {
+        try {
+          expect(msg).to.eq('Yay!!! Welcome');
+        } catch ( err ) {
+          return reject(err);
+        }
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('window.alert wasn\'t called within 4s'));
+      }, 4000);
+    }), { log: false });
+  });
 })
