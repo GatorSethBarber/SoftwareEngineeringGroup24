@@ -21,16 +21,16 @@ describe('Log-In Test', () => {
     cy.visit('http://localhost:4200');
   })
   it('registers new user', () => {
-    cy.getByData('login-link').click()
-    cy.url().should('include', '/login')
+    cy.getByData('login-link').click();
+    cy.url().should('include', '/login');
 
-    cy.getByData('register-link').click()
-    cy.url().should('include', '/register')
+    cy.getByData('register-link').click();
+    cy.url().should('include', '/register');
     
     cy.window()
       .its('console')
       .then((console) => {
-        cy.spy(console, 'log').as('log')
+        cy.spy(console, 'log').as('log');
       })
 
     // Generates random info to avoid unique constraint database errors
@@ -45,20 +45,20 @@ describe('Log-In Test', () => {
     lastName = capitalizeFirstLetter(lastName);
     let password = randomString(10);
 
-    cy.getByData('username-input').type(username)
-    cy.getByData('username-input').should('have.value', username)
+    cy.getByData('username-input').type(username);
+    cy.getByData('username-input').should('have.value', username);
 
-    cy.getByData('firstName-input').type(firstName)
-    cy.getByData('firstName-input').should('have.value', firstName)
+    cy.getByData('firstName-input').type(firstName);
+    cy.getByData('firstName-input').should('have.value', firstName);
 
-    cy.getByData('lastName-input').type(lastName)
-    cy.getByData('lastName-input').should('have.value', lastName)
+    cy.getByData('lastName-input').type(lastName);
+    cy.getByData('lastName-input').should('have.value', lastName);
 
-    cy.getByData('email-input').type(email)
-    cy.getByData('email-input').should('have.value', email)
+    cy.getByData('email-input').type(email);
+    cy.getByData('email-input').should('have.value', email);
 
-    cy.getByData('password-input').type(password)
-    cy.getByData('password-input').should('have.value', password)
+    cy.getByData('password-input').type(password);
+    cy.getByData('password-input').should('have.value', password);
 
     // Sets a promise so test only fails/passes after alert generates
     cy.wrap(new Promise((resolve, reject) => {
@@ -77,9 +77,5 @@ describe('Log-In Test', () => {
         reject(new Error('window.alert wasn\'t called within 4s'));
       }, 4000);
     }), { log: false });
-
-    cy.getByData('create-button').click()
-
-
   })
 })
