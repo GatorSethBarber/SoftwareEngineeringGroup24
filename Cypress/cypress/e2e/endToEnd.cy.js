@@ -99,4 +99,75 @@ describe('Log-In Test', () => {
       }, 4000);
     }), { log: false });
   });
+
+  it('attempts full register to log-in path', () => {
+    cy.getByData('login-link').click();
+    cy.url().should('include', '/login');
+
+    cy.getByData('register-link').click();
+    cy.url().should('include', '/register');
+    
+    let firstName = randomString(5);
+    let lastName = randomString(5);
+    let username = firstName.substring(0, 1) + lastName;
+    let email = username + "@gmail.com";
+    firstName = capitalizeFirstLetter(firstName);
+    lastName = capitalizeFirstLetter(lastName);
+    let password = randomString(10);
+
+    cy.getByData('username-input').type(username);
+    cy.getByData('username-input').should('have.value', username);
+
+    cy.getByData('firstName-input').type(firstName);
+    cy.getByData('firstName-input').should('have.value', firstName);
+
+    cy.getByData('lastName-input').type(lastName);
+    cy.getByData('lastName-input').should('have.value', lastName);
+
+    cy.getByData('email-input').type(email);
+    cy.getByData('email-input').should('have.value', email);
+
+    cy.getByData('password-input').type(password);
+    cy.getByData('password-input').should('have.value', password);
+
+    cy.wrap(new Promise((resolve, reject) => {
+      cy.getByData('create-button').click();
+
+      cy.on('window:alert', msg => {
+        try {
+          expect(msg).to.eq('Yay!!! Welcome');
+        } catch ( err ) {
+          return reject(err);
+        }
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('window.alert wasn\'t called within 4s'));
+      }, 4000);
+    }), { log: false });
+
+    cy.url().should('include', '/login');
+
+    cy.getByData('username-input').type(username);
+    cy.getByData('username-input').should('have.value', username);
+
+    cy.getByData('password-input').type(password);
+    cy.getByData('password-input').should('have.value', password);
+
+    cy.wrap(new Promise((resolve, reject) => {
+      cy.getByData('login-button').click();
+
+      cy.on('window:alert', msg => {
+        try {
+          expect(msg).to.eq('Yay!!! Welcome');
+        } catch ( err ) {
+          return reject(err);
+        }
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('window.alert wasn\'t called within 4s'));
+      }, 4000);
+    }), { log: false });
+  });
 })
