@@ -176,4 +176,52 @@ describe('Log-In Test', () => {
 
     cy.url().should('include', '/brand');
   });
+
+  it('doesn\'t register new user', () => {
+    cy.getByData('login-link').click();
+    cy.url().should('include', '/login');
+
+    cy.getByData('register-link').click();
+    cy.url().should('include', '/register');
+    
+    // Generates random info to avoid unique constraint database errors
+    // Username consists of first letter of first name + entire last name
+    // Email is username with '@gmail.com' at the end
+    // Capitalizes the first letter of names after being used in username/email
+
+    cy.getByData('username-input').type("Anlaf");
+    cy.getByData('username-input').should('have.value', "Anlaf");
+
+    cy.getByData('firstName-input').type("Olaf");
+    cy.getByData('firstName-input').should('have.value', "Olaf");
+
+    cy.getByData('lastName-input').type("Trygvasson");
+    cy.getByData('lastName-input').should('have.value', "Trygvasson");
+
+    cy.getByData('email-input').type("viking@iviking.com");
+    cy.getByData('email-input').should('have.value', "viking@iviking.com");
+
+    cy.getByData('password-input').type("password");
+    cy.getByData('password-input').should('have.value', "password");
+
+    // Sets a promise so test only fails/passes after alert generates
+    cy.wrap(new Promise((resolve, reject) => {
+      cy.getByData('create-button').click();
+
+      cy.on('window:alert', msg => {
+        try {
+          expect(msg).to.eq('hmmhmm something wrong');
+        } catch ( err ) {
+          return reject(err);
+        }
+        resolve();
+      });
+      // set a timeout to ensure we don't wait forever
+      setTimeout(() => {
+        reject(new Error('window.alert wasn\'t called within 4s'));
+      }, 4000);
+    }), { log: false });
+
+    cy.url().should('include', '/register');
+  });
 })
