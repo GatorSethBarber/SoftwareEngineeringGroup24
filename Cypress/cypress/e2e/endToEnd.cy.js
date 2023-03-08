@@ -71,6 +71,8 @@ describe('Log-In Test', () => {
         reject(new Error('window.alert wasn\'t called within 4s'));
       }, 4000);
     }), { log: false });
+
+    cy.url().should('include', '/login');
   });
 
   it('logs-in to an existing user', () => {
@@ -98,6 +100,8 @@ describe('Log-In Test', () => {
         reject(new Error('window.alert wasn\'t called within 4s'));
       }, 4000);
     }), { log: false });
+
+    cy.url().should('include', '/brand');
   });
 
   it('attempts full register to log-in path', () => {
@@ -169,5 +173,7 @@ describe('Log-In Test', () => {
         reject(new Error('window.alert wasn\'t called within 4s'));
       }, 4000);
     }), { log: false });
+
+    cy.url().should('include', '/brand');
   });
 })
