@@ -10,7 +10,10 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
+
+var store = sessions.NewCookieStore([]byte("totally_random_string"))
 
 // httpHandler creates the backend HTTP router for queries, types,
 // and serving the Angular frontend.
@@ -19,6 +22,8 @@ func httpHandler() http.Handler {
 	// Your REST API requests go here
 
 	// Routes for user
+	router.HandleFunc("/user/login/{username}/{password}", requestLogin).Methods("GET")
+	router.HandleFunc("/user/logout", requestLogout).Methods("GET")
 	router.HandleFunc("/user/get/{username}/{password}", requestGetUserInfo).Methods("GET")
 	router.HandleFunc("/user/new", requestCreateUser).Methods("POST")
 
@@ -38,11 +43,11 @@ func httpHandler() http.Handler {
 			handlers.AllowCredentials(),
 			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization",
 				"DNT", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
-				"Cache-Control", "Content-Range", "Range","Access-Control-Allow-origin"}),
+				"Cache-Control", "Content-Range", "Range", "Access-Control-Allow-origin"}),
 			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-			handlers.AllowedOrigins([]string{"http://localhost:8080","http://localhost:4200"}),
+			handlers.AllowedOrigins([]string{"http://localhost:8080", "http://localhost:4200"}),
 			handlers.ExposedHeaders([]string{"DNT", "Keep-Alive", "User-Agent",
-				"X-Requested-With", "If-Modified-Since", "Cache-Control","Access-Control-Allow-origin",
+				"X-Requested-With", "If-Modified-Since", "Cache-Control", "Access-Control-Allow-origin",
 				"Content-Type", "Content-Range", "Range", "Content-Disposition"}),
 			handlers.MaxAge(86400),
 		)(router))
@@ -213,10 +218,8 @@ func requestGetCard(writer http.ResponseWriter, request *http.Request) {
 	if encodeErr != nil {
 		log.Fatalln("There was an error encoding the struct for cards.")
 	}
-
 }
 
-// GET request
 func requestGetUserInfo(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
 
@@ -267,4 +270,91 @@ func requestCreateUser(writer http.ResponseWriter, request *http.Request) {
 		panic("Cannot encode")
 	}
 
+}
+
+func requestLogin(writer http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
+
+	// Maybe do some error checking here on username and password
+
+	user, userIsValid := getUserExistsPassword(params["username"], params["password"])
+	if !userIsValid {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	// TODO: Update this for hash and think about adding body to the request
+	makeSession(writer, request, user.Username, user.Password)
+	writer.WriteHeader(http.StatusOK)
+}
+
+func requestLogout(writer http.ResponseWriter, request *http.Request) {
+	deleteSession(writer, request)
+	writer.WriteHeader(http.StatusOK)
+}
+
+// Cookies
+
+func authSessionForUser(request *http.Request, username string) bool {
+	session, err := store.Get(request, "session-gcex")
+	if err != nil {
+		panic("Encountered an error decoding session info")
+	}
+
+	gotName, usernameExists := session.Values["username"]
+	gotHash, hashExists := session.Values["hash"]
+	if !usernameExists || !hashExists {
+		return false // Not signed in because invalid cookie
+	}
+
+	if gotName != username {
+		return false // Not authenticated to access this account
+	}
+
+	fmt.Printf("%v: %v\n", gotName, gotHash)
+
+	// Now, can check the username password combination
+	return true
+}
+
+func makeSession(writer http.ResponseWriter, request *http.Request, username string, hash string) {
+	session, err := store.Get(request, "session-gcex")
+	if err != nil {
+		panic("Encountered an error decoding session info")
+	}
+
+	// if !session.IsNew {
+	// 	return    // No need to access database
+	// }
+
+	fmt.Println(session)
+	fmt.Println(err)
+
+	// GET USERNAME and PASSWORD
+
+	session.Values["username"] = username
+	session.Values["hash"] = hash
+	session.Options.SameSite = http.SameSiteStrictMode
+
+	// Save it before we write to the response/return from the handler.
+	err = session.Save(request, writer)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func deleteSession(writer http.ResponseWriter, request *http.Request) {
+	session, err := store.Get(request, "session-gcex")
+	if err != nil {
+		return
+	}
+
+	if session.IsNew {
+		return
+	}
+
+	// The following deletes the cookie
+	session.Options.MaxAge = -1
+	session.Save(request, writer)
 }
