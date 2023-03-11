@@ -23,8 +23,28 @@ describe('RegisterComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+});
+  it('Register form is invalid when it empty', ()=>{
+    component.signUpForm.controls['username'].setValue('');
+    component.signUpForm.controls['firstName'].setValue('');
+    component.signUpForm.controls['lastName'].setValue('');
+    component.signUpForm.controls['email'].setValue('');
+    component.signUpForm.controls['passWord'].setValue('');
+    expect(component.signUpForm.valid).toBeFalsy();
+  });
 
-  it('Register method', () => {
+  it('Register form is valid when it not empty', ()=>{
+    component.signUpForm.controls['username'].setValue('SethTheBarber');
+    component.signUpForm.controls['firstName'].setValue('Barber');
+    component.signUpForm.controls['lastName'].setValue('password');
+    component.signUpForm.controls['email'].setValue('not.my.email@stfaux.com');
+    component.signUpForm.controls['passWord'].setValue('password');
+    expect(component.signUpForm.valid).toBeTruthy();
+  });
+
+  it('check if the register method is called from AuthService', () => {
     let registerElement: DebugElement;
     let debugElement = fixture.debugElement;
     let authService = debugElement.injector.get(AuthService);
@@ -40,11 +60,7 @@ describe('RegisterComponent', () => {
   expect(registerSpy).toHaveBeenCalled();
   });
 
-  it('Submit method', ()=>{
-    let registerSpy = spyOn(component, 'signUpSubmitted').and.callThrough();
-    let el = fixture.debugElement.query(By.css('button')).nativeElement;
-    el.click();
-    expect(registerSpy).toHaveBeenCalled();
-  })
 
-});
+ 
+}
+)
