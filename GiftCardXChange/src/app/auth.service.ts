@@ -57,6 +57,8 @@ export class AuthService {
       },}
     );
   }
+
+  
   //    register(username:any, email:any ,password:any,firstname:any,lastname:any){
   //   let headers = new HttpHeaders().set('content-type', 'application/json')
   //     .set('Access-Control-Allow-Origin', '*');

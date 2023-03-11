@@ -43,7 +43,7 @@ export class RegisterComponent {
   get f() {
     return this.signUpForm.controls;
   }
-  signUpSubmitted() {
+ signUpSubmitted()  {
     this.AuthService.register(this.signUpForm.value).subscribe(
       (res: any) => {
         alert('Yay!!! Welcome');
