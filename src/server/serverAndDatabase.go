@@ -91,6 +91,17 @@ func getUserInformation(username string, password string) (User, error) {
 	return user, theError
 }
 
+func newGetUserInformation(username string) (User, error) {
+	var user User
+	var theError error
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
+		user = User{}
+		theError = err
+	}
+
+	return user, theError
+}
+
 /*
 Get the username based on the id stored in the database.
 */
@@ -103,6 +114,19 @@ func getUserName(userID uint) (string, error) {
 	}
 
 	return user.Username, theError
+}
+
+// User authentication
+// FIXME: Needs to be updated for hash
+func getUserExistsPassword(username, password string) (User, bool) {
+	// TODO: hash password
+	var user User
+	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
+		return user, false
+	}
+
+	// If no not found error, then good to go
+	return user, true
 }
 
 func databaseCreateCard(giftcard *GiftCard) error {

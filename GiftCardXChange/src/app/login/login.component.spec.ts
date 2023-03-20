@@ -27,8 +27,37 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+});
+  it('Login form is invalid when it empty', ()=>{
+    component.loginForm.controls['userName'].setValue('');
+    component.loginForm.controls['passWord'].setValue('');
+    expect(component.loginForm.valid).toBeFalsy();
+  });
+  it('Login form is valid when it not empty', ()=>{
+    component.loginForm.controls['userName'].setValue('SethTheBarber');
+    component.loginForm.controls['passWord'].setValue('password');
+    expect(component.loginForm.valid).toBeTruthy();
+  });
 
-  it('Login successfful', () => {
+  it('check if usename is validity', ()=>{
+    let username = component.loginForm.controls.userName;
+    expect(username.valid).toBeFalsy();
+
+    username.setValue('');
+    expect(username.hasError('required')).toBeTruthy();
+  });
+
+  it('check if password is validity', ()=>{
+    let pwd = component.loginForm.controls.userName;
+    expect(pwd.valid).toBeFalsy();
+
+    pwd.setValue('');
+    expect(pwd.hasError('required')).toBeTruthy();
+  });
+
+  it('Check if the login method is called from AuthService', () => {
     let loginElement: DebugElement;
     let debugElement = fixture.debugElement;
     let authService = debugElement.injector.get(AuthService);
@@ -41,12 +70,12 @@ describe('LoginComponent', () => {
   expect(loginSpy).toHaveBeenCalled();
   });
 
-  it('Submit method', ()=>{
+  it('call submit method', ()=>{
     let loginSpy = spyOn(component, 'onSubmit');
     let el = fixture.debugElement.query(By.css('button')).nativeElement;
     el.click();
     expect(loginSpy).toHaveBeenCalledTimes(1);
-  })
+  });
 
 
 
