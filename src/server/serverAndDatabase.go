@@ -91,6 +91,17 @@ func getUserInformation(username string, password string) (User, error) {
 	return user, theError
 }
 
+func newGetUserInformation(username string) (User, error) {
+	var user User
+	var theError error
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
+		user = User{}
+		theError = err
+	}
+
+	return user, theError
+}
+
 /*
 Get the username based on the id stored in the database.
 */

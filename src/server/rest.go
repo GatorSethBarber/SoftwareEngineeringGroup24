@@ -25,6 +25,7 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/user/login/{username}/{password}", requestLogin).Methods("GET")
 	router.HandleFunc("/user/logout", requestLogout).Methods("GET")
 	router.HandleFunc("/user/get/{username}/{password}", requestGetUserInfo).Methods("GET")
+	router.HandleFunc("/user/get/{username}", newGetUserInfo).Methods("GET")
 	router.HandleFunc("/user/new", requestCreateUser).Methods("POST")
 
 	// Routes for gift card
@@ -237,6 +238,30 @@ func requestGetUserInfo(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
 	// Try to encode the user
+	encodeErr := json.NewEncoder(writer).Encode(&user)
+	if encodeErr != nil {
+		log.Fatalln("There was an error encoding the struct.")
+	}
+}
+
+func newGetUserInfo(writer http.ResponseWriter, request *http.Request) {
+	userName := mux.Vars(request)["username"]
+
+	user, err := newGetUserInformation(userName)
+
+	if err != nil {
+		fmt.Println(err)
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if !authSessionForUser(request, userName) {
+		user.FirstName = ""
+		user.LastName = ""
+		user.Email = ""
+		user.Password = ""
+	}
+
 	encodeErr := json.NewEncoder(writer).Encode(&user)
 	if encodeErr != nil {
 		log.Fatalln("There was an error encoding the struct.")
