@@ -104,17 +104,71 @@ Status codes:
 # Testings
 ## Front End 
 * Unit Tests
-  * describe here
-  
+  * Angular component tests to check that each component displays and builds correctly
+  * Basic testing to check that brands page gets correct number of brands
 * Cypress Tests
-  * describe here
+  * End-to-end test that goes over basic process of registering to check inputs are recorded correctly and navigation works
+
 
 ## Back End
-* Unit Tests
-  * describe here
-  
-* Cypress Tests
-  * describe here
+Tests for the back end are split into two major groups: Unit tests ran using Go, and tests ran using Cypress
+
+### Unit Tests in Go
+The testing of all functionality outside of router paths is done in Go. There are two files that contain unit tests, both of which are in src/server/
+* rest_test.go: This tests the functions associated with the processing of information.
+  * From Sprint 3:
+    * New tests here:
+
+  * From Sprint 2:
+    * TestValidCardInput: Test checkCardNumberAndAmount with valid input. Function should return true.
+    * TestMissingCardNumber: Test checkCardNumberAndAmount with a missing/blank card number. Function should return false.
+    * TestNegativeAmount: Test checkCardNumberAndAmount with a negative value for amount. Function should return false.
+    * TestZeroAmount: Test checkCardNumberAndAmount with a value of 0 for amount. Function should return false.
+    * Test_from_YYYY_MM_DD: Test stringToDate to ensure valid date properly converted.
+    * Test_from_YYYY_MM: Test stringToDate with invalid date string.
+    * Test_to_YYYY_MM: Test dateToString to ensure valid date properly converted to string
+    * TestValidCardBackToFrontWithNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct used for converting to JSON
+    * TestValidCardBackToFrontWithoutNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct for converting to JSON while hiding card number.
+    * TestInvalidUserBackToFrontWithoutNumber: Sanity check for cardBackToFront to ensure invalid data is handled properly.
+* serverAndDatabase_test.go: These tests test the functionality of the database.
+  * From Sprint 3:
+    * TestValidGetUserExistsPassword: Tests that a user exists for a given valid username and password combination and that the correct user information is returned.
+    * TestInvaldGetUserExistsPassword: Tests that a user does not exist for a given invalid username and password combination.
+    * TestValidNewGetUserInformation: Tests that getting user information by username with a valid username gets the correct user from the database.
+    * TestInvalidNewGetUserInformation: Tests that getting user information by username with a non-existent username causes an error to be thrown by the database.
+  * From Sprint 2: 
+    * TestCreateWithAlreadyTakenEmail: Test that emails cannot be duplicated
+    * TestCreateWithAlreadyTakenUsername: Test that usernames cannot be duplicated
+    * TestCreateNewUser: Test that it is possible to create a new user
+    * TestValidGetUserInformation: Test getUserInformation to make sure it returns the correct information for valid username and password combination.
+    * TestInvalidGetUserInformation: Test getUserInformation to make sure it returns an error when called with an invalid username and password combination.
+    * TestValidGetUserName: Test getUserName to ensure that it gets the correct name when called with a valid userID.
+    * TestInvalidUserIdGetUserName: Test getUserName to ensure that it returns an error when called with an invalid userID.
+    * TestValidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct gift cards are gotten when called with a specific companyName.
+    * TestInvalidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct affect happens when databaseGetCardsByCompany is called with a not-present companyName.
+    * TestCompleteData: Test checkUserInfo to ensure it returns true when passed complete data
+    * TestIncompleteData: Test checkUserInfo to ensure it returns false when passed incomplete data
+    * TestInvalidDuplicateCardNumber: Test that duplicate card numbers are not allowed
+    * TestValidCrateCard: Create a new card for the database
+
+### Testing the REST API in Cypress
+This is done through an end-to-end Cypress spec. The tests are stored in the end to end spec spec.cy.js.
+* Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
+  * GET with correct username and password: Tests valid username and password combination has response status code of 200.
+  * GET with incorrect password: Tests that invalid username and password combination has response status code of 404.
+* Test POST User: Tests that the /user/new route operates correctly
+  * POST with already taken username: Tests that attempt to create new user with already taken username has a response status code of 400
+  * POST with already taken email: Tests that attempt to create new user with already taken email has a response status code of 400
+  * POST with missing info: Tests that attempt to create new user while not fully specifying needed data has a response status code of 400.
+  * POST with valid info: Tests that successful creation of user has status code of 201
+* Test GET gift card information: Tests if the correct information is returned when requesting for a particular company name
+  * GET with correct company name: Tests that a 200 status code is the response when requesting for a valid company name
+  * GET without passing parameter: Tests that a 400 status code is the response to a request missing the *companyName* query parameter.
+  * Get with unkown company: Tests that a 404 status code is the response to a request with a *companyName* not present in the database.
+* Test POST GiftCard: Tests if the gift card is successfully created
+  * POST with already taken card number: Tests that a 400 status code is the response when creating a gift card that has the same number as another gift card
+  * POST with missing card number: Tests that a 400 status code is the response when creating a gift card without its card number
+  * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
 
 # Conclusion
 * describe here

@@ -77,6 +77,7 @@ func TestValidGetUserInformation(t *testing.T) {
 	wantUser.CreatedAt = gotUser.CreatedAt
 	wantUser.UpdatedAt = gotUser.UpdatedAt
 	wantUser.DeletedAt = gotUser.DeletedAt
+	wantUser.Hash = gotUser.Hash
 
 	if wantUser != gotUser {
 		t.Fatalf("Wanted %v, but got %v instead.", wantUser, gotUser)
@@ -231,5 +232,84 @@ func TestValidCrateCard(t *testing.T) {
 	err := databaseCreateCard(&newCard)
 	if err != nil {
 		t.Fatalf("Tried to create new card, but got %v", err)
+	}
+}
+
+// New for Sprint 3
+func TestValidGetUserExistsPassword(t *testing.T) {
+	database = ConnectToDatabase()
+	userName, password := "Anlaf", "password"
+	wantUser := User{
+		Username:  "Anlaf",
+		Password:  "password",
+		Email:     "viking@iviking.com",
+		FirstName: "Olaf",
+		LastName:  "Trygvasson",
+	}
+
+	gotUser, exists := getUserExistsPassword(userName, password)
+
+	if !exists {
+		t.Fatalf("Wanted to get a user, but got that the user does not exist.")
+	}
+
+	wantUser.ID = gotUser.ID
+	wantUser.CreatedAt = gotUser.CreatedAt
+	wantUser.UpdatedAt = gotUser.UpdatedAt
+	wantUser.DeletedAt = gotUser.DeletedAt
+	wantUser.Hash = gotUser.Hash
+
+	if wantUser != gotUser {
+		t.Fatalf("Wanted %v, got %v", wantUser, gotUser)
+	}
+
+}
+
+func TestInvaldGetUserExistsPassword(t *testing.T) {
+	database = ConnectToDatabase()
+	username, password := "Anlaf", "password2"
+
+	gotUser, exists := getUserExistsPassword(username, password)
+
+	if exists {
+		t.Fatalf("Wanted to get false, but got user of %v", gotUser)
+	}
+}
+
+func TestValidNewGetUserInformation(t *testing.T) {
+	database = ConnectToDatabase()
+	username := "Anlaf"
+	wantUser := User{
+		Username:  "Anlaf",
+		Password:  "password",
+		Email:     "viking@iviking.com",
+		FirstName: "Olaf",
+		LastName:  "Trygvasson",
+	}
+
+	gotUser, err := newGetUserInformation(username)
+
+	if err != nil {
+		t.Fatalf("Wanted to get user, insteat got %v", err)
+	}
+
+	wantUser.ID = gotUser.ID
+	wantUser.CreatedAt = gotUser.CreatedAt
+	wantUser.UpdatedAt = gotUser.UpdatedAt
+	wantUser.DeletedAt = gotUser.DeletedAt
+	wantUser.Hash = gotUser.Hash
+
+	if wantUser != gotUser {
+		t.Fatalf("Wanted %v, got %v", wantUser, gotUser)
+	}
+}
+
+func TestInvalidNewGetUserInformation(t *testing.T) {
+	database = ConnectToDatabase()
+	username := "a;dfakj;df;afda;k;aj"
+	gotUser, err := newGetUserInformation(username)
+
+	if err == nil {
+		t.Fatalf("Expected to get an error, got %v", gotUser)
 	}
 }
