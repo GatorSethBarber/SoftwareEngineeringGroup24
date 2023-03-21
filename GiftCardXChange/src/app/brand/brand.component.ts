@@ -25,6 +25,7 @@ export class BrandComponent {
     this.state = window.history.state.brandName;
 
     this.brands.forEach(brand => {
+      brand.displayName = brand.name.replace(/([A-Z])/g, ' $1').trim();
       this.AuthService.brandCards({ CompanyName: brand.name.replace(/\s+/g, '') }).subscribe(
         (res) => {
           brand.quantity = res.length;
