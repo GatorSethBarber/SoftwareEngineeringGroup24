@@ -31,6 +31,7 @@ func httpHandler() http.Handler {
 	// Routes for gift card
 	// TODO: consider altering /card/get to split into verified and not verified
 	router.HandleFunc("/card/new/{username}/{password}", requestCreateCard).Methods("POST")
+	router.HandleFunc("card/new/{username}", newRequestCreateCard).Methods("POST")
 	router.HandleFunc("/card/get", requestGetCard).Methods("GET")
 
 	// WARNING: this route must be the last route defined.
@@ -130,6 +131,75 @@ func requestCreateCard(writer http.ResponseWriter, request *http.Request) {
 
 	// Make sure user is valid
 	user, err := getUserInformation(params["username"], params["password"])
+	if err != nil {
+		fmt.Println(err)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// can now use user.ID in creating the card
+	// First, decode the json
+	var frontEndCard jsonCard
+
+	// Data in body will be converted to the structure of the user
+	if err := json.NewDecoder(request.Body).Decode(&frontEndCard); err != nil {
+		// panic("Cannot decode")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// TODO: Check for company here
+
+	// However, for right now, just build the new struct
+	experAsTime, err := stringToDate(frontEndCard.Expiration)
+	if err != nil || !checkCardNumberAndAmount(frontEndCard.CardNumber, frontEndCard.Amount) {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	backEndCard := GiftCard{
+		UserID:      user.ID,
+		CompanyName: frontEndCard.CompanyName,
+		CardNumber:  frontEndCard.CardNumber,
+		Amount:      frontEndCard.Amount,
+		Expiration:  experAsTime,
+	}
+
+	// If there is an error, signifies card already present.
+	if err := databaseCreateCard(&backEndCard); err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	writer.WriteHeader(http.StatusCreated)
+
+	if err := json.NewEncoder(writer).Encode(&frontEndCard); err != nil {
+		log.Fatalln("There was an error encoding the struct.")
+	}
+}
+
+func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	username := mux.Vars(request)["username"]
+	if !authSessionForUser(request, username) {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	session, err := store.Get(request, "session-gcex")
+	if err != nil {
+		panic("Encountered an error decoding session info")
+	}
+
+	// https://stackoverflow.com/questions/14289256/cannot-convert-data-type-interface-to-type-string-need-type-assertion
+	password, isOk := session.Values["password"].(string)
+	if !isOk {
+		panic("Encountered error in cookie")
+	}
+
+	// Make sure user is valid
+	user, err := getUserInformation(username, password)
 	if err != nil {
 		fmt.Println(err)
 		writer.WriteHeader(http.StatusBadRequest)
