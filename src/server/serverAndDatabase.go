@@ -19,6 +19,7 @@ type User struct {
 	gorm.Model
 	Username  string `gorm:"unique" json:"username"`
 	Password  string `json:"password"`
+	Hash      string `json:"hash"`
 	Email     string `gorm:"unique" json:"email"`
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
@@ -39,7 +40,7 @@ func main() {
 	database = ConnectToDatabase()
 
 	// Do not run more than once
-	// initialSetup(database)
+	initialSetup(database)
 
 	RunServer()
 

@@ -1,6 +1,8 @@
 # API Documentation Overview
 
-This is the documentation for Gift Card Xchange.
+This is the documentation for the Gift Card Xchange API.
+
+## Important Notes:
 
 Important HTTP Verbs:
 * GET: Get information
@@ -14,8 +16,22 @@ Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HT
 * 400 bad request: Use for bad syntax in POST (creation)
 * 404 not found: Will use for error in GET or POST requests
 
+## Currently Available Routes:
+The following routes are currently available for use. They are discussed further below.
 
-# Users
+### User
+* Login: /user/login/{username}/{password}
+* Logout: /user/logout
+* Get user information (legacy): /user/get/{username}/{password}
+* Get user information: /user/get/{username}
+* Create new user: /user/new
+
+### Gift Cards
+* Create gift card (legacy): /card/new/{username}/{password}
+* Create gift card: /card/new/{username}
+* Get gift card: /card/get
+
+## Users
 
 All users must have a username, email, password, and full name consisting of a first and last name (or just last name if they have only one name). These are all provided by the user. Additionally, a userID is created in the back end, but this is never used by the user.
 
@@ -23,7 +39,7 @@ The following are the necessar API calls. Names in curly braces stand for variab
 
 Please use port 4020 for the Angular server.
 
-## User Creation
+### User Creation
 
 URL: /user/new
 * body should include username, email, password, lastName, firstName
@@ -36,10 +52,41 @@ Response:
 
 Note: First name is optional. This also may be changed to use query instead
 
-If a user with the given username or email already exists, a status code of 400 (bad request) is returned.
-Otherwise, a response containing the user's information is returned with a status code of 201 (created)
+Status Codes:
+* Created: 201
+* User with the given username or email already exists: 400
 
-## User Information Access
+### User Login
+This logs the user in by checking the provided username and password with information stored in the database. If the data matches, returns a response with a cookie called **session-gcex** that keeps the user signed in.
+
+URL: /user/login/{username}/{passwword}
+
+Verb: GET
+
+Response:
+* Header: Default header
+
+Status Codes:
+* Successful login: 200
+* Unsuccessful login: 404
+
+Note: If the user signs in as a different user without first logging out, the information associated with the cookie changes, but not the expiration date.
+
+### User Logout:
+This logs the user out of the session they are currently signed in by deleting the **session-gcex** cookie.
+
+URL: /user/logout
+
+Verb: GET
+
+Status Codes:
+* Successful: 200
+
+Note: As no error is thrown if a logged-out user calls this again, the response status code is always 200.
+
+### User Information Access (Current)
+
+Get the information associated with a given username. If the user is logged in with the username (which is unique per user), then gets all information. If not, then personally identifiable information, such as email, password, firstName, and lastName, are replaced with empty strings.
 
 URL: /user/get/{username}/{password}
 
@@ -53,17 +100,24 @@ Response:
 
 If user does not exist, returns a 404 error code in the response.
 
-## Access One Piece of Username (Unimplemented)
 
-Can access one or more distinct pieces of information by placing the names after the username
+### User Information Access (Legacy)
+
+This is the legacy version of getting the user information.
+
+URL: /user/get/{username}/{password}
 
 Verb: GET
 
-URL examples: 
-* /user/get/{username}/{password}/email
-* /user/get/{username}/{password}/name
+Response Header: (Content-Type, application/json)
 
-## Updating User Information (Unimplemented)
+Response:
+* Header: JSON
+* JSON: {username: ..., email: ..., password: ..., firstName: ..., lastName: ...}
+
+If user does not exist, returns a 404 error code in the response.
+
+### Updating User Information (Unimplemented)
 
 Note: not finished.
 
@@ -71,20 +125,61 @@ Verb: PUT
 
 URL: /user/update/{username}/{password}
 
-# Gift Cards
+
+## Gift Cards
 
 All gift cards have a gift card number, amount, company, owner, and, potentially, an expiration date.
 
-## Gift Card Creation Implementation Underway
+### Gift Card Creation
+Create a new gift card associated with a given user. The user is either identified by the username and password (legacy) or with just the username and the **session-gcex** cookie is used to insure that the user is actually logged in.
+
+URLs:
+* URL: /card/new/{username}
+* Legacy URL: /card/new/{username}/{password}
 
 Request Verb: POST
 
-URL: /card/new/{username}/{password}
-
-Body: 
+Request Body: 
 * {cardNumber, amount, companyName, expirationDate}
 
-## Swap Cards (Unimplemented)
+Response:
+* Body with user information, if createion successful
+
+Status codes:
+* Create: 201
+* Conflict on card number or invalid username/password: 400
+
+### Get Matching Gift Cards
+
+Get all (basic information about) the gift cards that match certain search conditions. Searching by issuing company is the only permitted search.
+
+Verb: GET
+
+URL example: /card/get?companyName=Starbucks
+Potential Search Keys:
+* companyName: The name ofthe company without spaces or apostrophes
+
+Response:
+* Header: application/JSON
+* JSON: [{username: ..., company: ..., amount: ..., expirationDate:...}, ...]
+
+Status codes:
+* Success: 200
+* Non-existent company: 404
+* Company name query missing: 400
+
+### Get all Gift Cards for a User (Implementation Underway)
+
+Verb: GET
+
+URL: /card/{username}
+
+Response: 
+* Header: application/JSON
+* JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
+
+
+### Swap Cards (Unimplemented)
 
 Verb: PUT
 
@@ -95,31 +190,3 @@ Alternative:
 * If user approves of request, then they send via the URL: /card/swap/{username2}/{password2}/{card number 1}/{card identifier 2}
 * If pending request for those two cards, swap occurs and returns a 200 code.
 * Otherwise, nothing happens and returns a 400 error code.
-
-## Get all Gift Cards for a User (Unimplemented)
-
-Verb: GET
-
-URL: /card/{username}
-
-Response: 
-* Header: application/JSON
-* JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
-
-## Get Matching Gift Cards: Implementation Underway
-
-Get all (basic information about) the gift cards that match certain search conditions
-
-Verb: GET
-
-URL example: /card/get?companyName=Starbucks
-Potential Search Keys:
-* companyName: The name ofthe company
-* minAmount: The minimum amount for the card (unimplemented)
-* maxAmount: The maximum amount for the card (unimplemented)
-* exact: Defaults to true, which means company name must be matched exactly. If set to "false", then will allow matching on both sides.
-
-
-Response:
-* Header: application/JSON
-* JSON: [{username: ..., company: ..., amount: ..., expirationDate:...}, ...]
