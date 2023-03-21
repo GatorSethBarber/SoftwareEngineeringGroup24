@@ -182,7 +182,7 @@ describe('Log-In Test', () => {
     cy.url().should('include', '/login');
 
     cy.getByData('register-link').click();
-    cy.url().should('include', '/register');il
+    cy.url().should('include', '/register');
 
     cy.getByData('username-input').type("Anlaf");
     cy.getByData('username-input').should('have.value', "Anlaf");
@@ -225,7 +225,7 @@ describe('Log-In Test', () => {
     cy.getByData('username-input').type('Anlaf');
     cy.getByData('username-input').should('have.value', 'Anlaf');
 
-    cy.getByData('password-input').type('password');
+    cy.getByData('password-input').type('password2');
     cy.getByData('password-input').should('have.value', 'password2');
 
     cy.wrap(new Promise((resolve, reject) => {
@@ -246,4 +246,19 @@ describe('Log-In Test', () => {
 
     cy.url().should('include', '/login');
   });
+})
+
+describe('View brands test', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:4200');
+  })
+  it('displays all brands', () => {
+    cy.getByData('brands-link').click();
+    cy.url().should('include', '/brand');
+
+    cy.getByData('Starbucks').should('exist');
+    cy.getByData('Target').should('exist');
+    cy.getByData('BestBuy').should('exist');
+    cy.getByData('Kohls').should('exist');
+  })
 })
