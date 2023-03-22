@@ -55,4 +55,4 @@ In a terminal, navigate to *src/server* then run ```go test```. This will run th
 In a terminal, navigate to *GiftCardExchange* and run ```ng test```. This will open a web browser displaying the results of testing.
 
 ### Cypress Tests
-The code for the Cypress tests is located in the *Cypress* folder. Navigate to that folder in the terminal and run ```npx cypress open``` in the terminal. Afterwards, follow the direction listed on the Cypress website on how to run and view the tests. Note that only end-to-end tests were used in this project.
+The code for the Cypress tests is located in the *Cypress* folder. First, start the back end and front end as instructed above. Next, navigate to that *Cypress* folder in a new terminal and run ```npx cypress open``` in the terminal. Afterwards, follow the direction listed on the Cypress website on how to run and view the tests. Note that only end-to-end tests were used in this project.
