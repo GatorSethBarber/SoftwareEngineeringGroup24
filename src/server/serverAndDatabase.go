@@ -40,7 +40,7 @@ func main() {
 	database = ConnectToDatabase()
 
 	// Do not run more than once
-	initialSetup(database)
+	// initialSetup(database)
 
 	RunServer()
 
