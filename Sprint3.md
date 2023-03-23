@@ -152,23 +152,33 @@ The testing of all functionality outside of router paths is done in Go. There ar
     * TestValidCrateCard: Create a new card for the database
 
 ### Testing the REST API in Cypress
-This is done through an end-to-end Cypress spec. The tests are stored in the end to end spec spec.cy.js.
-* Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
-  * GET with correct username and password: Tests valid username and password combination has response status code of 200.
-  * GET with incorrect password: Tests that invalid username and password combination has response status code of 404.
-* Test POST User: Tests that the /user/new route operates correctly
-  * POST with already taken username: Tests that attempt to create new user with already taken username has a response status code of 400
-  * POST with already taken email: Tests that attempt to create new user with already taken email has a response status code of 400
-  * POST with missing info: Tests that attempt to create new user while not fully specifying needed data has a response status code of 400.
-  * POST with valid info: Tests that successful creation of user has status code of 201
-* Test GET gift card information: Tests if the correct information is returned when requesting for a particular company name
-  * GET with correct company name: Tests that a 200 status code is the response when requesting for a valid company name
-  * GET without passing parameter: Tests that a 400 status code is the response to a request missing the *companyName* query parameter.
-  * Get with unkown company: Tests that a 404 status code is the response to a request with a *companyName* not present in the database.
-* Test POST GiftCard: Tests if the gift card is successfully created
-  * POST with already taken card number: Tests that a 400 status code is the response when creating a gift card that has the same number as another gift card
-  * POST with missing card number: Tests that a 400 status code is the response when creating a gift card without its card number
-  * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
+This is done through an end-to-end Cypress spec. The tests are stored in the end to end specs spec.cy.js and testBackEndWithCookie.cy.js.
+* testBackEndWithCookie.cy.js (from Sprint 3):
+  * BasicLoginAndLogout
+    * Basic Login: Login without having previously logged in or logged out.
+    * Basic Logout: Logout after logging in.
+  * Multiple Logins and Logouts
+    * Logout before login: Tests that logging out before loggin in does not throw error.
+    * Login with invalid user credentials: Tests that logging in with invalid credentials results in a 404 error.
+    * Login twice with valid credentials: Tests that logging in with valid user credentials without logging out between the log ins does not throw an error.
+    * Logout: Final logout (actually repeat of basic logout due to way Cypress tests work)
+* spec.cy.js (from Sprint 2):
+  * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
+    * GET with correct username and password: Tests valid username and password combination has response status code of 200.
+    * GET with incorrect password: Tests that invalid username and password combination has response status code of 404.
+  * Test POST User: Tests that the /user/new route operates correctly
+    * POST with already taken username: Tests that attempt to create new user with already taken username has a response status code of 400
+    * POST with already taken email: Tests that attempt to create new user with already taken email has a response status code of 400
+    * POST with missing info: Tests that attempt to create new user while not fully specifying needed data has a response status code of 400.
+    * POST with valid info: Tests that successful creation of user has status code of 201
+  * Test GET gift card information: Tests if the correct information is returned when requesting for a particular company name
+    * GET with correct company name: Tests that a 200 status code is the response when requesting for a valid company name
+    * GET without passing parameter: Tests that a 400 status code is the response to a request missing the *companyName* query parameter.
+    * Get with unkown company: Tests that a 404 status code is the response to a request with a *companyName* not present in the database.
+  * Test POST GiftCard: Tests if the gift card is successfully created
+    * POST with already taken card number: Tests that a 400 status code is the response when creating a gift card that has the same number as another gift card
+    * POST with missing card number: Tests that a 400 status code is the response when creating a gift card without its card number
+    * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
 
 # Conclusion
 * describe here

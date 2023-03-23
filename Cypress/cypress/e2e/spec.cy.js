@@ -113,13 +113,13 @@ describe('Test GET gift card information', () => {
     })
   })
 
-  it('GET without passing parameter', () => {
+  it('GET with bad parameter', () => {
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/card/get?companyName=Targit',  
       failOnStatusCode: false
     }).then(response => {
-      expect(response.status).to.equal(400)
+      expect(response.status).to.equal(404)
     })
   })
 
