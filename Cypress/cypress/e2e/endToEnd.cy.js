@@ -262,3 +262,18 @@ describe('View brands test', () => {
     cy.getByData('Kohls').should('exist');
   })
 })
+
+describe('View cards test', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:4200');
+  })
+  it('displays correct card brand', () => {
+    cy.getByData('brands-link').click();
+    cy.url().should('include', '/brand');
+
+    cy.getByData('Starbucks').click();
+    cy.url().should('include', '/card');
+
+    cy.getByData('brand-name-head').should('have.text', ' All Cards for Starbucks ');
+  })
+})
