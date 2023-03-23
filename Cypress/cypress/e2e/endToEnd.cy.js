@@ -276,4 +276,19 @@ describe('View cards test', () => {
 
     cy.getByData('brand-name-head').should('have.text', ' All Cards for Starbucks ');
   })
+
+  it('displays all starbucks cards', () => {
+    cy.getByData('brands-link').click();
+    cy.url().should('include', '/brand');
+
+    cy.getByData('Starbucks').click();
+    cy.url().should('include', '/card');
+
+    cy.getByData('brand-name-head').should('have.text', ' All Cards for Starbucks ');    
+
+    cy.getByData('SethTheBarber').should('exist');
+    cy.getByData('EricTheRed').should('exist');
+    cy.getByData('Welthow').should('have.length', 2);
+    cy.getByData('Anlaf').should('have.length', 2);
+  })
 })
