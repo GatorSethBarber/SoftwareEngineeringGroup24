@@ -13,7 +13,6 @@ const login = (username="Anlaf", password="password") => {
 describe('BasicLoginAndLogout', () => {
   Cypress.Cookies.debug(true)
   it('Basic Login', () => {
-    cy.visit('http://localhost:8080/')
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/user/login/Anlaf/password'
@@ -26,7 +25,6 @@ describe('BasicLoginAndLogout', () => {
   it('Basic Logout', () => {
     login()
     cy.getCookie('session-gcex').should('exist')
-    cy.visit('http://localhost:8080/')
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/user/logout'
@@ -88,4 +86,84 @@ describe('Multiple Logins and Logouts', () => {
   })
 })
 
+describe('Test new GET User information', () => {
+  it ('GET without login', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/Anlaf'
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      const body = response.body
+      
+      console.log(body)
+      // https://stackoverflow.com/questions/60031254/cypress-get-value-from-json-response-body
+      expect(body).to.have.property("username", "Anlaf")
+      expect(body).to.have.property("password", "")
+      expect(body).to.have.property("email", "")
+      expect(body).to.have.property("firstname", "")
+      expect(body).to.have.property("lastname", "")
+    })
+  })
+
+  it('GET with same login', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/Anlaf',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      const body = response.body
+      
+      console.log(body)
+      // https://stackoverflow.com/questions/60031254/cypress-get-value-from-json-response-body
+      expect(body).to.have.property("username", "Anlaf")
+      expect(body).to.have.property("password", "password")
+      expect(body).to.have.property("email", "viking@iviking.com")
+      expect(body).to.have.property("firstname", "Olaf")
+      expect(body).to.have.property("lastname", "Trygvasson")
+    })
+  })
+
+  it('GET with different login', () => {
+    login("Welthow", "password")
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/Anlaf',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      const body = response.body
+      
+      console.log(body)
+      // https://stackoverflow.com/questions/60031254/cypress-get-value-from-json-response-body
+      expect(body).to.have.property("username", "Anlaf")
+      expect(body).to.have.property("password", "")
+      expect(body).to.have.property("email", "")
+      expect(body).to.have.property("firstname", "")
+      expect(body).to.have.property("lastname", "")
+    })
+  }),
+
+  it('GET nonexistent user without login', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/adjaafdaaad',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+    })
+  })
+
+  it('GET nonexistent user while logged in', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/adjaafdaaad',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+    })
+  })
+})
 

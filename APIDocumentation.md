@@ -88,7 +88,7 @@ Note: As no error is thrown if a logged-out user calls this again, the response 
 
 Get the information associated with a given username. If the user is logged in with the username (which is unique per user), then gets all information. If not, then personally identifiable information, such as email, password, firstName, and lastName, are replaced with empty strings.
 
-URL: /user/get/{username}/{password}
+URL: /user/get/{username}
 
 Verb: GET
 

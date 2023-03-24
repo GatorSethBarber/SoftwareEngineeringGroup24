@@ -315,6 +315,7 @@ func requestGetUserInfo(writer http.ResponseWriter, request *http.Request) {
 }
 
 func newGetUserInfo(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
 	userName := mux.Vars(request)["username"]
 
 	user, err := newGetUserInformation(userName)
