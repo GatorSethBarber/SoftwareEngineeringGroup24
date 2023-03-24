@@ -31,7 +31,7 @@ func httpHandler() http.Handler {
 	// Routes for gift card
 	// TODO: consider altering /card/get to split into verified and not verified
 	router.HandleFunc("/card/new/{username}/{password}", requestCreateCard).Methods("POST")
-	router.HandleFunc("card/new/{username}", newRequestCreateCard).Methods("POST")
+	router.HandleFunc("/card/new/{username}", newRequestCreateCard).Methods("POST")
 	router.HandleFunc("/card/get", requestGetCard).Methods("GET")
 
 	// WARNING: this route must be the last route defined.
@@ -193,7 +193,7 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// https://stackoverflow.com/questions/14289256/cannot-convert-data-type-interface-to-type-string-need-type-assertion
-	password, isOk := session.Values["password"].(string)
+	password, isOk := session.Values["hash"].(string)
 	if !isOk {
 		panic("Encountered error in cookie")
 	}

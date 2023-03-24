@@ -67,8 +67,11 @@ If user does not exist, returns a 404 error code in the response.
 All gift cards have a gift card number, amount, company, owner, and, potentially, an expiration date.
 
 ### Gift Card Creation
+Create a new gift card associated with a given user. The user is either identified by the username and password (legacy) or with just the username and the **session-gcex** cookie is used to insure that the user is actually logged in.
 
-URL: /card/new/{username}/{password}
+URLs:
+* URL: /card/new/{username}
+* Legacy URL: /card/new/{username}/{password}
 
 Request Verb: POST
 
@@ -168,6 +171,11 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * GET with different login: Verifies personally identifiable information about a user is masked from other users.
     * GET nonexistent user without login: Verifies that attempts to access the information for a nonexistent user results in a 404 error.
     * GET nonexistent user while logged in: Verifies that attempts to access the information for a nonexistent user results in a 404 error.
+  * Test new create Card
+    * Attempt to create without being logged in: Verifies that this case results in a 400 status code for the response
+    * Attempt to create with already taken gift card number: Should result in a 400 status code
+    * POST with missing card number: Should result in a 400 status code
+    * POST with valid new card: Should successfully create.
 * spec.cy.js (from Sprint 2):
   * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
     * GET with correct username and password: Tests valid username and password combination has response status code of 200.
