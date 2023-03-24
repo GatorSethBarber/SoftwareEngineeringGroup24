@@ -47,7 +47,7 @@ Status Codes:
 * Created: 201
 * User with the given username or email already exists: 400
 
-### User Information Access
+### User Information Access (for updates, see APIDocumentation.md)
 
 URL: /user/get/{username}/{password}
 
