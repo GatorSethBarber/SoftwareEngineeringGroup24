@@ -9,6 +9,8 @@ import (
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Maybe change this in future so connection is not global
@@ -103,9 +105,7 @@ func newGetUserInformation(username string) (User, error) {
 	return user, theError
 }
 
-/*
-Get the username based on the id stored in the database.
-*/
+// Get the username based on the id stored in the database.
 func getUserName(userID uint) (string, error) {
 	var user User
 	var theError error
@@ -115,6 +115,20 @@ func getUserName(userID uint) (string, error) {
 	}
 
 	return user.Username, theError
+}
+
+// Returns the bcrypt hash of the user's password
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", fmt.Errorf("Failed to hash password: %w", err)
+	}
+	return string(hashedPassword), nil
+}
+
+// Checks if the provided password is correct or not
+func CheckPassword(password string, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
 // User authentication
@@ -143,15 +157,41 @@ func databaseCreateCard(giftcard *GiftCard) error {
 	return returnError
 }
 
-/*
-Get the cards where the company name is equal to a given value.
-*/
+// Get the cards where the company name is equal to a given value.
 func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 	var cards []GiftCard
 	var theError error
 	if err := database.Where("company_name = ?", companyName).Find(&cards).Error; err != nil {
 		theError = err
 	}
+
+	return cards, theError
+}
+
+// create separate for getting userID from username
+
+// Get all the cards from the user
+
+// use username instead
+func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
+	var cards []GiftCard
+	var theError error
+	// var userID uint
+	// var usernameError error
+
+	// var user User
+
+	/*
+			user, usernameError = database.Where("username = ?", username).First(&user).Error; error != nil {
+		     return cards, usernameError;
+			}
+
+	*/
+	if err := database.Where("user.id = ?", user_ID).Find(&cards).Error; err != nil {
+		theError = err
+	}
+
+	// userID =  user.id
 
 	return cards, theError
 }
@@ -187,7 +227,7 @@ type GiftCard struct {
 	UserID            uint       `gorm:"not null"`
 	CompanyName       string     `gorm:"unique"`
 	CardNumber        uint32     `gorm:"primary_key"`
-	Amount            float32        `gorm:"not null"` // an amount must be displayed
+	Amount            float32    `gorm:"not null"` // an amount must be displayed
 	Expiration        time.Time
 	AvailabilityCount uint       `gorm:"not null"`
 }

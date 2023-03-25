@@ -354,6 +354,9 @@ func requestCreateUser(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	var hashErr error
+	user.Hash, hashErr = HashPassword(user.Password)
+
 	if err := databaseCreateUser(&user); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
