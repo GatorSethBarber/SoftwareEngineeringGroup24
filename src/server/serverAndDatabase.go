@@ -94,6 +94,19 @@ func getUserInformation(username string, password string) (User, error) {
 	return user, theError
 }
 
+// TODO: add tests for this function
+func getUserInformationHash(username, hash string) (User, error) {
+	fmt.Println("Getting with", username, "and", hash)
+	var user User
+	var theError error
+	if err := database.Where("username = ? AND hash = ?", username, hash).First(&user).Error; err != nil {
+		user = User{}
+		theError = err
+	}
+
+	return user, theError
+}
+
 func newGetUserInformation(username string) (User, error) {
 	var user User
 	var theError error
@@ -121,7 +134,7 @@ func getUserName(userID uint) (string, error) {
 func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf("Failed to hash password: %w", err)
+		return "", fmt.Errorf("failed to hash password: %w", err)
 	}
 	return string(hashedPassword), nil
 }
@@ -132,12 +145,14 @@ func CheckPassword(password string, hashedPassword string) error {
 }
 
 // User authentication
-// FIXME: Needs to be updated for hash
 func getUserExistsPassword(username, password string) (User, bool) {
-	// TODO: hash password
 	var user User
-	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
 		return user, false
+	}
+
+	if CheckPassword(password, user.Hash) != nil {
+		return User{}, false
 	}
 
 	// If no not found error, then good to go
@@ -171,30 +186,7 @@ func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 // create separate for getting userID from username
 
 // Get all the cards from the user
-
-// use username instead
-func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
-	var cards []GiftCard
-	var theError error
-	// var userID uint
-	// var usernameError error
-
-	// var user User
-
-	/*
-			user, usernameError = database.Where("username = ?", username).First(&user).Error; error != nil {
-		     return cards, usernameError;
-			}
-
-	*/
-	if err := database.Where("user.id = ?", user_ID).Find(&cards).Error; err != nil {
-		theError = err
-	}
-
-	// userID =  user.id
-
-	return cards, theError
-}
+// This will be reinserted
 
 /********  Database setup *************/
 
@@ -216,6 +208,15 @@ func makeTestUsers(database *gorm.DB) {
 		{Username: "Welthow", Password: "password", Email: "theGoldenCup@hello.da", FirstName: "", LastName: "Welthow"},
 		{Username: "Anlaf", Password: "password", Email: "viking@iviking.com", FirstName: "Olaf", LastName: "Trygvasson"},
 		{Username: "KingCanute", Password: "password", Email: "waves.and.toes@northerners.com", FirstName: "", LastName: "Cnut"},
+	}
+
+	var err error
+	for index, user := range users {
+		users[index].Hash, err = HashPassword(user.Password)
+
+		if err != nil {
+			log.Panicf("Encountered an unexpected error hashing %v", user.Password)
+		}
 	}
 
 	database.CreateInBatches(&users, 50)
