@@ -4,11 +4,12 @@ import { AppComponent } from './app.component';
 import { BrandComponent } from './brand/brand.component';
 import { NavComponent } from './nav/nav.component';
 import { By } from '@angular/platform-browser';
+import { RouterOutlet } from '@angular/router';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [NavComponent, AppComponent, BrandComponent],
     
     }).compileComponents();
@@ -25,8 +26,12 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app.title).toEqual('GiftCardXChange');
   });
-
- 
+   
+  it('should have a router outlet', ()=>{
+    const fixture = TestBed.createComponent(AppComponent);
+    let de = fixture.debugElement.query(By.directive(RouterOutlet));
+    expect(de).not.toBeNull();
+    });
 
 
 });

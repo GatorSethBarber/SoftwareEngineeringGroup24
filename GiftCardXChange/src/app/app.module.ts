@@ -17,6 +17,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { AuthService } from './auth.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import {MatTabsModule} from '@angular/material/tabs'; 
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -26,7 +30,8 @@ import { AuthService } from './auth.service';
     NavComponent,
     LoginComponent,
     RegisterComponent,
-    CardsComponent, 
+    CardsComponent,
+    DashboardComponent, 
   ],
   imports: [
     BrowserModule,
@@ -40,7 +45,9 @@ import { AuthService } from './auth.service';
     MatFormFieldModule,
     MatPaginatorModule,
     MatSortModule,
-
+    MatTabsModule,
+    MatOptionModule,
+    MatSelectModule
     ],
 
   exports: [

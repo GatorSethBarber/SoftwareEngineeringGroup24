@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,10 @@ export class AuthService {
   getToken() {
     // Todo replace with logic to get token
     return '';
+  
   }
+
+ 
 
   makeRequestHeader(authorize: boolean = false) {
     const header = new HttpHeaders()
@@ -26,6 +29,8 @@ export class AuthService {
     }
     return header;
   }
+
+  
 
   register(
     userInfor: { userName: string; passWord: string } | any
@@ -46,6 +51,16 @@ export class AuthService {
     );
   }
 
+  userlogOut(): Observable<any> {
+    const headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/user/logout`,
+      { headers }
+    );
+  }
+
+
+
   brandCards(
     cardInfo: { companyName: string} | any
   ): Observable<any> {
@@ -59,28 +74,7 @@ export class AuthService {
   }
 
   
-  //    register(username:any, email:any ,password:any,firstname:any,lastname:any){
-  //   let headers = new HttpHeaders().set('content-type', 'application/json')
-  //     .set('Access-Control-Allow-Origin', '*');
 
-  //   const body = JSON.stringify({
-  //     username: username,
-  //     email: email,
-  //     password: password,
-  //     firstname: firstname,
-  //     lastname: lastname
-  //   });
-  //   return this.http.post('http://localhost:8080/user/new',body,{headers: headers});
-  //  }
+  
 
-  //  login(username:any, password:any){
-  //   let headers = new HttpHeaders().set('content-type', 'application/json')
-  //     .set('Access-Control-Allow-Origin', '*');
-
-  //   const body = JSON.stringify({
-  //     username: username,
-  //     password: password
-  //   });
-  //   return this.http.get('http://localhost:8080/user/get', {headers});
-  //  }
 }
