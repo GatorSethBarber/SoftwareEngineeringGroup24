@@ -47,7 +47,7 @@ Status Codes:
 * Created: 201
 * User with the given username or email already exists: 400
 
-### User Information Access
+### User Information Access (for updates, see APIDocumentation.md)
 
 URL: /user/get/{username}/{password}
 
@@ -67,8 +67,11 @@ If user does not exist, returns a 404 error code in the response.
 All gift cards have a gift card number, amount, company, owner, and, potentially, an expiration date.
 
 ### Gift Card Creation
+Create a new gift card associated with a given user. The user is either identified by the username and password (legacy) or with just the username and the **session-gcex** cookie is used to insure that the user is actually logged in.
 
-URL: /card/new/{username}/{password}
+URLs:
+* URL: /card/new/{username}
+* Legacy URL: /card/new/{username}/{password}
 
 Request Verb: POST
 
@@ -117,7 +120,7 @@ Tests for the back end are split into two major groups: Unit tests ran using Go,
 The testing of all functionality outside of router paths is done in Go. There are two files that contain unit tests, both of which are in src/server/
 * rest_test.go: This tests the functions associated with the processing of information.
   * From Sprint 3:
-    * New tests here:
+    * No additional tests in *rest_test.go*
 
   * From Sprint 2:
     * TestValidCardInput: Test checkCardNumberAndAmount with valid input. Function should return true.
@@ -154,14 +157,25 @@ The testing of all functionality outside of router paths is done in Go. There ar
 ### Testing the REST API in Cypress
 This is done through an end-to-end Cypress spec. The tests are stored in the end to end specs spec.cy.js and testBackEndWithCookie.cy.js.
 * testBackEndWithCookie.cy.js (from Sprint 3):
-  * BasicLoginAndLogout
+  * BasicLoginAndLogout: Test basic log in and log out
     * Basic Login: Login without having previously logged in or logged out.
     * Basic Logout: Logout after logging in.
-  * Multiple Logins and Logouts
+  * Multiple Logins and Logouts: Test multiple log ins and log outs
     * Logout before login: Tests that logging out before loggin in does not throw error.
     * Login with invalid user credentials: Tests that logging in with invalid credentials results in a 404 error.
     * Login twice with valid credentials: Tests that logging in with valid user credentials without logging out between the log ins does not throw an error.
     * Logout: Final logout (actually repeat of basic logout due to way Cypress tests work)
+  * Test new GET User information: Tests the new version of getting user information
+    * GET without login: Verifies that getting user information without being logged in masks personally identifiable values
+    * GET with same login: Verifies that user has access to needed information about their account when they are logged in.
+    * GET with different login: Verifies personally identifiable information about a user is masked from other users.
+    * GET nonexistent user without login: Verifies that attempts to access the information for a nonexistent user results in a 404 error.
+    * GET nonexistent user while logged in: Verifies that attempts to access the information for a nonexistent user results in a 404 error.
+  * Test new create Card
+    * Attempt to create without being logged in: Verifies that this case results in a 400 status code for the response
+    * Attempt to create with already taken gift card number: Should result in a 400 status code
+    * POST with missing card number: Should result in a 400 status code
+    * POST with valid new card: Should successfully create.
 * spec.cy.js (from Sprint 2):
   * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
     * GET with correct username and password: Tests valid username and password combination has response status code of 200.

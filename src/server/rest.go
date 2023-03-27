@@ -31,7 +31,7 @@ func httpHandler() http.Handler {
 	// Routes for gift card
 	// TODO: consider altering /card/get to split into verified and not verified
 	router.HandleFunc("/card/new/{username}/{password}", requestCreateCard).Methods("POST")
-	router.HandleFunc("card/new/{username}", newRequestCreateCard).Methods("POST")
+	router.HandleFunc("/card/new/{username}", newRequestCreateCard).Methods("POST")
 	router.HandleFunc("/card/get", requestGetCard).Methods("GET")
 
 	// WARNING: this route must be the last route defined.
@@ -187,19 +187,8 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	session, err := store.Get(request, "session-gcex")
-	if err != nil {
-		panic("Encountered an error decoding session info")
-	}
-
-	// https://stackoverflow.com/questions/14289256/cannot-convert-data-type-interface-to-type-string-need-type-assertion
-	password, isOk := session.Values["password"].(string)
-	if !isOk {
-		panic("Encountered error in cookie")
-	}
-
 	// Make sure user is valid
-	user, err := getUserInformation(username, password)
+	user, err := newGetUserInformation(username)
 	if err != nil {
 		fmt.Println(err)
 		writer.WriteHeader(http.StatusBadRequest)
@@ -315,6 +304,7 @@ func requestGetUserInfo(writer http.ResponseWriter, request *http.Request) {
 }
 
 func newGetUserInfo(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
 	userName := mux.Vars(request)["username"]
 
 	user, err := newGetUserInformation(userName)
@@ -353,6 +343,17 @@ func requestCreateUser(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	var hashErr error
+	user.Hash, hashErr = HashPassword(user.Password)
+	if hashErr != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if hashErr != nil {
+		panic("Cannot hash password")
+	}
+
 	if err := databaseCreateUser(&user); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -379,7 +380,7 @@ func requestLogin(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// TODO: Update this for hash and think about adding body to the request
-	makeSession(writer, request, user.Username, user.Password)
+	makeSession(writer, request, user.Username, user.Hash)
 	writer.WriteHeader(http.StatusOK)
 }
 

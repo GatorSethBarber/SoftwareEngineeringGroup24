@@ -13,7 +13,6 @@ const login = (username="Anlaf", password="password") => {
 describe('BasicLoginAndLogout', () => {
   Cypress.Cookies.debug(true)
   it('Basic Login', () => {
-    cy.visit('http://localhost:8080/')
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/user/login/Anlaf/password'
@@ -26,7 +25,6 @@ describe('BasicLoginAndLogout', () => {
   it('Basic Logout', () => {
     login()
     cy.getCookie('session-gcex').should('exist')
-    cy.visit('http://localhost:8080/')
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/user/logout'
@@ -88,4 +86,160 @@ describe('Multiple Logins and Logouts', () => {
   })
 })
 
+describe('Test new GET User information', () => {
+  it ('GET without login', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/Anlaf'
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      const body = response.body
+      
+      console.log(body)
+      // https://stackoverflow.com/questions/60031254/cypress-get-value-from-json-response-body
+      expect(body).to.have.property("username", "Anlaf")
+      expect(body).to.have.property("password", "")
+      expect(body).to.have.property("email", "")
+      expect(body).to.have.property("firstname", "")
+      expect(body).to.have.property("lastname", "")
+    })
+  })
 
+  it('GET with same login', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/Anlaf',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      const body = response.body
+      
+      console.log(body)
+      // https://stackoverflow.com/questions/60031254/cypress-get-value-from-json-response-body
+      expect(body).to.have.property("username", "Anlaf")
+      expect(body).to.have.property("password", "password")
+      expect(body).to.have.property("email", "viking@iviking.com")
+      expect(body).to.have.property("firstname", "Olaf")
+      expect(body).to.have.property("lastname", "Trygvasson")
+    })
+  })
+
+  it('GET with different login', () => {
+    login("Welthow", "password")
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/Anlaf',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      const body = response.body
+      
+      console.log(body)
+      // https://stackoverflow.com/questions/60031254/cypress-get-value-from-json-response-body
+      expect(body).to.have.property("username", "Anlaf")
+      expect(body).to.have.property("password", "")
+      expect(body).to.have.property("email", "")
+      expect(body).to.have.property("firstname", "")
+      expect(body).to.have.property("lastname", "")
+    })
+  }),
+
+  it('GET nonexistent user without login', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/adjaafdaaad',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+    })
+  })
+
+  it('GET nonexistent user while logged in', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/user/get/adjaafdaaad',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+    })
+  })
+})
+
+describe('Test new create Card', () => {
+  it('Attempt to create without being logged in', () => {
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/card/new/Anlaf',
+      body: {
+        "companyName":  "Starbuck",
+        "cardNumber":   "111111122",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
+      },
+      headers: {
+        'content-type': 'application/json'
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
+
+  it('Attempt to create with already taken gift card number', () => {
+    login()
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/card/new/Anlaf',
+      body: {
+        "companyName":  "Starbuck",
+        "cardNumber":   "223456789",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
+      },
+      headers: {
+        'content-type': 'application/json'
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  }),
+
+  it ('POST with missing card number', () => {
+    login()
+    cy.request({
+      method: 'POST', 
+      url: 'http://localhost:8080/card/new/Anlaf',
+      body: {
+        "companyName":  "Target",
+        "amount":       50.0,
+        "expirationDate":   "2027-12"
+      },
+      headers: {
+        'content-type': 'application/json'
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
+
+  it ('POST with valid new card', () => {
+    login()
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/card/new/Anlaf',
+      body: {
+        "companyName": "Starbucks",
+        "amount": 50.0,
+        "expirationDate": "2027-12",
+        "cardNumber": "2222222229"
+      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(201)
+    })
+  })
+})
