@@ -208,7 +208,7 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	var user User
 	user.ID, theError = getUserID(username)
 
-	if err := database.Where("user.id = ?", user.ID).Find(&cards).Error; err != nil {
+	if err := database.Where("user_id = ?", user.ID).Find(&cards).Error; err != nil {
 		theError = err
 	}
 

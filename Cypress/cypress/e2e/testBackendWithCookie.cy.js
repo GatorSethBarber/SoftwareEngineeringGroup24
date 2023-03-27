@@ -243,3 +243,63 @@ describe('Test new create Card', () => {
     })
   })
 })
+
+
+describe('Test get cards for user', () => {
+  it('Get with invalid username (not logged in)', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get/adafdafdafdad',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+      console.log(response.body)
+      expect(response.body).to.equal("[]\nnull\n")
+    })
+  })
+
+  it('Get with invalid username (logged in)', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get/adafdafdafdad',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+      expect(response.body).to.equal("[]\nnull\n")
+    })
+  })
+
+  it('Get with valid username (not logged in)', () => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get/Anlaf',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      expect(response.body[0]).to.have.property("cardNumber", "")
+    })
+  })
+  it('Get with valid username (logged in)', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get/Anlaf',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      expect(response.body[0]["cardNumber"]).to.not.equal("")
+    })
+  })
+  it('Get with valid username (logged in to different account)', () => {
+    login()
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get/Welthow',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+      expect(response.body[0]).to.have.property("cardNumber", "")
+    })
+  })
+})

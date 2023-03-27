@@ -29,10 +29,10 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/user/new", requestCreateUser).Methods("POST")
 
 	// Routes for gift card
-	// TODO: consider altering /card/get to split into verified and not verified
 	router.HandleFunc("/card/new/{username}/{password}", requestCreateCard).Methods("POST")
 	router.HandleFunc("/card/new/{username}", newRequestCreateCard).Methods("POST")
 	router.HandleFunc("/card/get", requestGetCard).Methods("GET")
+	router.HandleFunc("/card/get/{username}", requestAllCardsForUser).Methods("GET")
 
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
@@ -239,7 +239,6 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 func requestGetCard(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
-	// TODO: Add functionality for minAmount and maxAmount
 	if !request.URL.Query().Has("companyName") {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -273,6 +272,43 @@ func requestGetCard(writer http.ResponseWriter, request *http.Request) {
 
 	// Encode frontEndCard
 	writer.WriteHeader(http.StatusOK)
+
+	encodeErr := json.NewEncoder(writer).Encode(&frontCards)
+	if encodeErr != nil {
+		log.Fatalln("There was an error encoding the struct for cards.")
+	}
+}
+
+func requestAllCardsForUser(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	username := mux.Vars(request)["username"]
+
+	cards, getErr := databaseGetCardsFromUser(username)
+	if getErr != nil {
+		writer.WriteHeader(http.StatusNotFound)
+		encodeErr := json.NewEncoder(writer).Encode(&cards)
+		if encodeErr != nil {
+			log.Fatalln("There was an error encoding the struct for cards.")
+		}
+	}
+
+	keepCardNumber := authSessionForUser(request, username)
+	var frontCards []jsonCard
+
+	for index, _ := range cards {
+		card, err := cardBackToFront(&cards[index], keepCardNumber)
+		if err != nil {
+			log.Panicf("Could not convert card %v", cards[index])
+		}
+		frontCards = append(frontCards, card)
+	}
+
+	if len(frontCards) < 1 {
+		writer.WriteHeader(http.StatusNotFound)
+	} else {
+		// Encode frontEndCard
+		writer.WriteHeader(http.StatusOK)
+	}
 
 	encodeErr := json.NewEncoder(writer).Encode(&frontCards)
 	if encodeErr != nil {
