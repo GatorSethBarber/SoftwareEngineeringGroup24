@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"time"
 
@@ -38,11 +39,27 @@ type GiftCard struct {
 
 func main() {
 	fmt.Println("Starting Process")
+	doInitialSetup := false
+
+	// https://www.tutorialspoint.com/how-to-check-if-a-file-exists-in-golang
+	fileExists := true
+	if _, err := os.Stat(databaseName); err != nil {
+		fileExists = false
+	}
+
+	// Do not run more than once
+	if (len(os.Args) > 1 && os.Args[1] == "reset") || !fileExists {
+		if fileExists {
+			os.Remove(databaseName) // Don't care if error is thrown
+		}
+		doInitialSetup = true
+	}
 
 	database = ConnectToDatabase()
 
-	// Do not run more than once
-	// initialSetup(database)
+	if doInitialSetup {
+		initialSetup(database)
+	}
 
 	RunServer()
 
@@ -133,12 +150,14 @@ func CheckPassword(password string, hashedPassword string) error {
 }
 
 // User authentication
-// FIXME: Needs to be updated for hash
 func getUserExistsPassword(username, password string) (User, bool) {
-	// TODO: hash password
 	var user User
-	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
 		return user, false
+	}
+
+	if CheckPassword(password, user.Hash) != nil {
+		return User{}, false
 	}
 
 	// If no not found error, then good to go
@@ -200,11 +219,14 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
+	fmt.Println("Running initial set up.")
 
 	database.AutoMigrate(&GiftCard{}, &User{})
 
 	makeTestUsers(database)
 	populateGiftCards(database)
+
+	fmt.Println("Initial set up complete.")
 }
 
 // Make a bunch of users
@@ -216,6 +238,15 @@ func makeTestUsers(database *gorm.DB) {
 		{Username: "Welthow", Password: "password", Email: "theGoldenCup@hello.da", FirstName: "", LastName: "Welthow"},
 		{Username: "Anlaf", Password: "password", Email: "viking@iviking.com", FirstName: "Olaf", LastName: "Trygvasson"},
 		{Username: "KingCanute", Password: "password", Email: "waves.and.toes@northerners.com", FirstName: "", LastName: "Cnut"},
+	}
+
+	var err error
+	for index, user := range users {
+		users[index].Hash, err = HashPassword(user.Password)
+
+		if err != nil {
+			log.Panicf("Encountered an unexpected error hashing %v", user.Password)
+		}
 	}
 
 	database.CreateInBatches(&users, 50)

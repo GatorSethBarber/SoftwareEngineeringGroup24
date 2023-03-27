@@ -186,22 +186,48 @@ func TestBcryptPassword(t *testing.T) {
 
 /* func TestBcryptingIsCorrect(t *testing.T) {
 	pass := []byte("mypassword")
-	hp, err := GenerateFromPassword(pass, 0)
+	hp, err := bcrypt.GenerateFromPassword(pass, 0)
 	if err != nil {
 		t.Fatalf("GenerateFromPassword error: %s", err)
 	}
 
-	if CompareHashAndPassword(hp, pass) != nil {
+	if bcrypt.CompareHashAndPassword(hp, pass) != nil {
 		t.Errorf("%v should hash %s correctly", hp, pass)
 	}
 
 	notPass := "notthepass"
-	err = CompareHashAndPassword(hp, []byte(notPass))
-	if err != ErrMismatchedHashAndPassword {
+	err = bcrypt.CompareHashAndPassword(hp, []byte(notPass))
+	if err != bcrypt.ErrMismatchedHashAndPassword {
 		t.Errorf("%v and %s should be mismatched", hp, notPass)
 	}
 }
 
+/*
+func TestBcryptingIsCorrect(t *testing.T) {
+	pass := []byte("allmine")
+	salt := []byte("XajjQvNhvvRt5GSeFk1xFe")
+	expectedHash := []byte("$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga")
+
+	hash, err := bcrypt(pass, 10, salt)
+	if err != nil {
+		t.Fatalf("bcrypt blew up: %v", err)
+	}
+	if !bytes.HasSuffix(expectedHash, hash) {
+		t.Errorf("%v should be the suffix of %v", hash, expectedHash)
+	}
+
+	h, err := newFromHash(expectedHash)
+	if err != nil {
+		t.Errorf("Unable to parse %s: %v", string(expectedHash), err)
+	}
+
+	if err == nil && !bytes.Equal(expectedHash, h.Hash()) {
+		t.Errorf("Parsed hash %v should equal %v", h.Hash(), expectedHash)
+	}
+}
+*/
+
+/*
 func TestInvalidHashErrors(t *testing.T) {
 	check := func(name string, expected, err error) {
 		if err == nil {
@@ -211,6 +237,7 @@ func TestInvalidHashErrors(t *testing.T) {
 			t.Errorf("%s gave err %v but should have given %v", name, err, expected)
 		}
 	}
+
 	for _, iht := range invalidTests {
 		_, err := newFromHash(iht.hash)
 		check("newFromHash", iht.err, err)
