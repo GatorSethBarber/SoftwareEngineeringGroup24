@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"testing"
 	"time"
 
@@ -172,19 +171,21 @@ func TestIncompleteData(t *testing.T) {
 	}
 }
 
+/*
 func TestBcryptPassword(t *testing.T) {
 	password := []byte("mypassword")
 
 	// hp = hashed password
 	hp, err := bcrypt.GenerateFromPassword(password)
-	require.NoError(t, err)
+	bytes.require.NoError(t, err)
 	require.NotEmpty(t, hp)
 
-	err = bcrypt.CheckPassword(password, hp)
+	err = CheckPassword(string(password), string(hp))
 	require.NoError(t, err)
 }
+*/
 
-/* func TestBcryptingIsCorrect(t *testing.T) {
+func TestBcryptingIsCorrect(t *testing.T) {
 	pass := []byte("mypassword")
 	hp, err := bcrypt.GenerateFromPassword(pass, 0)
 	if err != nil {

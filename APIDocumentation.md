@@ -168,11 +168,11 @@ Status codes:
 * Non-existent company: 404
 * Company name query missing: 400
 
-### Get all Gift Cards for a User (Implementation Underway)
+### Get all Gift Cards for a User
 
 Verb: GET
 
-URL: /card/{username}
+URL: /card/get/{username}
 
 Response: 
 * Header: application/JSON
