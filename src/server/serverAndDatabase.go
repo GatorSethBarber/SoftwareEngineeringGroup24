@@ -121,6 +121,7 @@ func getUserName(userID uint) (string, error) {
 func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		// if an error occurs, return an empty string
 		return "", fmt.Errorf("Failed to hash password: %w", err)
 	}
 	return string(hashedPassword), nil
@@ -168,30 +169,29 @@ func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 	return cards, theError
 }
 
-// create separate for getting userID from username
+// Get the userID from username stored in the database
+func getUserID(username string) (uint, error) {
+	var user User
+	var usernameError error
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
+		fmt.Println(err)
+		usernameError = err
+	}
 
-// Get all the cards from the user
+	return user.ID, usernameError
+}
 
-// use username instead
+// Get all the cards from the user based on the userID stored in the database
 func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	var cards []GiftCard
 	var theError error
-	// var userID uint
-	// var usernameError error
 
-	// var user User
+	var user User
+	user.ID, theError = getUserID(username)
 
-	/*
-			user, usernameError = database.Where("username = ?", username).First(&user).Error; error != nil {
-		     return cards, usernameError;
-			}
-
-	*/
-	if err := database.Where("user.id = ?", user_ID).Find(&cards).Error; err != nil {
+	if err := database.Where("user.id = ?", user.ID).Find(&cards).Error; err != nil {
 		theError = err
 	}
-
-	// userID =  user.id
 
 	return cards, theError
 }
