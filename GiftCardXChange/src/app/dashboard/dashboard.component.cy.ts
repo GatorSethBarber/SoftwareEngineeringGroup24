@@ -1,7 +1,7 @@
 import { DashboardComponent } from './dashboard.component'
 
 describe('DashboardComponent', () => {
-  it('should mount', () => {
+  it('should mount ', () => {
     cy.mount(DashboardComponent)
   })
 })

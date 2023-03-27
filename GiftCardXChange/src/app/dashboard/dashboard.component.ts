@@ -12,7 +12,7 @@ export class DashboardComponent {
   myControl: FormControl = new FormControl();
 
   options = [
-    'Starbucks',
+    'Starbuck',
     'BestBuy',
     'Target',
     'Kohls'
