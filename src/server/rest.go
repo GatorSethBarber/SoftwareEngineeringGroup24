@@ -187,19 +187,8 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	session, err := store.Get(request, "session-gcex")
-	if err != nil {
-		panic("Encountered an error decoding session info")
-	}
-
-	// https://stackoverflow.com/questions/14289256/cannot-convert-data-type-interface-to-type-string-need-type-assertion
-	hashPassword, isOk := session.Values["hash"].(string)
-	if !isOk {
-		panic("Encountered error in cookie")
-	}
-
 	// Make sure user is valid
-	user, err := getUserInformationHash(username, hashPassword)
+	user, err := newGetUserInformation(username)
 	if err != nil {
 		fmt.Println(err)
 		writer.WriteHeader(http.StatusBadRequest)

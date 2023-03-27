@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"time"
 
@@ -38,11 +39,27 @@ type GiftCard struct {
 
 func main() {
 	fmt.Println("Starting Process")
+	doInitialSetup := false
+
+	// https://www.tutorialspoint.com/how-to-check-if-a-file-exists-in-golang
+	fileExists := true
+	if _, err := os.Stat(databaseName); err != nil {
+		fileExists = false
+	}
+
+	// Do not run more than once
+	if (len(os.Args) > 1 && os.Args[1] == "reset") || !fileExists {
+		if fileExists {
+			os.Remove(databaseName) // Don't care if error is thrown
+		}
+		doInitialSetup = true
+	}
 
 	database = ConnectToDatabase()
 
-	// Do not run more than once
-	// initialSetup(database)
+	if doInitialSetup {
+		initialSetup(database)
+	}
 
 	RunServer()
 
@@ -87,19 +104,6 @@ func getUserInformation(username string, password string) (User, error) {
 	var user User
 	var theError error
 	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
-		user = User{}
-		theError = err
-	}
-
-	return user, theError
-}
-
-// TODO: add tests for this function
-func getUserInformationHash(username, hash string) (User, error) {
-	fmt.Println("Getting with", username, "and", hash)
-	var user User
-	var theError error
-	if err := database.Where("username = ? AND hash = ?", username, hash).First(&user).Error; err != nil {
 		user = User{}
 		theError = err
 	}
@@ -192,11 +196,14 @@ func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
+	fmt.Println("Running initial set up.")
 
 	database.AutoMigrate(&GiftCard{}, &User{})
 
 	makeTestUsers(database)
 	populateGiftCards(database)
+
+	fmt.Println("Initial set up complete.")
 }
 
 // Make a bunch of users
