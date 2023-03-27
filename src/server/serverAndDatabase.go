@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"time"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Maybe change this in future so connection is not global
@@ -36,11 +39,27 @@ type GiftCard struct {
 
 func main() {
 	fmt.Println("Starting Process")
+	doInitialSetup := false
+
+	// https://www.tutorialspoint.com/how-to-check-if-a-file-exists-in-golang
+	fileExists := true
+	if _, err := os.Stat(databaseName); err != nil {
+		fileExists = false
+	}
+
+	// Do not run more than once
+	if (len(os.Args) > 1 && os.Args[1] == "reset") || !fileExists {
+		if fileExists {
+			os.Remove(databaseName) // Don't care if error is thrown
+		}
+		doInitialSetup = true
+	}
 
 	database = ConnectToDatabase()
 
-	// Do not run more than once
-	// initialSetup(database)
+	if doInitialSetup {
+		initialSetup(database)
+	}
 
 	RunServer()
 
@@ -103,9 +122,7 @@ func newGetUserInformation(username string) (User, error) {
 	return user, theError
 }
 
-/*
-Get the username based on the id stored in the database.
-*/
+// Get the username based on the id stored in the database.
 func getUserName(userID uint) (string, error) {
 	var user User
 	var theError error
@@ -117,13 +134,30 @@ func getUserName(userID uint) (string, error) {
 	return user.Username, theError
 }
 
+// Returns the bcrypt hash of the user's password
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		// if an error occurs, return an empty string
+		return "", fmt.Errorf("Failed to hash password: %w", err)
+	}
+	return string(hashedPassword), nil
+}
+
+// Checks if the provided password is correct or not
+func CheckPassword(password string, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
 // User authentication
-// FIXME: Needs to be updated for hash
 func getUserExistsPassword(username, password string) (User, bool) {
-	// TODO: hash password
 	var user User
-	if err := database.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
 		return user, false
+	}
+
+	if CheckPassword(password, user.Hash) != nil {
+		return User{}, false
 	}
 
 	// If no not found error, then good to go
@@ -143,9 +177,7 @@ func databaseCreateCard(giftcard *GiftCard) error {
 	return returnError
 }
 
-/*
-Get the cards where the company name is equal to a given value.
-*/
+// Get the cards where the company name is equal to a given value.
 func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 	var cards []GiftCard
 	var theError error
@@ -156,15 +188,45 @@ func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 	return cards, theError
 }
 
+// Get the userID from username stored in the database
+func getUserID(username string) (uint, error) {
+	var user User
+	var usernameError error
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
+		fmt.Println(err)
+		usernameError = err
+	}
+
+	return user.ID, usernameError
+}
+
+// Get all the cards from the user based on the userID stored in the database
+func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
+	var cards []GiftCard
+	var theError error
+
+	var user User
+	user.ID, theError = getUserID(username)
+
+	if err := database.Where("user.id = ?", user.ID).Find(&cards).Error; err != nil {
+		theError = err
+	}
+
+	return cards, theError
+}
+
 /********  Database setup *************/
 
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
+	fmt.Println("Running initial set up.")
 
 	database.AutoMigrate(&GiftCard{}, &User{})
 
 	makeTestUsers(database)
 	populateGiftCards(database)
+
+	fmt.Println("Initial set up complete.")
 }
 
 // Make a bunch of users
@@ -178,6 +240,15 @@ func makeTestUsers(database *gorm.DB) {
 		{Username: "KingCanute", Password: "password", Email: "waves.and.toes@northerners.com", FirstName: "", LastName: "Cnut"},
 	}
 
+	var err error
+	for index, user := range users {
+		users[index].Hash, err = HashPassword(user.Password)
+
+		if err != nil {
+			log.Panicf("Encountered an unexpected error hashing %v", user.Password)
+		}
+	}
+
 	database.CreateInBatches(&users, 50)
 }
 
@@ -187,7 +258,7 @@ type GiftCard struct {
 	UserID            uint       `gorm:"not null"`
 	CompanyName       string     `gorm:"unique"`
 	CardNumber        uint32     `gorm:"primary_key"`
-	Amount            float32        `gorm:"not null"` // an amount must be displayed
+	Amount            float32    `gorm:"not null"` // an amount must be displayed
 	Expiration        time.Time
 	AvailabilityCount uint       `gorm:"not null"`
 }

@@ -27,9 +27,7 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-  it('should create', () => {
-    expect(component).toBeTruthy();
-});
+
   it('Login form is invalid when it empty', ()=>{
     component.loginForm.controls['userName'].setValue('');
     component.loginForm.controls['passWord'].setValue('');

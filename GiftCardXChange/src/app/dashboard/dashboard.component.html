@@ -1,0 +1,81 @@
+<mat-tab-group>
+  <!-- User Account Information -->
+  <mat-tab label="Profile" class="acc">
+    <!-- First Name -->
+     <p style="margin-top: 40px;">
+      <mat-form-field>
+        <mat-label>First Name</mat-label>
+        <input matInput/>
+      </mat-form-field>
+    </p>
+    <!-- Last Name -->
+    <p>
+      <mat-form-field>
+        <mat-label>Last Name</mat-label>
+        <input matInput/>
+      </mat-form-field>
+    </p>
+    <!-- User -->
+    <p>
+      <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput/>
+      </mat-form-field>
+    </p>
+    <!-- Password -->
+    <p>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput/>
+      </mat-form-field>
+    </p>
+    <!-- Email -->
+    <p>
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput/>
+      </mat-form-field>
+    </p>
+  </mat-tab>
+
+  <!-- User available giftcard -->
+  <mat-tab label="My Wallet"> Available Card </mat-tab>
+
+  <!-- Add new card to user wallet -->
+  <mat-tab label="Add New Card">
+    <h3>Please Enter Your Card</h3>
+    <!-- Company Name -->
+    <p>
+      <mat-form-field>
+        <mat-label>Company Name</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let option of options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <!-- Card Number -->
+    <p>
+      <mat-form-field>
+        <mat-label>Card Number</mat-label>
+        <input matInput placeholder="Enter your card" />
+      </mat-form-field>
+    </p>
+    <!-- Amount -->
+    <p>
+      <mat-form-field>
+        <mat-label>Amount</mat-label>
+        <input matInput placeholder="$" />
+      </mat-form-field>
+    </p>
+    <!-- Expiration Date -->
+    <p>
+      <mat-form-field>
+        <mat-label>Expiration Date</mat-label>
+        <input matInput placeholder="Month/Year" />
+      </mat-form-field>
+    </p>
+    <button type="submit" class="btn btn-primary">Add Card</button>
+  </mat-tab>
+</mat-tab-group>
