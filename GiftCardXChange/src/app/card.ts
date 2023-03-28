@@ -1,7 +1,7 @@
 export interface Card {
-    userID: number;
-    cardID: string;
+    username: string;
+    cardNumber: string;
     amount: number;
-    expiryDate: string;
-    brand: string;
+    expirationDate: string;
+    company: string;
 }
