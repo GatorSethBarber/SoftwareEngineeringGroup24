@@ -313,3 +313,55 @@ func TestInvalidNewGetUserInformation(t *testing.T) {
 		t.Fatalf("Expected to get an error, got %v", gotUser)
 	}
 }
+
+// Test getUserID
+
+func TestValidGetUserID(t *testing.T) {
+	database = ConnectToDatabase()
+	username := "Anlaf"
+	gotUserID, err := getUserID(username)
+	var wantUserID uint = 5
+
+	if err != nil {
+		t.Fatalf("Expected to get user, got %v", err)
+	}
+
+	if gotUserID != wantUserID {
+		t.Fatalf("Expected to get %v for %v, but got %v.", wantUserID, username, gotUserID)
+	}
+}
+
+func TestInvalidGetUserID(t *testing.T) {
+	database = ConnectToDatabase()
+	username := "afadfadfadasfd"
+	gotUserID, err := getUserID(username)
+
+	if err == nil {
+		t.Fatalf("Expected to get an error, but got user ID %v", gotUserID)
+	}
+}
+
+// Test databaseGetCardsFromUser
+func TestValidGetCardsFromUser(t *testing.T) {
+	database = ConnectToDatabase()
+	username := "Anlaf"
+	gotCards, err := databaseGetCardsFromUser(username)
+
+	if err != nil {
+		t.Fatalf("Expected to get gift cards, but got %v", err)
+	}
+
+	if len(gotCards) == 0 {
+		t.Fatalf("Expected to get gift cards, but got empty slice")
+	}
+}
+
+func TestInvalidGetCardsFromUser(t *testing.T) {
+	database = ConnectToDatabase()
+	username := "adfafaafsfdasa"
+	gotCards, err := databaseGetCardsFromUser(username)
+
+	if err == nil {
+		t.Fatalf("Expected to get error, but got %v", gotCards)
+	}
+}
