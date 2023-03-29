@@ -15,7 +15,13 @@ The exact details of our functionalities for Sprint 3 is described below in the 
 # What We Accomplished
 
 ## Front End
-* describe here
+* Modified log-in system to use cookies to save user data after logging in
+* Changes cypress tests to reflect new user path due to cookie change
+* Creates a dashboard available to cookied users to display their information, cards, and allow them to add new cards
+* Stores user information based on cookies in front-end as members in .ts files
+* Reformats html element attributes to allow cypress testing
+* Adds cypress testing to check correctness of user information from cookie
+* Adds cypress testing to check correctness of cards for a user based on a cookie
 
 ## Back End
 * describe here
