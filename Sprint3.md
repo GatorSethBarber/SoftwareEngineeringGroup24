@@ -13,6 +13,7 @@ The exact details of our functionalities for Sprint 3 is described below in the 
 4. As a signed in user, I want to have a cookie to keep me signed in.
 
 # What We Accomplished
+What we accomplished is described below. As can be seen, we accomplished all the user stories except for the third one. However, this user story is more closely related, and can be more easily tested, with additional functionality in the next sprint.
 
 ## Front End
 * Modified log-in system to use cookies to save user data after logging in
