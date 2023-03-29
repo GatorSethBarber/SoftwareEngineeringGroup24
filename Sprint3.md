@@ -197,13 +197,6 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * Attempt to create with already taken gift card number: Should result in a 400 status code
     * POST with missing card number: Should result in a 400 status code
     * POST with valid new card: Should successfully create.
-  * Test get cards for user
-    * Get with invalid username (not logged in): Tests that 404 and body corresponding to empty list returned for request to get all cards associated with an invalid username when user is not logged in.
-    * Get with invalid username (logged in): Same as previous, but with user logged in
-    * Get with valid username (not logged in): Tests that the cards associated with username are gotten, but the actual card numbers are masked (by checking first card)
-    * Get with valid username (logged in): Tests that the cards associated with the username that the user is logged in as are gotten, with the actual card numbers not masked (by checking the first card)
-    * Get with valid username (logged in to different account): Same as *Get with valid username (not logged in)*, but with user logged in to a different account than that with the request's username.
-    * Get from user without any cards: Tests that getting the cards for a user that does not have any cards returns an empty list (an a 404 error)
 * spec.cy.js (from Sprint 2):
   * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
     * GET with correct username and password: Tests valid username and password combination has response status code of 200.
