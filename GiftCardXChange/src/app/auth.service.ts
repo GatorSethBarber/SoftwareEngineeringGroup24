@@ -99,7 +99,7 @@ export class AuthService {
     localStorage.removeItem('user');
     this.user$.next(null);
     return this.http
-      .get<any>(`http://localhost:8080/user/logout`, { headers });
+      .get<any>(`http://localhost:8080/user/logout`, { headers, withCredentials:true });
   }
 
 
