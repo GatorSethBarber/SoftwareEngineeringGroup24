@@ -124,6 +124,21 @@ export class AuthService {
       }
     );
   }
+
+  // add card 
+  addNewGiftCard(
+    userInfo: {companyName: string, userName: string, expirationDate: string,
+    amount: number, cardNumber: string } | any
+  ): Observable<any> {
+    let headers = this.makeRequestHeader();
+    return this.http.post<any>(
+      `http://localhost:8080/card/new/${userInfo.username}`,
+      {
+        withCredentials:true,
+      }
+    );
+  }
+
   
 
 }
