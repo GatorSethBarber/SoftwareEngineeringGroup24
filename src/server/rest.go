@@ -345,13 +345,10 @@ func requestCreateUser(writer http.ResponseWriter, request *http.Request) {
 
 	var hashErr error
 	user.Hash, hashErr = HashPassword(user.Password)
-	if hashErr != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
 
 	if hashErr != nil {
-		panic("Cannot hash password")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	if err := databaseCreateUser(&user); err != nil {
@@ -389,7 +386,7 @@ func requestLogout(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusOK)
 }
 
-// Cookies
+/************************************** Cookies **************************************/
 
 func authSessionForUser(request *http.Request, username string) bool {
 	session, err := store.Get(request, "session-gcex")
