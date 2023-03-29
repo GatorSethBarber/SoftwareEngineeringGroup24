@@ -74,7 +74,14 @@ export class AuthService {
   }
 
   
-
+  userCards(
+    userInfo: { username: string} | any
+  ): Observable<any> {
+    const headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/card/get/${userInfo.username}`
+    );
+  }
   
 
 }
