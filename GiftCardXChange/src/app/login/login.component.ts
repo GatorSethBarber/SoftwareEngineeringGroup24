@@ -42,8 +42,9 @@ export class LoginComponent {
     this.AuthService.login(this.loginForm.value).subscribe(
       (res) => {
         console.log(res);
-        alert('Yay!!! Welcome');
-        this.loginForm.reset();
+        // alert('Yay!!! Welcome');
+        // this.loginForm.reset();
+        localStorage.setItem('user',JSON.stringify(res))
         this.router.navigate(['dashboard']);
       },
       (err) => alert('hmmhmm something wrong')

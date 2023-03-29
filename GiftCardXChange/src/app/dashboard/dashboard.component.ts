@@ -5,19 +5,24 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { CARDS } from '../mock-cards';
-import { AuthService } from '../auth.service';
 
+
+import { Input } from '@angular/core';
+import { AuthService } from '../auth.service';
+import { User } from '../User';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class DashboardComponent {
+  user : User;
   myControl: FormControl = new FormControl();
 
   cards = CARDS;
+
 
   columnsToDisplay: string[] = ['cardNumber', 'amount', 'expirationDate'];
   dataSource = new MatTableDataSource(CARDS);
@@ -25,23 +30,27 @@ export class DashboardComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  constructor(private AuthService: AuthService,     private router: Router,   private route: ActivatedRoute)  {
+    AuthService.user$.subscribe(
+      (user) =>
+        (this.user = user ?? {
+          email: '',
+          firstname: '',
+          lastname: '',
+          passWord: '',
+          username: '',
+        })
+    );
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private AuthService: AuthService
-  ) {  }
+ 
 
-  options = [
-    'Starbuck',
-    'BestBuy',
-    'Target',
-    'Kohls'
-  ];
+  options = ['Starbuck', 'BestBuy', 'Target', 'Kohls'];
 
   ngOnInit() {
     this.AuthService.userCards({username: "Anlaf"}).subscribe(
@@ -56,6 +65,4 @@ export class DashboardComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
-
-
 }
