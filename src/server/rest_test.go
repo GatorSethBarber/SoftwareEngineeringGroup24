@@ -3,8 +3,6 @@ package main
 import (
 	"testing"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Test checkCardNumberAndAmount

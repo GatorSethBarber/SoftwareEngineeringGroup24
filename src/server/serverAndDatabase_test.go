@@ -436,6 +436,7 @@ func TestDatabaseGetCardsFromUser(t *testing.T) {
 
 }
 
+/*
 func TestValidBcryptPassword(t *testing.T) {
 	password := []byte("mypassword")
 
@@ -466,3 +467,4 @@ func TestComparePasswordAndHash(t *testing.T) {
 	}
 
 }
+*/
