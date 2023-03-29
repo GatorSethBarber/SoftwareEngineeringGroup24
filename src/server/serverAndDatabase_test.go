@@ -369,31 +369,38 @@ func TestInvalidGetCardsFromUser(t *testing.T) {
 }
 
 func TestValidBcryptPassword(t *testing.T) {
-	password := []byte("mypassword")
+	password := "mypassword"
 
 	// hp = hashed password
-	hp, err := bcrypt.GenerateFromPassword(password)
-	bytes.require.NoError(t, err)
-	require.NotEmpty(t, hp)
+	hp, err := HashPassword(password)
+	if err != nil {
+		t.Fatalf("Unexpected error %v", err)
+	}
 
 	err = CheckPassword(string(password), string(hp))
-	require.NoError(t, err)
+	if err != nil {
+		t.Fatalf("Was expecting no error, but got %v", err)
+	}
 }
 
 func TestInvalidBcryptPassword(t *testing.T) {
 	notPass := "notthepass"
-	err = bcrypt.CompareHashAndPassword(hp, []byte(notPass))
+	otherEncrypt, errTwo := HashPassword("password1")
+	if errTwo != nil {
+		t.Fatalf("Unexpected error %v", otherEncrypt)
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(otherEncrypt), []byte(notPass))
 	if err != bcrypt.ErrMismatchedHashAndPassword {
-		t.Errorf("%v and %s should be mismatched", hp, notPass)
+		t.Errorf("%v and %s should be mismatched", otherEncrypt, notPass)
 	}
 }
 
 func TestComparePasswordAndHash(t *testing.T) {
-	pass := []byte("allmine")
-	expectedHash := []byte("$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga")
+	pass := "allmine"
+	expectedHash := "$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga"
 
-	_, err := CheckPassword(pass, expectedHash)
-	if err != CheckPassword {
+	err := CheckPassword(pass, expectedHash)
+	if err != nil {
 		t.Errorf("unexpected error: got %q, want %q", err, CheckPassword)
 	}
 
