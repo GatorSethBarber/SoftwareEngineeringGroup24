@@ -66,18 +66,6 @@ export class AuthService {
     }));
   }
 
-  setCookie(
-    userInfor: { userName: string; passWord: string } | any
-  ): Observable<any> {
-    const headers = this.makeRequestHeader();
-    return this.http.get<any>(
-      `http://localhost:8080/user/login/${userInfor.userName}/${userInfor.passWord}`,
-      {
-        headers: headers,
-        withCredentials: true
-      }
-    )
-  }
 
   setCookie(
     userInfor: { userName: string; passWord: string } | any
