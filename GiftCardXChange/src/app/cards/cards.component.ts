@@ -23,7 +23,7 @@ export class CardsComponent {
 
   chosenBrand: import("../brand").Brand;
 
-  columnsToDisplay: string[] = ['userID', 'amount', 'expiryDate'];
+  columnsToDisplay: string[] = ['username', 'amount', 'expirationDate'];
   dataSource = new MatTableDataSource(CARDS);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
