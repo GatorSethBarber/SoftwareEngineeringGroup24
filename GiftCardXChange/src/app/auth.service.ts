@@ -73,13 +73,21 @@ export class AuthService {
     );
   }
 
-  
+  // https://github.com/angular/angular/issues/31373
   userCards(
     userInfo: { username: string} | any
   ): Observable<any> {
-    const headers = this.makeRequestHeader();
+    let headers = this.makeRequestHeader();
+    let theCookie = document.cookie
+    console.log(theCookie)
+    console.log(headers)
+    headers = headers.append("cookie", theCookie)
     return this.http.get<any>(
-      `http://localhost:8080/card/get/${userInfo.username}`
+      `http://localhost:8080/card/get/${userInfo.username}`,
+      {
+        headers: headers,
+        withCredentials:true,
+      }
     );
   }
   
