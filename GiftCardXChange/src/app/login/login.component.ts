@@ -34,12 +34,19 @@ export class LoginComponent {
 
     console.log(this.loginForm.value)
 
+    this.AuthService.setCookie(this.loginForm.value).subscribe(
+      (res) => {
+        console.log(res)
+      }
+    )
+
     this.AuthService.login(this.loginForm.value).subscribe(
       (res) => {
         console.log(res);
-        alert('Yay!!! Welcome');
-        this.loginForm.reset();
-        this.router.navigate(['brand']);
+        // alert('Yay!!! Welcome');
+        // this.loginForm.reset();
+        localStorage.setItem('user',JSON.stringify(res))
+        this.router.navigate(['dashboard']);
       },
       (err) => alert('hmmhmm something wrong')
     );
