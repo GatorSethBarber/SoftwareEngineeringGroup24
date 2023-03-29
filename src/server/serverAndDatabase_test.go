@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // test databaseCreateUser
@@ -364,4 +366,35 @@ func TestInvalidGetCardsFromUser(t *testing.T) {
 	if err == nil {
 		t.Fatalf("Expected to get error, but got %v", gotCards)
 	}
+}
+
+func TestValidBcryptPassword(t *testing.T) {
+	password := []byte("mypassword")
+
+	// hp = hashed password
+	hp, err := bcrypt.GenerateFromPassword(password)
+	bytes.require.NoError(t, err)
+	require.NotEmpty(t, hp)
+
+	err = CheckPassword(string(password), string(hp))
+	require.NoError(t, err)
+}
+
+func TestInvalidBcryptPassword(t *testing.T) {
+	notPass := "notthepass"
+	err = bcrypt.CompareHashAndPassword(hp, []byte(notPass))
+	if err != bcrypt.ErrMismatchedHashAndPassword {
+		t.Errorf("%v and %s should be mismatched", hp, notPass)
+	}
+}
+
+func TestComparePasswordAndHash(t *testing.T) {
+	pass := []byte("allmine")
+	expectedHash := []byte("$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga")
+
+	_, err := CheckPassword(pass, expectedHash)
+	if err != CheckPassword {
+		t.Errorf("unexpected error: got %q, want %q", err, CheckPassword)
+	}
+
 }
