@@ -121,6 +121,7 @@ The testing of all functionality outside of router paths is done in Go. There ar
 * rest_test.go: This tests the functions associated with the processing of information.
   * From Sprint 3:
     * No additional tests in *rest_test.go*
+    * Snow: Add the tests you added here
 
   * From Sprint 2:
     * TestValidCardInput: Test checkCardNumberAndAmount with valid input. Function should return true.
@@ -139,6 +140,10 @@ The testing of all functionality outside of router paths is done in Go. There ar
     * TestInvaldGetUserExistsPassword: Tests that a user does not exist for a given invalid username and password combination.
     * TestValidNewGetUserInformation: Tests that getting user information by username with a valid username gets the correct user from the database.
     * TestInvalidNewGetUserInformation: Tests that getting user information by username with a non-existent username causes an error to be thrown by the database.
+    * TestValidGetUserID: Tests that calling getUserID with a valid username gets the correct user ID (used in database)
+    * TestInvalidGetUserID: Tests that calling getUserID with an invalid username returns an error
+    * TestValidGetCardsFromUser: Tests that calling databaseGetCardsFromUser returns a non-empty slice of cards when called with a valid username of a user who has gift cards
+    * TestInvalidGetCardsFromUser: Tests that calling databaseGetCardsFromUser returns an error when called with an invalid username.
   * From Sprint 2: 
     * TestCreateWithAlreadyTakenEmail: Test that emails cannot be duplicated
     * TestCreateWithAlreadyTakenUsername: Test that usernames cannot be duplicated
@@ -176,6 +181,12 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * Attempt to create with already taken gift card number: Should result in a 400 status code
     * POST with missing card number: Should result in a 400 status code
     * POST with valid new card: Should successfully create.
+  * Test get cards for user
+    * Get with invalid username (not logged in): Tests that 404 and body corresponding to empty slice returned for request to get all cards associated with an invalid username when user is not logged in.
+    * Get with invalid username (logged in): Same as previous, but with user logged in
+    * Get with valid username (not logged in): Tests that the cards associated with username are gotten, but the actual card numbers are masked (by checking first card)
+    * Get with valid username (logged in): Tests that the cards associated with the username that the user is logged in as are gotten, with the actual card numbers not masked (by checking the first card)
+    * Get with valid username (logged in to different account): Same as *Get with valid username (not logged in)*, but with user logged in to a different account than that with the request's username.
 * spec.cy.js (from Sprint 2):
   * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
     * GET with correct username and password: Tests valid username and password combination has response status code of 200.

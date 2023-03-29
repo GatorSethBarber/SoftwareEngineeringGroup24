@@ -66,12 +66,41 @@ export class AuthService {
     }));
   }
 
+  setCookie(
+    userInfor: { userName: string; passWord: string } | any
+  ): Observable<any> {
+    const headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/user/login/${userInfor.userName}/${userInfor.passWord}`,
+      {
+        headers: headers,
+        withCredentials: true
+      }
+    )
+  }
+
+  setCookie(
+    userInfor: { userName: string; passWord: string } | any
+  ): Observable<any> {
+    const headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/user/login/${userInfor.userName}/${userInfor.passWord}`,
+      {
+        headers: headers,
+        withCredentials: true
+      }
+    )
+  }
+
   //get username and profile
   getUserName(userInfor: { userName: string } | any): Observable<any> {
     const headers = this.makeRequestHeader();
     return this.http.get<any>(
-      `http://localhost:8080/user/get/${userInfor.userName}`,
-      { headers }
+      `http://localhost:8080/user/logout`,
+      { 
+        headers,
+        withCredentials: true
+      }
     );
   }
 
@@ -94,4 +123,19 @@ export class AuthService {
       },
     });
   }
+
+  // https://github.com/angular/angular/issues/31373
+  userCards(
+    userInfo: { username: string} | any
+  ): Observable<any> {
+    let headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/card/get/${userInfo.username}`,
+      {
+        withCredentials:true,
+      }
+    );
+  }
+  
+
 }

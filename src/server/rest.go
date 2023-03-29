@@ -433,17 +433,22 @@ func authSessionForUser(request *http.Request, username string) bool {
 		panic("Encountered an error decoding session info")
 	}
 
+	fmt.Println(request.Cookies())
+
 	gotName, usernameExists := session.Values["username"]
 	gotHash, hashExists := session.Values["hash"]
 	if !usernameExists || !hashExists {
+		fmt.Println("Not signed in: missing/invalid")
 		return false // Not signed in because invalid cookie
 	}
 
 	if gotName != username {
+		fmt.Println("Signed in to different account")
 		return false // Not authenticated to access this account
 	}
 
 	fmt.Printf("%v: %v\n", gotName, gotHash)
+	fmt.Println("Successfully authenticated!")
 
 	// Now, can check the username password combination
 	return true
@@ -466,7 +471,7 @@ func makeSession(writer http.ResponseWriter, request *http.Request, username str
 
 	session.Values["username"] = username
 	session.Values["hash"] = hash
-	session.Options.SameSite = http.SameSiteStrictMode
+	session.Options.SameSite = http.SameSiteLaxMode
 
 	// Save it before we write to the response/return from the handler.
 	err = session.Save(request, writer)

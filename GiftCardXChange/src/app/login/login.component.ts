@@ -32,8 +32,13 @@ export class LoginComponent {
 
   onSubmit() {
     console.log(this.loginForm.value);
-    
-    
+
+    this.AuthService.setCookie(this.loginForm.value).subscribe(
+      (res) => {
+        console.log(res)
+      }
+    )
+
     this.AuthService.login(this.loginForm.value).subscribe(
       (res) => {
         console.log(res);

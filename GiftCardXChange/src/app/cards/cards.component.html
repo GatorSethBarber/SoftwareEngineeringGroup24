@@ -21,13 +21,13 @@
                 </ng-container>
 
                 <!-- Expiration date column -->
-                <ng-container matColumnDef="expiryDate">
+                <ng-container matColumnDef="expirationDate">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
                     <td mat-cell *matCellDef="let card">{{card.expirationDate}}</td>
                 </ng-container>
 
                 <!-- UserID column -->
-                <ng-container matColumnDef="userID">
+                <ng-container matColumnDef="username">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
                     <td [attr.data-cy]="card.username" mat-cell *matCellDef="let card">{{card.username}}</td>
                 </ng-container>
