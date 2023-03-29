@@ -370,39 +370,44 @@ func TestDatabaseGetCardsFromUser(t *testing.T) {
 	database = ConnectToDatabase()
 	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
 
-	userID := 1
+	// userID := 5
+
+	// gettingUserID, err := getUserID(username)
+	// var wantUserID uint = 5
+
+	// Get all the cards from the user based on the userID stored in the database
+	// func databaseGetCardsFromUser(username string) ([]GiftCard, error)
+
+	// if err != nil {
+	// 	t.Fatalf("Expected to get user, got %v", err)
+	// }
+
+	username := "Anlaf"
+
 	gotGiftCards, err := databaseGetCardsFromUser(username)
 
 	wantGiftCards := []GiftCard{
 		{
-			UserID:      1,
-			CompanyName: "BestBuy",
-			CardNumber:  "123456789",
-			Amount:      50.0,
-			Expiration:  useDate,
-		},
-
-		{
-			UserID:      1,
-			CompanyName: "Target",
-			CardNumber:  "223456789",
-			Amount:      50.0,
-			Expiration:  useDate,
-		},
-
-		{
-			UserID:      1,
+			UserID:      5,
 			CompanyName: "Starbucks",
-			CardNumber:  "323456789",
-			Amount:      50.0,
+			CardNumber:  "133456789",
+			Amount:      100.0,
 			Expiration:  useDate,
 		},
 
 		{
-			UserID:      1,
+			UserID:      5,
+			CompanyName: "Starbucks",
+			CardNumber:  "143456789",
+			Amount:      70.0,
+			Expiration:  useDate,
+		},
+
+		{
+			UserID:      5,
 			CompanyName: "Kohls",
-			CardNumber:  "423456789",
-			Amount:      75.0,
+			CardNumber:  "153456789",
+			Amount:      135.0,
 			Expiration:  useDate,
 		},
 	}
@@ -415,17 +420,49 @@ func TestDatabaseGetCardsFromUser(t *testing.T) {
 		t.Fatalf("Expected to get %v gift cards, but got %v.", len(wantGiftCards), len(gotGiftCards))
 	}
 
+	// set each wanted gift cards to the actual cards in card slice
 	for index, _ := range gotGiftCards {
 		wantGiftCards[index].ID = gotGiftCards[index].ID
 		wantGiftCards[index].CreatedAt = gotGiftCards[index].CreatedAt
 		wantGiftCards[index].UpdatedAt = gotGiftCards[index].UpdatedAt
-		wantGiftCards[index].DeletedAt = gotGiftCards[index].DeletedAt
 	}
 
+	// if it does not match the gift cards in the database, return an error
 	for index, _ := range gotGiftCards {
 		if wantGiftCards[index] != gotGiftCards[index] {
 			t.Fatalf("Wanted %v, but got %v instead.", wantGiftCards[index], gotGiftCards[index])
 		}
+	}
+
+}
+
+func TestValidBcryptPassword(t *testing.T) {
+	password := []byte("mypassword")
+
+	// hp = hashed password
+	hp, err := bcrypt.GenerateFromPassword(password)
+	bytes.require.NoError(t, err)
+	require.NotEmpty(t, hp)
+
+	err = CheckPassword(string(password), string(hp))
+	require.NoError(t, err)
+}
+
+func TestInvalidBcryptPassword(t *testing.T) {
+	notPass := "notthepass"
+	err = bcrypt.CompareHashAndPassword(hp, []byte(notPass))
+	if err != bcrypt.ErrMismatchedHashAndPassword {
+		t.Errorf("%v and %s should be mismatched", hp, notPass)
+	}
+}
+
+func TestComparePasswordAndHash(t *testing.T) {
+	pass := []byte("allmine")
+	expectedHash := []byte("$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga")
+
+	_, err := CheckPassword(pass, expectedHash)
+	if err != CheckPassword {
+		t.Errorf("unexpected error: got %q, want %q", err, CheckPassword)
 	}
 
 }
