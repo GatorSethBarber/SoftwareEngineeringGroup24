@@ -280,41 +280,6 @@ func requestGetCard(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func requestAllCardsForUser(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-	username := mux.Vars(request)["username"]
-
-	cards, getErr := databaseGetCardsFromUser(username)
-	if getErr != nil {
-		writer.WriteHeader(http.StatusNotFound)
-		writer.Write([]byte("[]"))
-		return
-	}
-
-	keepCardNumber := authSessionForUser(request, username)
-	var frontCards []jsonCard
-
-	for index, _ := range cards {
-		card, err := cardBackToFront(&cards[index], keepCardNumber)
-		if err != nil {
-			log.Panicf("Could not convert card %v", cards[index])
-		}
-		frontCards = append(frontCards, card)
-	}
-
-	if len(frontCards) < 1 {
-		writer.WriteHeader(http.StatusNotFound)
-		writer.Write([]byte("[]"))
-	} else {
-		// Encode frontEndCard
-		writer.WriteHeader(http.StatusOK)
-		encodeErr := json.NewEncoder(writer).Encode(&frontCards)
-		if encodeErr != nil {
-			log.Fatalln("There was an error encoding the struct for cards.")
-		}
-	}
-}
-
 func requestGetUserInfo(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
 

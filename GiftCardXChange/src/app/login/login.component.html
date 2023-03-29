@@ -5,7 +5,7 @@
         <h3><b>Login to your account</b></h3>
       </div>
     </div>
-    <form [formGroup]="loginForm" id="ff" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" id="ff"(ngSubmit)="onSubmit()">
       <input
         required
         formControlName="userName"
@@ -19,7 +19,7 @@
       <input
         required
         formControlName="passWord"
-        type="password"
+        type="text"
         id="passWord"
         placeholder="Password"
         formControlName="passWord"
@@ -29,10 +29,7 @@
       <button type="submit" data-cy="login-button">Log In</button>
       <p class="message">
         Not a member?
-        <a
-          routerLink="/register"
-          style="text-decoration: underline"
-          data-cy="register-link"
+        <a routerLink="/register" style="text-decoration: underline" data-cy="register-link"
           >Sign up now</a
         >
       </p>
