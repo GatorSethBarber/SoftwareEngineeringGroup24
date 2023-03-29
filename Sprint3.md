@@ -115,8 +115,23 @@ Status codes:
 * Unit Tests
   * Angular component tests to check that each component displays and builds correctly
   * Basic testing to check that brands page gets correct number of brands
-* Cypress Tests
-  * End-to-end test that goes over basic process of registering to check inputs are recorded correctly and navigation works
+### Cypress Tests
+Tests to verify that front-end and back-end successfuly share data with hard-coded values
+Everything done in endToEnd.cy.js
+* Log-In Test for register and log-in components
+  * registers new user: Registers a new user with randomly-generated data. Checks if registration of new user is successful .
+  * logs-in to an existing user: Logs-in to a test user 'Anlaf.' Checks if log-in of existing user is successful.
+  * attempts full register to log-in path: Generates random user, registers, then logs-in with same information. Checks if registering and logging in a new user is sucessful.
+  * doesn't register new user: Negative test to see if invalid user info doesn't register. Checks if register process only succeeds on info that doesn't already exist.
+  * doesn't log-in to an existing user: Negative test to see if incorrect password results in failed log-in. Checks if log-in process only succeeds on correct, existing data.
+* View brands test for checking that all brands are displayed correctly in the home page
+  * display all brands: Test for all current brands. Checks if all the ones that are supposed to exist get displayed.
+* View cards test for checking that all the correct cards get displayed for a brand in the home page.
+  *  displays correct card brand: Test for right name for chosen brand in home page. Checks if containers share brand info correctly.
+  *  displays all starbucks cards: Test for correct cards in starting database. Checks if frontend succesfully retrieves card information for a specific brand.
+* Dashboard tests for verifying that the information of the dashboard matches the currently logged-in user
+  *  displays correct user info: Test for right info on dashboard after logging in. Checks if data from log-in matches that of dashboard from cookied back-end.
+  *  displays all cards for user: Test for base list of cards for a test user. Checks if query to back-end based on cookie gets correct data.
 
 
 ## Back End
@@ -182,6 +197,13 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * Attempt to create with already taken gift card number: Should result in a 400 status code
     * POST with missing card number: Should result in a 400 status code
     * POST with valid new card: Should successfully create.
+  * Test get cards for user
+    * Get with invalid username (not logged in): Tests that 404 and body corresponding to empty list returned for request to get all cards associated with an invalid username when user is not logged in.
+    * Get with invalid username (logged in): Same as previous, but with user logged in
+    * Get with valid username (not logged in): Tests that the cards associated with username are gotten, but the actual card numbers are masked (by checking first card)
+    * Get with valid username (logged in): Tests that the cards associated with the username that the user is logged in as are gotten, with the actual card numbers not masked (by checking the first card)
+    * Get with valid username (logged in to different account): Same as *Get with valid username (not logged in)*, but with user logged in to a different account than that with the request's username.
+    * Get from user without any cards: Tests that getting the cards for a user that does not have any cards returns an empty list (an a 404 error)
 * spec.cy.js (from Sprint 2):
   * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
     * GET with correct username and password: Tests valid username and password combination has response status code of 200.
