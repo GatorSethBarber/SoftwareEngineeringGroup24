@@ -219,7 +219,7 @@ func TestInvalidDuplicateCardNumber(t *testing.T) {
 	}
 }
 
-func TestValidCrateCard(t *testing.T) {
+func TestValidCreateCard(t *testing.T) {
 	database = ConnectToDatabase()
 	newCard := GiftCard{
 		UserID:      1,
@@ -311,5 +311,68 @@ func TestInvalidNewGetUserInformation(t *testing.T) {
 
 	if err == nil {
 		t.Fatalf("Expected to get an error, got %v", gotUser)
+	}
+}
+
+func TestDatabaseGetCardsFromUser(t *testing.T) {
+	database = ConnectToDatabase()
+	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
+
+	userID := 1
+	gotGiftCards, err := databaseGetCardsFromUser(username)
+
+	wantGiftCards := []GiftCard{
+		{
+			UserID:      1,
+			CompanyName: "BestBuy",
+			CardNumber:  "123456789",
+			Amount:      50.0,
+			Expiration:  useDate,
+		},
+
+		{
+			UserID:      1,
+			CompanyName: "Target",
+			CardNumber:  "223456789",
+			Amount:      50.0,
+			Expiration:  useDate,
+		},
+
+		{
+			UserID:      1,
+			CompanyName: "Starbucks",
+			CardNumber:  "323456789",
+			Amount:      50.0,
+			Expiration:  useDate,
+		},
+
+		{
+			UserID:      1,
+			CompanyName: "Kohls",
+			CardNumber:  "423456789",
+			Amount:      75.0,
+			Expiration:  useDate,
+		},
+	}
+
+	if err != nil {
+		t.Fatalf("Wanted to get the gift cards, but got an error: %v", err)
+	}
+
+	if len(gotGiftCards) != len(wantGiftCards) {
+		t.Fatalf("Expected to get %v gift cards, but got %v.", len(wantGiftCards), len(gotGiftCards))
+	}
+
+	for index, _ := range gotGiftCards {
+		wantGiftCards[index].ID = gotGiftCards[index].ID
+		wantGiftCards[index].CreatedAt = gotGiftCards[index].CreatedAt
+		wantGiftCards[index].UpdatedAt = gotGiftCards[index].UpdatedAt
+		wantGiftCards[index].DeletedAt = gotGiftCards[index].DeletedAt
+	}
+
+	for index, _ := range gotGiftCards {
+		if wantGiftCards[index] != gotGiftCards[index] {
+			t.Fatalf("Wanted %v, but got %v instead.", wantGiftCards[index], gotGiftCards[index])
+		}
 	}
 }
