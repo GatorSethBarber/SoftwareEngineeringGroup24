@@ -1,23 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { map } from 'rxjs';
+import { User } from './User';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   // headers = new HttpHeaders().set('content-type', 'application/json').set('Access-Control-Allow-Origin', '*');
+  user$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    try {
+      this.user$.next(JSON.parse(localStorage.getItem('user') ?? 'null'));
+    } catch {}
+  }
 
   getToken() {
     // Todo replace with logic to get token
     return '';
-  
   }
-
- 
 
   makeRequestHeader(authorize: boolean = false) {
     const header = new HttpHeaders()
@@ -30,8 +34,8 @@ export class AuthService {
     return header;
   }
 
-  
 
+//register  
   register(
     userInfor: { userName: string; passWord: string } | any
   ): Observable<any> {
@@ -41,40 +45,53 @@ export class AuthService {
     });
   }
 
+
+
+  
+//login
   login(
     userInfor: { userName: string; passWord: string } | any
   ): Observable<any> {
     const headers = this.makeRequestHeader();
+    return this.http
+      .get<User>(
+        `http://localhost:8080/user/get/${userInfor.userName}/${userInfor.passWord}`,
+        { headers }
+      ).pipe(map(r => {
+        if(r){
+          localStorage.setItem('currentuser', JSON.stringify(r));
+          this.user$.next(r);
+      }
+      return r
+    }));
+  }
+
+  //get username and profile
+  getUserName(userInfor: { userName: string } | any): Observable<any> {
+    const headers = this.makeRequestHeader();
     return this.http.get<any>(
-      `http://localhost:8080/user/get/${userInfor.userName}/${userInfor.passWord}`,
+      `http://localhost:8080/user/get/${userInfor.userName}`,
       { headers }
     );
   }
 
+  
+//user logout
   userlogOut(): Observable<any> {
     const headers = this.makeRequestHeader();
-    return this.http.get<any>(
-      `http://localhost:8080/user/logout`,
-      { headers }
-    );
+    localStorage.removeItem('user');
+    this.user$.next(null);
+    return this.http
+      .get<any>(`http://localhost:8080/user/logout`, { headers });
   }
 
 
-
-  brandCards(
-    cardInfo: { companyName: string} | any
-  ): Observable<any> {
+  brandCards(cardInfo: { companyName: string } | any): Observable<any> {
     const headers = this.makeRequestHeader();
-    return this.http.get<any>(
-      `http://localhost:8080/card/get`,
-      { params: {
+    return this.http.get<any>(`http://localhost:8080/card/get`, {
+      params: {
         companyName: cardInfo.CompanyName,
-      },}
-    );
+      },
+    });
   }
-
-  
-
-  
-
 }
