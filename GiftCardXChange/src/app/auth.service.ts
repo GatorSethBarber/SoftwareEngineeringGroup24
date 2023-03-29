@@ -44,18 +44,34 @@ export class AuthService {
   login(
     userInfor: { userName: string; passWord: string } | any
   ): Observable<any> {
-    const headers = this.makeRequestHeader();
+    const headers = this.makeRequestHeader();    
     return this.http.get<any>(
       `http://localhost:8080/user/get/${userInfor.userName}/${userInfor.passWord}`,
       { headers }
     );
   }
 
+  setCookie(
+    userInfor: { userName: string; passWord: string } | any
+  ): Observable<any> {
+    const headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/user/login/${userInfor.userName}/${userInfor.passWord}`,
+      {
+        headers: headers,
+        withCredentials: true
+      }
+    )
+  }
+
   userlogOut(): Observable<any> {
     const headers = this.makeRequestHeader();
     return this.http.get<any>(
       `http://localhost:8080/user/logout`,
-      { headers }
+      { 
+        headers,
+        withCredentials: true
+      }
     );
   }
 
@@ -78,14 +94,9 @@ export class AuthService {
     userInfo: { username: string} | any
   ): Observable<any> {
     let headers = this.makeRequestHeader();
-    let theCookie = document.cookie
-    console.log(theCookie)
-    console.log(headers)
-    headers = headers.append("cookie", theCookie)
     return this.http.get<any>(
       `http://localhost:8080/card/get/${userInfo.username}`,
       {
-        headers: headers,
         withCredentials:true,
       }
     );
