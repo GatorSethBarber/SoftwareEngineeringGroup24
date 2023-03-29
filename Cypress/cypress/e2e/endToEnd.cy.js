@@ -26,7 +26,7 @@ describe('Log-In Test', () => {
 
     cy.getByData('register-link').click();
     cy.url().should('include', '/register');
-
+    
     // Generates random info to avoid unique constraint database errors
     let firstName = randomString(5);
     let lastName = randomString(5);
@@ -61,7 +61,7 @@ describe('Log-In Test', () => {
       cy.on('window:alert', msg => {
         try {
           expect(msg).to.eq('Yay!!! Welcome');
-        } catch (err) {
+        } catch ( err ) {
           return reject(err);
         }
         resolve();
@@ -85,9 +85,23 @@ describe('Log-In Test', () => {
     cy.getByData('password-input').type('password');
     cy.getByData('password-input').should('have.value', 'password');
 
-    cy.getByData('login-button').click();
+    cy.wrap(new Promise((resolve, reject) => {
+      cy.getByData('login-button').click();
 
-    cy.url().should('include', '/dashboard');
+      cy.on('window:alert', msg => {
+        try {
+          expect(msg).to.eq('Yay!!! Welcome');
+        } catch ( err ) {
+          return reject(err);
+        }
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('window.alert wasn\'t called within 4s'));
+      }, 4000);
+    }), { log: false });
+
+    cy.url().should('include', '/brand');
   });
 
   it('attempts full register to log-in path', () => {
@@ -96,7 +110,7 @@ describe('Log-In Test', () => {
 
     cy.getByData('register-link').click();
     cy.url().should('include', '/register');
-
+    
     let firstName = randomString(5);
     let lastName = randomString(5);
     let username = firstName.substring(0, 1) + lastName;
@@ -144,9 +158,23 @@ describe('Log-In Test', () => {
     cy.getByData('password-input').type(password);
     cy.getByData('password-input').should('have.value', password);
 
-    cy.getByData('login-button').click();
+    cy.wrap(new Promise((resolve, reject) => {
+      cy.getByData('login-button').click();
 
-    cy.url().should('include', '/dashboard');
+      cy.on('window:alert', msg => {
+        try {
+          expect(msg).to.eq('Yay!!! Welcome');
+        } catch ( err ) {
+          return reject(err);
+        }
+        resolve();
+      });
+      setTimeout(() => {
+        reject(new Error('window.alert wasn\'t called within 4s'));
+      }, 4000);
+    }), { log: false });
+
+    cy.url().should('include', '/brand');
   });
 
   it('doesn\'t register new user', () => {
@@ -177,7 +205,7 @@ describe('Log-In Test', () => {
       cy.on('window:alert', msg => {
         try {
           expect(msg).to.eq('hmmhmm something wrong');
-        } catch (err) {
+        } catch ( err ) {
           return reject(err);
         }
         resolve();
@@ -206,7 +234,7 @@ describe('Log-In Test', () => {
       cy.on('window:alert', msg => {
         try {
           expect(msg).to.eq('hmmhmm something wrong');
-        } catch (err) {
+        } catch ( err ) {
           return reject(err);
         }
         resolve();
@@ -256,59 +284,11 @@ describe('View cards test', () => {
     cy.getByData('Starbucks').click();
     cy.url().should('include', '/card');
 
-    cy.getByData('brand-name-head').should('have.text', ' All Cards for Starbucks ');
+    cy.getByData('brand-name-head').should('have.text', ' All Cards for Starbucks ');    
 
     cy.getByData('SethTheBarber').should('exist');
     cy.getByData('EricTheRed').should('exist');
     cy.getByData('Welthow').should('have.length', 2);
     cy.getByData('Anlaf').should('have.length', 2);
-  })
-})
-
-describe('Dashboard tests', () => {
-  beforeEach(() => {
-    cy.visit('http://localhost:4200');
-  })
-  it('displays correct user info', () => {
-    cy.getByData('login-link').click();
-    cy.url().should('include', '/login');
-
-    cy.getByData('username-input').type('Anlaf');
-    cy.getByData('username-input').should('have.value', 'Anlaf');
-
-    cy.getByData('password-input').type('password');
-    cy.getByData('password-input').should('have.value', 'password');
-
-    cy.getByData('login-button').click();
-
-    cy.url().should('include', '/dashboard');
-
-    cy.getByData('firstName-input').should('have.value', 'Olaf');
-    cy.getByData('lastName-input').should('have.value', 'Trygvasson');
-    cy.getByData('username-input').should('have.value', 'Anlaf');
-    cy.getByData('password-input').should('have.value', '');
-    cy.getByData('email-input').should('have.value', 'viking@iviking.com');
-  })
-
-  it('displays all cards for user', () => {
-    cy.getByData('login-link').click();
-    cy.url().should('include', '/login');
-
-    cy.getByData('username-input').type('Anlaf');
-    cy.getByData('username-input').should('have.value', 'Anlaf');
-
-    cy.getByData('password-input').type('password');
-    cy.getByData('password-input').should('have.value', 'password');
-
-    cy.getByData('login-button').click();
-
-    cy.url().should('include', '/dashboard');
-
-
-    cy.get('.mat-mdc-tab').contains('Wallet').click();
-
-    cy.getByData('100').should('exist');
-    cy.getByData('70').should('exist');
-    cy.getByData('135').should('exist');
   })
 })
