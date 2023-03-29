@@ -15,7 +15,13 @@ The exact details of our functionalities for Sprint 3 is described below in the 
 # What We Accomplished
 
 ## Front End
-* describe here
+* Modified log-in system to use cookies to save user data after logging in
+* Changes cypress tests to reflect new user path due to cookie change
+* Creates a dashboard available to cookied users to display their information, cards, and allow them to add new cards
+* Stores user information based on cookies in front-end as members in .ts files
+* Reformats html element attributes to allow cypress testing
+* Adds cypress testing to check correctness of user information from cookie
+* Adds cypress testing to check correctness of cards for a user based on a cookie
 
 ## Back End
 * describe here
@@ -109,8 +115,23 @@ Status codes:
 * Unit Tests
   * Angular component tests to check that each component displays and builds correctly
   * Basic testing to check that brands page gets correct number of brands
-* Cypress Tests
-  * End-to-end test that goes over basic process of registering to check inputs are recorded correctly and navigation works
+### Cypress Tests
+Tests to verify that front-end and back-end successfuly share data with hard-coded values
+Everything done in endToEnd.cy.js
+* Log-In Test for register and log-in components
+  * registers new user: Registers a new user with randomly-generated data. Checks if registration of new user is successful .
+  * logs-in to an existing user: Logs-in to a test user 'Anlaf.' Checks if log-in of existing user is successful.
+  * attempts full register to log-in path: Generates random user, registers, then logs-in with same information. Checks if registering and logging in a new user is sucessful.
+  * doesn't register new user: Negative test to see if invalid user info doesn't register. Checks if register process only succeeds on info that doesn't already exist.
+  * doesn't log-in to an existing user: Negative test to see if incorrect password results in failed log-in. Checks if log-in process only succeeds on correct, existing data.
+* View brands test for checking that all brands are displayed correctly in the home page
+  * display all brands: Test for all current brands. Checks if all the ones that are supposed to exist get displayed.
+* View cards test for checking that all the correct cards get displayed for a brand in the home page.
+  *  displays correct card brand: Test for right name for chosen brand in home page. Checks if containers share brand info correctly.
+  *  displays all starbucks cards: Test for correct cards in starting database. Checks if frontend succesfully retrieves card information for a specific brand.
+* Dashboard tests for verifying that the information of the dashboard matches the currently logged-in user
+  *  displays correct user info: Test for right info on dashboard after logging in. Checks if data from log-in matches that of dashboard from cookied back-end.
+  *  displays all cards for user: Test for base list of cards for a test user. Checks if query to back-end based on cookie gets correct data.
 
 
 ## Back End
@@ -121,7 +142,6 @@ The testing of all functionality outside of router paths is done in Go. There ar
 * rest_test.go: This tests the functions associated with the processing of information.
   * From Sprint 3:
     * No additional tests in *rest_test.go*
-    * Snow: Add the tests you added here
 
   * From Sprint 2:
     * TestValidCardInput: Test checkCardNumberAndAmount with valid input. Function should return true.
@@ -140,10 +160,6 @@ The testing of all functionality outside of router paths is done in Go. There ar
     * TestInvaldGetUserExistsPassword: Tests that a user does not exist for a given invalid username and password combination.
     * TestValidNewGetUserInformation: Tests that getting user information by username with a valid username gets the correct user from the database.
     * TestInvalidNewGetUserInformation: Tests that getting user information by username with a non-existent username causes an error to be thrown by the database.
-    * TestValidGetUserID: Tests that calling getUserID with a valid username gets the correct user ID (used in database)
-    * TestInvalidGetUserID: Tests that calling getUserID with an invalid username returns an error
-    * TestValidGetCardsFromUser: Tests that calling databaseGetCardsFromUser returns a non-empty slice of cards when called with a valid username of a user who has gift cards
-    * TestInvalidGetCardsFromUser: Tests that calling databaseGetCardsFromUser returns an error when called with an invalid username.
   * From Sprint 2: 
     * TestCreateWithAlreadyTakenEmail: Test that emails cannot be duplicated
     * TestCreateWithAlreadyTakenUsername: Test that usernames cannot be duplicated
@@ -210,7 +226,6 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
 * describe here
 
 Below is the link to the video recording of our group demonstrating new features and tests of Gift Card Xchange for Sprint 3.
-
 
 
 
