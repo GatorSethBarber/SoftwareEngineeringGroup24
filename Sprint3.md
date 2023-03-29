@@ -22,6 +22,7 @@ The exact details of our functionalities for Sprint 3 is described below in the 
 * Reformats html element attributes to allow cypress testing
 * Adds cypress testing to check correctness of user information from cookie
 * Adds cypress testing to check correctness of cards for a user based on a cookie
+* Add AuthGuardService to protect the routes from unauthenticated user
 
 ## Back End
 * describe here
@@ -115,6 +116,10 @@ Status codes:
 * Unit Tests
   * Angular component tests to check that each component displays and builds correctly
   * Basic testing to check that brands page gets correct number of brands
+  * Basic testing to check that html element of each component 
+  * Test to check if the function is called in .ts
+  * Test to check if the register form and login form work
+  * Test to check if the method is called from AuthService
 ### Cypress Tests
 Tests to verify that front-end and back-end successfuly share data with hard-coded values
 Everything done in endToEnd.cy.js
