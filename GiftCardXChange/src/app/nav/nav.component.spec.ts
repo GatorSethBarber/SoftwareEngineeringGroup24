@@ -9,6 +9,7 @@ import { LoginComponent } from '../login/login.component';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 describe('NavComponent', () => {
   let component: NavComponent;
   let fixture: ComponentFixture<NavComponent>;
@@ -19,7 +20,7 @@ describe('NavComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ NavComponent, BrandComponent,LoginComponent ],
       imports:[FormsModule,
-      RouterTestingModule.withRoutes([]), RouterLink],
+      RouterTestingModule.withRoutes([]), RouterLink, HttpClientTestingModule],
     })
     .compileComponents();
 
