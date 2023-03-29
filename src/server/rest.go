@@ -286,10 +286,8 @@ func requestAllCardsForUser(writer http.ResponseWriter, request *http.Request) {
 	cards, getErr := databaseGetCardsFromUser(username)
 	if getErr != nil {
 		writer.WriteHeader(http.StatusNotFound)
-		encodeErr := json.NewEncoder(writer).Encode(&cards)
-		if encodeErr != nil {
-			log.Fatalln("There was an error encoding the struct for cards.")
-		}
+		writer.Write([]byte("[]"))
+		return
 	}
 
 	keepCardNumber := authSessionForUser(request, username)
@@ -305,14 +303,14 @@ func requestAllCardsForUser(writer http.ResponseWriter, request *http.Request) {
 
 	if len(frontCards) < 1 {
 		writer.WriteHeader(http.StatusNotFound)
+		writer.Write([]byte("[]"))
 	} else {
 		// Encode frontEndCard
 		writer.WriteHeader(http.StatusOK)
-	}
-
-	encodeErr := json.NewEncoder(writer).Encode(&frontCards)
-	if encodeErr != nil {
-		log.Fatalln("There was an error encoding the struct for cards.")
+		encodeErr := json.NewEncoder(writer).Encode(&frontCards)
+		if encodeErr != nil {
+			log.Fatalln("There was an error encoding the struct for cards.")
+		}
 	}
 }
 

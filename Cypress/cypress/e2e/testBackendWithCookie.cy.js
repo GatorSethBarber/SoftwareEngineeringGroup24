@@ -1,3 +1,4 @@
+// https://github.com/cypress-io/cypress/issues/8956
 const login = (username="Anlaf", password="password") => {
   cy.session(
     [username, password],
@@ -18,19 +19,19 @@ describe('BasicLoginAndLogout', () => {
       url: 'http://localhost:8080/user/login/Anlaf/password'
     }).then(response => {
       expect(response.status).to.equal(200)
-      cy.getCookie('session-gcex').should('exist')
+      cy.getCookie('session-gcex', {domain: "localhost"}).should('exist')
     })
   })
 
   it('Basic Logout', () => {
     login()
-    cy.getCookie('session-gcex').should('exist')
+    cy.getCookie('session-gcex', {domain: "localhost"}).should('exist')
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/user/logout'
     }).then(response => {
       expect(response.status).to.equal(200)
-      cy.getCookie('session-gcex').should('not.exist')
+      cy.getCookie('session-gcex', {domain: "localhost"}).should('not.exist')
       // expect(cy.getCookie('session-gcex')).to.equal(null)
       
     })
@@ -46,7 +47,7 @@ describe('Multiple Logins and Logouts', () => {
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(200)
-      cy.getCookie('session-gcex').should('not.exist')
+      cy.getCookie('session-gcex', {domain: "localhost"}).should('not.exist')
   })
   })
 
@@ -57,7 +58,7 @@ describe('Multiple Logins and Logouts', () => {
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
-      cy.getCookie('session-gcex').should('not.exist')
+      cy.getCookie('session-gcex', {domain: "localhost"}).should('not.exist')
     })
   })
 
@@ -69,7 +70,7 @@ describe('Multiple Logins and Logouts', () => {
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(200)
-      cy.getCookie('session-gcex').should('exist')
+      cy.getCookie('session-gcex', {domain: "localhost"}).should('exist')
     })
   })
 
@@ -81,7 +82,7 @@ describe('Multiple Logins and Logouts', () => {
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(200)
-      cy.getCookie('session-gcex').should('not.exist')
+      cy.getCookie('session-gcex', {domain: "localhost"}).should('not.exist')
     })
   })
 })
@@ -254,7 +255,7 @@ describe('Test get cards for user', () => {
     }).then(response => {
       expect(response.status).to.equal(404)
       console.log(response.body)
-      expect(response.body).to.equal("[]\nnull\n")
+      expect(response.body.length).to.equal(0)
     })
   })
 
@@ -266,7 +267,7 @@ describe('Test get cards for user', () => {
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(404)
-      expect(response.body).to.equal("[]\nnull\n")
+      expect(response.body.length).to.equal(0)
     })
   })
 
@@ -300,6 +301,17 @@ describe('Test get cards for user', () => {
     }).then(response => {
       expect(response.status).to.equal(200)
       expect(response.body[0]).to.have.property("cardNumber", "")
+    })
+  })
+
+  it('Get from user without any cards',() => {
+    cy.request({
+      method: 'GET',
+      url: 'http://localhost:8080/card/get/KingCanute',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(404)
+      expect(response.body.length).to.equal(0)
     })
   })
 })
