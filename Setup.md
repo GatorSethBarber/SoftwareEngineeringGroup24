@@ -4,7 +4,7 @@
 
 ### 1. Dowload Languages and Environments
 
-This project uses the go programming language, angular, and the Node Package Manager. Please see https://go.dev and https://nodejs.org for how to download these.
+This project uses the go programming language, angular, and the Node Package Manager. Please see https://go.dev and https://nodejs.org for how to download these. To run the Cypress tests (used for testing front-end functionality and some back-end functionality), Node version 16 must be used.
 
 ### 2. Get the Code
 The code can be installed from this github repo.
@@ -35,7 +35,13 @@ To start the back end, navigate in the terminal to the */src/server* folder and 
 ```
 go run .
 ```
-This will start up the back end on port 8080, and corresponding messages will be printed to the screen.
+This will start up the back end on port 8080, and corresponding messages will be printed to the screen. If the file *database.sqlite*, which stores the data for the application, does not exist, it will be created and initialized with the test data.
+
+If you have used the database and want to reset it to the test data, run the following command instead:
+
+```
+go run . reset
+```
 
 ### Second Terminal: Front End
 In the second terminal, go to the *GiftCardExchange* Folder and run the following command:
