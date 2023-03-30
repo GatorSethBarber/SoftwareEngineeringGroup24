@@ -26,7 +26,11 @@ What we accomplished is described below. As can be seen, we accomplished all the
 * Add AuthGuardService to protect the routes from unauthenticated user
 
 ## Back End
-* describe here
+* Added functionality to store hashed passwords in the database and use the hashed passwords rather than the plain-text passwords for actions, such as loggint in, creating gift cards, and accessing protected information (personally identifiable information and gift card numbers).
+* Added functionality for creating and using cookies for authentication
+* Added routes for logging in and logging out
+* Added route for getting all the gift cards owned by a given user
+* Added functionality to mask protected information from unauthenticated users.
 
 # Updated Back End API Documentation 
 ## Important Notes:
