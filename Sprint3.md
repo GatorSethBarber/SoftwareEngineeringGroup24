@@ -324,9 +324,10 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
 
 # Conclusion
-* describe here
+Throughout this Sprint, we learned about cookies and how to successfully use them in both TypeScript and Go. We continued working towards our goal of making a working application.
 
-Below is the link to the video recording of our group demonstrating new features and tests of Gift Card Xchange for Sprint 3.
+Below is the link to the video recording of our group demonstrating new features and tests of Gift Card Xchange for Sprint 3:
+https://youtu.be/UXZnIhVbPBU
 
 
 
