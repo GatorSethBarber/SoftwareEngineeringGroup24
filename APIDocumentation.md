@@ -202,6 +202,7 @@ Response:
 * 400 if bad request (missing information, does not own card one, owns card two)
 
 ### Confirm Swap
+Confirms specified swap. Additionally, all pending swaps associated with either card number are automatically deleted (made by previous owners of the cards, not the current ones).
 
 Verb: PUT
 
@@ -214,6 +215,15 @@ Response:
 * 404 if swap does not exist
 * 400 if bad request
 
+### Deny Swap
+
+Deletes a single swap. (No cascading.)
+
+Verb: DELETE
+
+URL: swaps/deny
+
+Body: {CardIDOne, CardIDTwo}
 
 ### Get All Pending Swaps User Requested
 Get all the pending requested the user initiated
