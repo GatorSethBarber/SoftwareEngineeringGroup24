@@ -1,7 +1,6 @@
 package main
 
 import (
-   
 	"encoding/json"
 	"fmt"
 	"log"
@@ -184,6 +183,7 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 
 	username := mux.Vars(request)["username"]
 	if !authSessionForUser(request, username) {
+		fmt.Println("User is not signed in correctly to this account.")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -191,6 +191,7 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 	// Make sure user is valid
 	user, err := newGetUserInformation(username)
 	if err != nil {
+		fmt.Println("User does not exist in the database")
 		fmt.Println(err)
 		writer.WriteHeader(http.StatusBadRequest)
 		return
@@ -203,6 +204,8 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 	// Data in body will be converted to the structure of the user
 	if err := json.NewDecoder(request.Body).Decode(&frontEndCard); err != nil {
 		// panic("Cannot decode")
+		fmt.Println("Cannot decode the JSON")
+		fmt.Println("body\n", request.Body)
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -212,6 +215,7 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 	// However, for right now, just build the new struct
 	experAsTime, err := stringToDate(frontEndCard.Expiration)
 	if err != nil || !checkCardNumberAndAmount(frontEndCard.CardNumber, frontEndCard.Amount) {
+		fmt.Println("Error date not formatted correctly or no card number/amount")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -226,6 +230,7 @@ func newRequestCreateCard(writer http.ResponseWriter, request *http.Request) {
 
 	// If there is an error, signifies card already present.
 	if err := databaseCreateCard(&backEndCard); err != nil {
+		fmt.Println("Card already present")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
