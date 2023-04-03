@@ -32,7 +32,7 @@ export class DashboardComponent {
   cards = CARDS;
 
 
-  columnsToDisplay: string[] = ['cardNumber', 'amount', 'expirationDate'];
+  columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
   dataSource = new MatTableDataSource(CARDS);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
