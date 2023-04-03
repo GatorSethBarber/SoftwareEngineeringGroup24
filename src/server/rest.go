@@ -56,6 +56,7 @@ func httpHandler() http.Handler {
 }
 
 type jsonCard struct {
+	// CardID      uint    `json:"cardID"`
 	CompanyName string  `json:"company"`
 	Username    string  `json:"username"`
 	Expiration  string  `json:"expirationDate"`

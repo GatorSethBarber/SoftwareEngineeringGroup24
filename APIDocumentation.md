@@ -179,14 +179,62 @@ Response:
 * JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
 
 
-### Swap Cards (Unimplemented)
+### Redeeming Card (If we have time)
+
+Verb: DELETE
+
+URL: /card/redeem/cardID
+
+## Swap Cards (Implementation in Progress)
+
+Below, the user requesting the swap has control of card 1. The user who has the swap requested of them has control card 2.
+
+### Request Swap
+
+Verb: POST
+
+URL: swaps/request
+
+Body: {CardIDOne, CardIDTwo}
+
+Response: 
+* 201 if successful
+* 400 if bad request (missing information, does not own card one, owns card two)
+
+### Confirm Swap
 
 Verb: PUT
 
-URL: /card/{username 1}/{username 2}/{card number 1}/{card number 2}
+URL: swaps/confirm
 
-Alternative:
-* We have another data table with requests pending per card.
-* If user approves of request, then they send via the URL: /card/swap/{username2}/{password2}/{card number 1}/{card identifier 2}
-* If pending request for those two cards, swap occurs and returns a 200 code.
-* Otherwise, nothing happens and returns a 400 error code.
+Body: {CardIdOne, CardIDTwo}
+
+Response:
+* 200 if successful
+* 404 if swap does not exist
+* 400 if bad request
+
+
+### Get All Pending Swaps User Requested
+Get all the pending requested the user initiated
+
+Verb: GET
+
+URL: swaps/get/pending/requested
+
+Response Body: [
+    [{cardOne}, {cardTwo}]
+]
+
+### Get All Pending Swaps User Received
+Get all the pending requests others initiated with the user
+
+Verb: GET
+
+URL: swaps/get/pending/requested
+
+Response Body: [
+    [{cardOne}, {cardTwo}]
+]
+
+Verb: PUT
