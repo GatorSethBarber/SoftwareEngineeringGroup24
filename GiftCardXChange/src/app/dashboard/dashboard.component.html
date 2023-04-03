@@ -85,6 +85,7 @@
   <!-- Filter field -->
 
 
+  <div>
   <!-- Add new card to user wallet -->
   <mat-tab label="Add New Card">
     <h3>Please Enter Your Card</h3>
@@ -92,8 +93,9 @@
     <p>
       <mat-form-field>
         <mat-label>Company Name</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let option of options" [value]="option">
+        <mat-select >
+          <mat-option
+           *ngFor="let option of options" [value]="option">
             {{ option }}
           </mat-option>
         </mat-select>
@@ -117,9 +119,12 @@
     <p>
       <mat-form-field>
         <mat-label>Expiration Date</mat-label>
-        <input matInput placeholder="Month/Year" />
+        <input  matInput placeholder="Month/Year" />
       </mat-form-field>
     </p>
-    <button type="submit" class="btn btn-primary" >Add Card</button>
+    <button type="submit" class="btn btn-primary" (click)="add()" >Add Card</button>
   </mat-tab>
+</div>
+
+
 </mat-tab-group>
