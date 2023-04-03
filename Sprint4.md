@@ -1,6 +1,29 @@
-# API Documentation Overview
+# Introduction
+In Sprint 4, we continued to fix the unit tests that did not pass and resumed creating the functionality of allowing users to post gift cards to exchange with each other in the previous sprint. We also added new functionalities to implement in the final sprint.
 
-This is the documentation for the Gift Card Xchange API.
+# What We Planned
+We planned to create a fully functional web application by the end of Sprint 4. We planned to implement the remaining necessary user stories to accomplish this task. The essential function of Gift Card Xchange is to allow users to request and exchange gift cards with another user. In the back end, we planned to execute this by creating a new database to store the swapped cards, deleting one gift card from one account holder, and adding the same gift card to another account holder. Similarly, in the front end, we will create a new column in the user's dashboard featuring a "request" button to request an exchange for each listed gift card, and a "swap" button, which allows the gift card owner to click once they agree to exchange. 
+
+The exact details of our functionalities for Sprint 4 is described below in the user stories.  
+
+## User Stories
+1.
+2.
+3.
+
+# What We Accomplished
+* Describe below
+
+## Front End
+* List below
+
+## Back End
+* List below
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Back End API Documentation 
+* Updates are in progress
 
 ## Important Notes:
 
@@ -16,7 +39,7 @@ Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HT
 * 400 bad request: Use for bad syntax in POST (creation)
 * 404 not found: Will use for error in GET or POST requests
 
-## Currently Available Routes:
+## Available Routes:
 The following routes are currently available for use. They are discussed further below.
 
 ### User
@@ -84,7 +107,7 @@ Status Codes:
 
 Note: As no error is thrown if a logged-out user calls this again, the response status code is always 200.
 
-### User Information Access (Current)
+### User Information Access (with Cookie)
 
 Get the information associated with a given username. If the user is logged in with the username (which is unique per user), then gets all information. If not, then personally identifiable information, such as email, password, firstName, and lastName, are replaced with empty strings.
 
@@ -116,15 +139,6 @@ Response:
 * JSON: {username: ..., email: ..., password: ..., firstName: ..., lastName: ...}
 
 If user does not exist, returns a 404 error code in the response.
-
-### Updating User Information (Unimplemented)
-
-Note: not finished.
-
-Verb: PUT
-
-URL: /user/update/{username}/{password}
-
 
 ## Gift Cards
 
@@ -178,63 +192,29 @@ Response:
 * Header: application/JSON
 * JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Redeeming Card (If we have time)
+# Testings
+## Front End
+* Describe below (optional)
 
-Verb: DELETE
+### Unit Tests
+* List below 
 
-URL: /card/redeem/cardID
-
-## Swap Cards (Implementation in Progress)
-
-Below, the user requesting the swap has control of card 1. The user who has the swap requested of them has control card 2.
-
-### Request Swap
-
-Verb: POST
-
-URL: swaps/request
-
-Body: {CardIDOne, CardIDTwo}
-
-Response: 
-* 201 if successful
-* 400 if bad request (missing information, does not own card one, owns card two)
-
-### Confirm Swap
-
-Verb: PUT
-
-URL: swaps/confirm
-
-Body: {CardIdOne, CardIDTwo}
-
-Response:
-* 200 if successful
-* 404 if swap does not exist
-* 400 if bad request
+### Cypress Tests
+* List below 
 
 
-### Get All Pending Swaps User Requested
-Get all the pending requested the user initiated
+## Back End
+* Describe below (optional)
 
-Verb: GET
+### Unit Tests in Go
+* List below  
 
-URL: swaps/get/pending/requested
+### Testing  in Cypress
+* List below
+ 
+# Conclusion
+* Describe below
 
-Response Body: [
-    [{cardOne}, {cardTwo}]
-]
-
-### Get All Pending Swaps User Received
-Get all the pending requests others initiated with the user
-
-Verb: GET
-
-URL: swaps/get/pending/requested
-
-Response Body: [
-    [{cardOne}, {cardTwo}]
-]
-
-Verb: PUT
+Below is the link to the video recording of our group demonstrating new features and tests of Gift Card Xchange for Sprint 4:

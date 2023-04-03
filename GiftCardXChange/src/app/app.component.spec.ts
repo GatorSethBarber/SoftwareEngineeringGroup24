@@ -5,11 +5,12 @@ import { BrandComponent } from './brand/brand.component';
 import { NavComponent } from './nav/nav.component';
 import { By } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule],
       declarations: [NavComponent, AppComponent, BrandComponent],
     
     }).compileComponents();

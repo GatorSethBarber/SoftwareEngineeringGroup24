@@ -13,6 +13,7 @@ The exact details of our functionalities for Sprint 3 is described below in the 
 4. As a signed in user, I want to have a cookie to keep me signed in.
 
 # What We Accomplished
+What we accomplished is described below. As can be seen, we accomplished all the user stories except for the third one. However, this user story is more closely related, and can be more easily tested, with additional functionality in the next sprint.
 
 ## Front End
 * Modified log-in system to use cookies to save user data after logging in
@@ -22,12 +23,45 @@ The exact details of our functionalities for Sprint 3 is described below in the 
 * Reformats html element attributes to allow cypress testing
 * Adds cypress testing to check correctness of user information from cookie
 * Adds cypress testing to check correctness of cards for a user based on a cookie
+* Add AuthGuardService to protect the routes from unauthenticated user
 
 ## Back End
-* describe here
+* Added functionality to store hashed passwords in the database and use the hashed passwords rather than the plain-text passwords for actions, such as loggint in, creating gift cards, and accessing protected information (personally identifiable information and gift card numbers).
+* Added functionality for creating and using cookies for authentication
+* Added routes for logging in and logging out
+* Added route for getting all the gift cards owned by a given user
+* Added functionality to mask protected information from unauthenticated users.
 
 # Updated Back End API Documentation 
-* Note: updates underway
+## Important Notes:
+
+Important HTTP Verbs:
+* GET: Get information
+* PUT: Update information
+* POST: Create information
+* DELETE: Delete information.
+
+Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) and what they will be used for in the project.
+* 200 ok: means that the operation (mainly for GET and PUT) was successful
+* 201 created: Means that an objected was created (use for successful POST)
+* 400 bad request: Use for bad syntax in POST (creation)
+* 404 not found: Will use for error in GET or POST requests
+
+## Currently Available Routes:
+The following routes are currently available for use. They are discussed further below.
+
+### User
+* Login: /user/login/{username}/{password}
+* Logout: /user/logout
+* Get user information (legacy): /user/get/{username}/{password}
+* Get user information: /user/get/{username}
+* Create new user: /user/new
+
+### Gift Cards
+* Create gift card (legacy): /card/new/{username}/{password}
+* Create gift card: /card/new/{username}
+* Get gift card: /card/get
+
 ## Users
 
 All users must have a username, email, password, and full name consisting of a first and last name (or just last name if they have only one name). These are all provided by the user. Additionally, a userID is created in the back end, but this is never used by the user.
@@ -53,7 +87,54 @@ Status Codes:
 * Created: 201
 * User with the given username or email already exists: 400
 
-### User Information Access (for updates, see APIDocumentation.md)
+### User Login
+This logs the user in by checking the provided username and password with information stored in the database. If the data matches, returns a response with a cookie called **session-gcex** that keeps the user signed in.
+
+URL: /user/login/{username}/{passwword}
+
+Verb: GET
+
+Response:
+* Header: Default header
+
+Status Codes:
+* Successful login: 200
+* Unsuccessful login: 404
+
+Note: If the user signs in as a different user without first logging out, the information associated with the cookie changes, but not the expiration date.
+
+### User Logout:
+This logs the user out of the session they are currently signed in by deleting the **session-gcex** cookie.
+
+URL: /user/logout
+
+Verb: GET
+
+Status Codes:
+* Successful: 200
+
+Note: As no error is thrown if a logged-out user calls this again, the response status code is always 200.
+
+### User Information Access (with Cookie)
+
+Get the information associated with a given username. If the user is logged in with the username (which is unique per user), then gets all information. If not, then personally identifiable information, such as email, password, firstName, and lastName, are replaced with empty strings.
+
+URL: /user/get/{username}
+
+Verb: GET
+
+Response Header: (Content-Type, application/json)
+
+Response:
+* Header: JSON
+* JSON: {username: ..., email: ..., password: ..., firstName: ..., lastName: ...}
+
+If user does not exist, returns a 404 error code in the response.
+
+
+### User Information Access (Legacy)
+
+This is the legacy version of getting the user information.
 
 URL: /user/get/{username}/{password}
 
@@ -66,7 +147,6 @@ Response:
 * JSON: {username: ..., email: ..., password: ..., firstName: ..., lastName: ...}
 
 If user does not exist, returns a 404 error code in the response.
-
 
 ## Gift Cards
 
@@ -93,7 +173,7 @@ Status codes:
 
 ### Get Matching Gift Cards
 
-Get all (basic information about) the gift cards that match certain search conditions
+Get all (basic information about) the gift cards that match certain search conditions. Searching by issuing company is the only permitted search.
 
 Verb: GET
 
@@ -110,11 +190,25 @@ Status codes:
 * Non-existent company: 404
 * Company name query missing: 400
 
+### Get all Gift Cards for a User
+
+Verb: GET
+
+URL: /card/get/{username}
+
+Response: 
+* Header: application/JSON
+* JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
+
 # Testings
 ## Front End 
 * Unit Tests
   * Angular component tests to check that each component displays and builds correctly
   * Basic testing to check that brands page gets correct number of brands
+  * Basic testing to check that html element of each component 
+  * Test to check if the function is called in .ts
+  * Test to check if the register form and login form work
+  * Test to check if the method is called from AuthService
 ### Cypress Tests
 Tests to verify that front-end and back-end successfuly share data with hard-coded values
 Everything done in endToEnd.cy.js
@@ -141,7 +235,7 @@ Tests for the back end are split into two major groups: Unit tests ran using Go,
 The testing of all functionality outside of router paths is done in Go. There are two files that contain unit tests, both of which are in src/server/
 * rest_test.go: This tests the functions associated with the processing of information.
   * From Sprint 3:
-    * No additional tests in *rest_test.go*
+    * TestBcryptingIsCorrect: Tests working of bcrypt
 
   * From Sprint 2:
     * TestValidCardInput: Test checkCardNumberAndAmount with valid input. Function should return true.
@@ -154,12 +248,21 @@ The testing of all functionality outside of router paths is done in Go. There ar
     * TestValidCardBackToFrontWithNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct used for converting to JSON
     * TestValidCardBackToFrontWithoutNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct for converting to JSON while hiding card number.
     * TestInvalidUserBackToFrontWithoutNumber: Sanity check for cardBackToFront to ensure invalid data is handled properly.
+    * TestCompleteData: Test checkUserInfo to ensure it returns true when passed complete data
+    * TestIncompleteData: Test checkUserInfo to ensure it returns false when passed incomplete data
 * serverAndDatabase_test.go: These tests test the functionality of the database.
   * From Sprint 3:
     * TestValidGetUserExistsPassword: Tests that a user exists for a given valid username and password combination and that the correct user information is returned.
     * TestInvaldGetUserExistsPassword: Tests that a user does not exist for a given invalid username and password combination.
     * TestValidNewGetUserInformation: Tests that getting user information by username with a valid username gets the correct user from the database.
     * TestInvalidNewGetUserInformation: Tests that getting user information by username with a non-existent username causes an error to be thrown by the database.
+    * TestValidGetUserID: Tests that getting a user id with a valid username returns the correct user id (via getUserID)
+    * TestInvalidGetUserID: Tests that getter a user id with an invalid username returns an error (via getUserID)
+    * TestValidGetCardsFromUser: Tests that cards are gotten (using databaseGetCardsFromUser) when a valid username is supplied
+    * TestInvalidGetCardsFromUser: Tests that an error is gotten when an invalid username is supplied to databaseGetCardsFromUser
+    * TestValidBcryptPassword: Tests that HashPassword and CheckPassword work together correctly
+    * TestInvalidBcryptPassword: Tests that HashPassword works correctly.
+    * TestComparePasswordAndHash: Tests that CheckPassword correctly checks hashes to be equal.
   * From Sprint 2: 
     * TestCreateWithAlreadyTakenEmail: Test that emails cannot be duplicated
     * TestCreateWithAlreadyTakenUsername: Test that usernames cannot be duplicated
@@ -170,8 +273,6 @@ The testing of all functionality outside of router paths is done in Go. There ar
     * TestInvalidUserIdGetUserName: Test getUserName to ensure that it returns an error when called with an invalid userID.
     * TestValidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct gift cards are gotten when called with a specific companyName.
     * TestInvalidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct affect happens when databaseGetCardsByCompany is called with a not-present companyName.
-    * TestCompleteData: Test checkUserInfo to ensure it returns true when passed complete data
-    * TestIncompleteData: Test checkUserInfo to ensure it returns false when passed incomplete data
     * TestInvalidDuplicateCardNumber: Test that duplicate card numbers are not allowed
     * TestValidCrateCard: Create a new card for the database
 
@@ -223,9 +324,10 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
 
 # Conclusion
-* describe here
+For this sprint, we accomplished three of the user stories. We developed a dashboard for the user once they log into the server. The dashboard displays three distinct features: the user's profile which includes their name, username, and email, "My Wallet" which shows the number on the gift card, the amount, and the expiration date, and adding a new gift card option. We also implemented a hashing function to encrypt the passwords stored in the database for security measures. Additionally, we implemented a cookie that remembers the user's information, such as login credentials, so that when the users revisit the server, any information that was provided in a previous session can be easily retrieved. Furthermore, we created a  session cookie to store the user's information while the user is visiting the server. These cookies are deleted once the user closes the session. During Sprint 3, we fixed and passed the tests that failed in Sprint 2. We also implemented new unit tests, such as TestGetUserExistsPassword, which tests for the authentication of the user function. Not only did we create new unit tests for the front and back we, but we also developed new Cypress testings, which tests all the new functionalities for Sprint 3. Unfortunately, a few of the hashing unit tests failed, and we were unable to implement posting the user's cards to be available for trade in the next sprint. We will carry these two tasks over for Sprint 4 as well as implement new functionalities to Gift Card Xchange. 
 
-Below is the link to the video recording of our group demonstrating new features and tests of Gift Card Xchange for Sprint 3.
+Below is the link to the video recording of our group demonstrating new features and tests of Gift Card Xchange for Sprint 3:
+https://youtu.be/UXZnIhVbPBU
 
 
 

@@ -125,20 +125,30 @@ export class AuthService {
     );
   }
 
-  // add card 
+// add card
+  // router.HandleFunc("/card/new/{username}", newRequestCreateCard).Methods("POST")
   addNewGiftCard(
-    userInfo: {companyName: string, userName: string, expirationDate: string,
-    amount: number, cardNumber: string } | any
+    userInfo: { username: string },
+    cardInfo:
+      | {
+          companyName: string;
+          userName: string;
+          expirationDate: string;
+          amount: number;
+          cardNumber: string;
+        }
+      | any
   ): Observable<any> {
     let headers = this.makeRequestHeader();
     return this.http.post<any>(
       `http://localhost:8080/card/new/${userInfo.username}`,
+      cardInfo,
       {
-        withCredentials:true,
+        headers,
+        withCredentials: true,
       }
     );
   }
-
   
 
 }
