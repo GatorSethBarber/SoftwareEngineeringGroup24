@@ -5,14 +5,14 @@
     <p style="margin-top: 40px;">
       <mat-form-field>
         <mat-label>First Name</mat-label>
-        <input data-cy="firstName-input" matInput [ngModel]="user.firstname"/>
+        <input data-cy="firstName-input" matInput [ngModel]="user.firstname" />
       </mat-form-field>
     </p>
     <!-- Last Name -->
     <p>
       <mat-form-field>
         <mat-label>Last Name</mat-label>
-        <input data-cy="lastName-input" matInput [ngModel]="user.lastname"/>
+        <input data-cy="lastName-input" matInput [ngModel]="user.lastname" />
       </mat-form-field>
     </p>
     <!-- User -->
@@ -33,7 +33,7 @@
     <p>
       <mat-form-field>
         <mat-label>Email</mat-label>
-        <input data-cy="email-input" matInput [ngModel]="user.email"/>
+        <input data-cy="email-input" matInput [ngModel]="user.email" />
       </mat-form-field>
     </p>
   </mat-tab>
@@ -48,11 +48,18 @@
 
       <div class="mat-elevation-z8">
         <table mat-table [dataSource]="dataSource" matSort>
+          <!-- Company column -->
+          <ng-container matColumnDef="company">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
+            <td [attr.data-cy]="card.company" mat-cell *matCellDef="let card" data-testid="company-data">{{card.company}}
+            </td>
+          </ng-container>
 
           <!-- Amount column -->
           <ng-container matColumnDef="amount">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-            <td [attr.data-cy]="card.amount" mat-cell *matCellDef="let card" data-testid="amount-data">{{card.amount}}</td>
+            <td [attr.data-cy]="card.amount" mat-cell *matCellDef="let card" data-testid="amount-data">{{card.amount}}
+            </td>
           </ng-container>
 
           <!-- Expiration date column -->
@@ -120,6 +127,6 @@
         <input matInput placeholder="Month/Year" />
       </mat-form-field>
     </p>
-    <button type="submit" class="btn btn-primary" >Add Card</button>
+    <button type="submit" class="btn btn-primary">Add Card</button>
   </mat-tab>
 </mat-tab-group>
