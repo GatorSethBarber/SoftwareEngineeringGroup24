@@ -82,7 +82,7 @@ export class DashboardComponent {
 
  //add new gift card
  cardForm = this.formBuilder.group({
-  cn: new FormControl('', Validators.required),
+  company: new FormControl('', Validators.required),
   cardnumber: new FormControl('', Validators.required),
   amount: new FormControl('', Validators.required),
   expirationDate: new FormControl('', Validators.required),

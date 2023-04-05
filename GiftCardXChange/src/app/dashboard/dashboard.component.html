@@ -26,7 +26,7 @@
     <p>
       <mat-form-field>
         <mat-label>Password</mat-label>
-        <input data-cy="password-input" matInput />
+        <input data-cy="password-input" matInput [ngModel]="user.passWord"/>
       </mat-form-field>
     </p>
     <!-- Email -->
@@ -101,7 +101,7 @@
     <p style="margin-top: 30px;">
       <mat-form-field>
         <mat-label>Company Name</mat-label>
-        <mat-select  formControlName="cn">
+        <mat-select  formControlName="company">
           <mat-option
            *ngFor="let option of options" [value]="option">
             {{ option }}
