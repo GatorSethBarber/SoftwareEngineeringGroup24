@@ -89,8 +89,11 @@ func TestValidCardBackToFrontWithNumber(t *testing.T) {
 		Expiration:  time.Date(2027, 12, 1, 0, 0, 0, 0, time.UTC),
 	}
 
+	backendCard.ID = 1
+
 	getWithNumber, errOne := cardBackToFront(&backendCard, true)
 	wantWithNumber := jsonCard{
+		CardID:      1,
 		CompanyName: "Starbucks",
 		Username:    "SethTheBarber",
 		Expiration:  "2027-12",
@@ -116,8 +119,11 @@ func TestValidCardBackToFrontWithoutNumber(t *testing.T) {
 		Expiration:  time.Date(2027, 12, 1, 0, 0, 0, 0, time.UTC),
 	}
 
+	backendCard.ID = 1
+
 	getWithNumber, errOne := cardBackToFront(&backendCard, false)
 	wantWithNumber := jsonCard{
+		CardID:      1,
 		CompanyName: "Starbucks",
 		Username:    "SethTheBarber",
 		Expiration:  "2027-12",
@@ -144,6 +150,8 @@ func TestInvalidUserBackToFrontWithoutNumber(t *testing.T) {
 		Amount:      20.3,
 		Expiration:  time.Date(2027, 12, 1, 0, 0, 0, 0, time.UTC),
 	}
+
+	backendCard.ID = 1
 
 	gotCard, errOne := cardBackToFront(&backendCard, false)
 

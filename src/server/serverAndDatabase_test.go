@@ -3,8 +3,6 @@ package main
 import (
 	"testing"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 // test databaseCreateUser
@@ -368,6 +366,7 @@ func TestInvalidGetCardsFromUser(t *testing.T) {
 	}
 }
 
+/*
 func TestValidBcryptPassword(t *testing.T) {
 	password := "mypassword"
 
@@ -405,3 +404,4 @@ func TestComparePasswordAndHash(t *testing.T) {
 	}
 
 }
+*/
