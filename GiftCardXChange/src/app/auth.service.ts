@@ -4,6 +4,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { map } from 'rxjs';
 import { User } from './User';
+import { Card } from './card';
 
 @Injectable({
   providedIn: 'root',
@@ -127,21 +128,11 @@ export class AuthService {
 
 // add card
   // router.HandleFunc("/card/new/{username}", newRequestCreateCard).Methods("POST")
-  addNewGiftCard(
-    userInfo: { username: string },
-    cardInfo:
-      | {
-          companyName: string;
-          userName: string;
-          expirationDate: string;
-          amount: number;
-          cardNumber: string;
-        }
-      | any
-  ): Observable<any> {
+  addNewGiftCard(cardInfo: Card): Observable<any> {
+    // console.log(this.user$.next(User['use']))
     let headers = this.makeRequestHeader();
     return this.http.post<any>(
-      `http://localhost:8080/card/new/${userInfo.username}`,
+      `http://localhost:8080/card/new/${cardInfo.username}`,
       cardInfo,
       {
         headers,
@@ -149,6 +140,7 @@ export class AuthService {
       }
     );
   }
+
   
 
 }
