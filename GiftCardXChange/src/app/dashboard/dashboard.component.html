@@ -93,45 +93,47 @@
   <!-- Filter field -->
 
 
-  <div>
-    <!-- Add new card to user wallet -->
-    <mat-tab label="Add New Card">
-      <h3>Please Enter Your Card</h3>
-      <!-- Company Name -->
-      <p>
-        <mat-form-field>
-          <mat-label>Company Name</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let option of options" [value]="option">
-              {{ option }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </p>
-      <!-- Card Number -->
-      <p>
-        <mat-form-field>
-          <mat-label>Card Number</mat-label>
-          <input matInput placeholder="Enter your card" />
-        </mat-form-field>
-      </p>
-      <!-- Amount -->
-      <p>
-        <mat-form-field>
-          <mat-label>Amount</mat-label>
-          <input matInput placeholder="$" />
-        </mat-form-field>
-      </p>
-      <!-- Expiration Date -->
-      <p>
-        <mat-form-field>
-          <mat-label>Expiration Date</mat-label>
-          <input matInput placeholder="YYYY-MM" />
-        </mat-form-field>
-      </p>
-      <button type="submit" class="btn btn-primary" (click)="add()">Add Card</button>
-    </mat-tab>
-  </div>
+  <!-- Add new card to user wallet -->
+  <mat-tab label="Add New Card">
+    <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
+    <!-- <h3>Please Enter Your Card</h3>
+    Company Name -->
+    <p>
+      <mat-form-field>
+        <mat-label>Company Name</mat-label>
+        <mat-select  formControlName="cn">
+          <mat-option
+           *ngFor="let option of options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <!-- Card Number -->
+    <p>
+      <mat-form-field>
+        <mat-label>Card Number</mat-label>
+        <input formControlName="cardnumber" matInput placeholder="Enter your card" />
+      </mat-form-field>
+    </p>
+    <!-- Amount -->
+    <p>
+      <mat-form-field>
+        <mat-label>Amount</mat-label>
+        <input formControlName="amount" matInput placeholder="$"  type="number"/>
+      </mat-form-field>
+    </p>
+    <!-- Expiration Date -->
+    <p>
+      <mat-form-field>
+        <mat-label>Expiration Date</mat-label>
+        <input formControlName="expirationDate"  matInput placeholder="YYYY-MM" />
+      </mat-form-field>
+    </p>
+    <button type="submit" >Add Card</button>
+
+    </form>
+  </mat-tab>
 
   <!-- User available requests -->
   <mat-tab data-cy="requests-link" label="My Requests">
