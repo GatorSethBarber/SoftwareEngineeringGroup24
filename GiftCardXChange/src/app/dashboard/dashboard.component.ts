@@ -34,7 +34,8 @@ export class DashboardComponent {
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
   dataSource = new MatTableDataSource(CARDS);
-  requestsSource = new MatTableDataSource(CARDS);
+  inboundRequestSource = new MatTableDataSource(CARDS);
+  outboundRequestSource = new MatTableDataSource(CARDS);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
