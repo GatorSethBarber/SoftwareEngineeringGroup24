@@ -215,6 +215,18 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	return cards, theError
 }
 
+// TODO: Test this function
+func databaseGetCardByCardID(cardID uint) (GiftCard, error) {
+	var card GiftCard
+	var theError error
+
+	if err := database.Where("gift_cards.id = ?", cardID).First(&card).Error; err != nil {
+		theError = err
+	}
+
+	return card, theError
+}
+
 /********  Database setup *************/
 
 func initialSetup(database *gorm.DB) {

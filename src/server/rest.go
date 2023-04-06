@@ -34,6 +34,13 @@ func httpHandler() http.Handler {
 	router.HandleFunc("/card/get", requestGetCard).Methods("GET")
 	router.HandleFunc("/card/get/{username}", requestAllCardsForUser).Methods("GET")
 
+	// Routes for swap card
+	router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
+	router.HandleFunc("/swaps/confirm", requestConfirmSwap).Methods("PUT")
+	router.HandleFunc("/swaps/deny", requestDenySwap).Methods("DELETE")
+	router.HandleFunc("/swaps/get/pending/requested/user", getRequestedByUser).Methods("GET")
+	router.HandleFunc("/swaps/get/pending/requested/others", getRequestedByOthers).Methods("GET")
+
 	// WARNING: this route must be the last route defined.
 	router.PathPrefix("/").Handler(AngularHandler).Methods("GET")
 
@@ -62,6 +69,18 @@ type jsonCard struct {
 	Expiration  string  `json:"expirationDate"`
 	Amount      float32 `json:"amount"`
 	CardNumber  string  `json:"cardNumber"`
+}
+
+type frontEndSwap struct {
+	CardIDOne uint `json:"cardIDOne"`
+	CardIDTwo uint `json:"cardIDTwo"`
+}
+
+type backEndSwap struct {
+	UserIDOne uint
+	UserIDTwo uint
+	CardIDOne uint
+	CardIDTwo uint
 }
 
 /*
@@ -432,7 +451,221 @@ func requestLogout(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusOK)
 }
 
+// Swaps
+// TODO: test these functions below (if not already tested)
+/*
+router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
+router.HandleFunc("/swaps/confirm", requestConfirmSwap).Methods("PUT")
+router.HandleFunc("/swaps/deny", requestDenySwap).Methods("DELETE")
+router.HandleFunc("/swaps/get/pending/requested/user", getRequestedByUser).Methods("GET")
+router.HandleFunc("/swaps/get/pending/requested/others", getRequestedByOthers).Methods("GET")
+*/
+
+/*
+Decode the body into the specified object. If error, write status bad request.
+Returns a boolean indicating if process was successful.
+*/
+func decodeJSON(writer http.ResponseWriter, request *http.Request, object interface{}) bool {
+	if err := json.NewDecoder(request.Body).Decode(object); err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return false
+	}
+	return true
+}
+
+var swapSlice []backEndSwap
+
+func requestSwap(writer http.ResponseWriter, request *http.Request) {
+	var frontEndSwapInfo frontEndSwap
+	if !decodeJSON(writer, request, &frontEndSwapInfo) {
+		fmt.Println("Could not decode JSON")
+		return
+	}
+
+	// Make sure user owns the card
+	requester, isOk := cookieGetUserByCookie(request)
+	if !isOk {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Get Cards (for getting the id)
+	// The following makes sure that the cards are actually real
+	cardOne, errCardOne := databaseGetCardByCardID(frontEndSwapInfo.CardIDOne)
+	cardTwo, errCardTwo := databaseGetCardByCardID(frontEndSwapInfo.CardIDTwo)
+	if errCardOne != nil || errCardTwo != nil {
+		fmt.Println("At least one card is nonexistent")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// If user does not own the first card, throw error
+	// If user owns the second card, throw error (can't swap with cards you own)
+	if cardOne.UserID != requester.ID || cardTwo.UserID == requester.ID {
+		writer.WriteHeader(http.StatusBadRequest)
+		fmt.Println("Don't own card or can't swap your own cards")
+		return
+	}
+
+	// Otherwise, everythin is OK and do translation
+	backEndSwap := backEndSwap{
+		cardOne.UserID,
+		cardTwo.UserID,
+		frontEndSwapInfo.CardIDOne,
+		frontEndSwapInfo.CardIDTwo,
+	}
+
+	// FIXME: Add to swaps instead
+	_, isPresent := getSwapIfValid(&frontEndSwapInfo)
+	if isPresent {
+		writer.WriteHeader(http.StatusBadRequest)
+		fmt.Println("Already stored")
+		return
+	}
+	swapSlice = append(swapSlice, backEndSwap)
+
+	writer.WriteHeader(http.StatusCreated)
+	fmt.Printf("CREATED SWAP: %v\n", frontEndSwapInfo)
+}
+
+func getSwapIfValid(swap *frontEndSwap) (backEndSwap, bool) {
+	for _, beswap := range swapSlice {
+		if swap.CardIDOne == beswap.CardIDOne && swap.CardIDTwo == beswap.CardIDTwo {
+			return beswap, true
+		}
+	}
+
+	return backEndSwap{}, false
+}
+
+func doSwapAndDelete(swap *frontEndSwap) {
+	i := 0
+	for i < len(swapSlice) {
+		if swapSlice[i].CardIDOne == swap.CardIDOne ||
+			swapSlice[i].CardIDTwo == swap.CardIDOne ||
+			swapSlice[i].CardIDOne == swap.CardIDTwo ||
+			swapSlice[i].CardIDTwo == swap.CardIDTwo {
+			swapSlice = append(swapSlice[:i], swapSlice[i+1:]...)
+		}
+	}
+}
+
+func deleteSwap(swapToDelete *frontEndSwap) {
+	i := 0
+	for i < len(swapSlice) {
+		if swapSlice[i].CardIDOne == swapToDelete.CardIDOne &&
+			swapSlice[i].CardIDTwo == swapToDelete.CardIDOne {
+			swapSlice = append(swapSlice[:i], swapSlice[i+1:]...)
+			return
+		} else {
+			i = i + 1
+		}
+	}
+}
+
+func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
+	var frontEndSwapInfo frontEndSwap
+	if !decodeJSON(writer, request, &frontEndSwapInfo) {
+		return
+	}
+
+	// FIXME: Fix the following with a database function
+	_, exists := getSwapIfValid(&frontEndSwapInfo)
+	if !exists {
+		fmt.Printf("This swap does not exist: %v\n", frontEndSwapInfo)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Check if user owns the backEndCard
+	user, isOk := cookieGetUserByCookie(request)
+	if !isOk {
+		fmt.Println("Not signed in")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	_, errCardOne := databaseGetCardByCardID(frontEndSwapInfo.CardIDOne)
+	cardTwo, errCardTwo := databaseGetCardByCardID(frontEndSwapInfo.CardIDTwo)
+	if errCardOne != nil || errCardTwo != nil {
+		fmt.Println("Card One or Card Two is bad")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// If user does not own cardTwo, throw an error (already guaranteed does not own cardOne)
+	if cardTwo.UserID != user.ID {
+		fmt.Println("Don't own this card")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// FIXME: Change this to final database function
+	doSwapAndDelete(&frontEndSwapInfo)
+
+	fmt.Printf("REDEEEMED SWAP %v", frontEndSwapInfo)
+}
+
+func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
+	var frontEndSwapInfo frontEndSwap
+	if !decodeJSON(writer, request, &frontEndSwapInfo) {
+		return
+	}
+
+	user, isOk := cookieGetUserByCookie(request)
+	if !isOk {
+		fmt.Printf("Invalid user for deleting %v\n", frontEndSwapInfo)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	cardTwo, errCardTwo := databaseGetCardByCardID(frontEndSwapInfo.CardIDTwo)
+	if errCardTwo != nil {
+		fmt.Printf("Card Two is invalid for %v\n", frontEndSwapInfo)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if user.ID != cardTwo.UserID {
+		fmt.Printf("User doesn't own card 2 for %v\n", frontEndSwapInfo)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	deleteSwap(&frontEndSwapInfo)
+}
+func getRequestedByUser(writer http.ResponseWriter, request *http.Request)   {}
+func getRequestedByOthers(writer http.ResponseWriter, request *http.Request) {}
+
 // Cookies
+// TODO: test the following two functions below
+func cookieGetUserByCookie(request *http.Request) (User, bool) {
+	username, cookieExists := cookieExtractUsername(request)
+	if !cookieExists {
+		return User{}, false
+	}
+
+	user, userErr := newGetUserInformation(username)
+	if userErr != nil {
+		return User{}, false
+	}
+
+	return user, true
+}
+
+func cookieExtractUsername(request *http.Request) (string, bool) {
+	session, err := store.Get(request, "session-gcex")
+	if err != nil {
+		panic("Encountered an error decoding session info")
+	}
+
+	gotName, usernameExists := session.Values["username"]
+	if !usernameExists {
+		return "", false
+	}
+
+	return gotName.(string), true
+}
 
 func authSessionForUser(request *http.Request, username string) bool {
 	session, err := store.Get(request, "session-gcex")

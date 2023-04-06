@@ -405,3 +405,42 @@ func TestComparePasswordAndHash(t *testing.T) {
 
 }
 */
+
+// Sprint 4
+func TestValidDatabaseGetCardByCardID(t *testing.T) {
+	database = ConnectToDatabase()
+	var useID uint = 1
+	wantCard := GiftCard{
+		UserID:      1,
+		CompanyName: "BestBuy",
+		CardNumber:  "123456789",
+		Amount:      50.0,
+		Expiration:  time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC),
+	}
+
+	gotCard, err := databaseGetCardByCardID(useID)
+
+	if err != nil {
+		t.Fatalf("Expected to get card, but got %v", err)
+	}
+
+	wantCard.ID = gotCard.ID
+	wantCard.CreatedAt = gotCard.CreatedAt
+	wantCard.UpdatedAt = gotCard.UpdatedAt
+	wantCard.DeletedAt = gotCard.DeletedAt
+
+	if wantCard != gotCard {
+		t.Fatalf("Wanted %v, got %v", wantCard, gotCard)
+	}
+
+}
+
+func TestInvalidDatabaseGetCardByCardID(t *testing.T) {
+	database = ConnectToDatabase()
+	var useID uint = 0
+	gotCard, err := databaseGetCardByCardID(useID)
+
+	if err == nil {
+		t.Fatalf("Wanted an error, but got %v", gotCard)
+	}
+}
