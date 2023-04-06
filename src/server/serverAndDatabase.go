@@ -222,7 +222,7 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	return cards, theError
 }
 
-/*********************************** Swapping Gift Cards ***********************************/
+/***************************************** Swapping Gift Cards ******************************************/
 
 // request user to trade
 func createRequestCard(cardID uint) error {
@@ -283,9 +283,20 @@ func denyCardRequest() {
 
 }
 
-func deleteCardRequests() {
-	// deleting transaction, search for card = x
+func deleteCardRequests(gcardID uint) {
+	tx := db.Begin()
 
+	if err := tx.Where("id = ?", gcardID).Delete(&RequestCard{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	
+	return nil
 }
 
 func getAllPendingUserRequests() {
@@ -296,7 +307,7 @@ func getAllPendingRequestsFromOthers() {
 
 }
 
-/*************************************** Database setup ***************************************/
+/******************************************** Database setup ********************************************/
 
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
