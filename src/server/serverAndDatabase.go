@@ -37,6 +37,13 @@ type GiftCard struct {
 	Expiration  time.Time
 }
 
+type RequestCard struct {
+	UserIDOne uint `json:"-"`
+	UserIDTwo uint `json:"-"`
+	CardIDOne uint `gorm:"primaryKey"`
+	CardIDTwo uint `gorm:"primaryKey"`
+}
+
 func main() {
 	fmt.Println("Starting Process")
 	doInitialSetup := false
@@ -215,19 +222,81 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	return cards, theError
 }
 
-// TODO: Test this function
-func databaseGetCardByCardID(cardID uint) (GiftCard, error) {
-	var card GiftCard
-	var theError error
+/*********************************** Swapping Gift Cards ***********************************/
 
-	if err := database.Where("gift_cards.id = ?", cardID).First(&card).Error; err != nil {
-		theError = err
+// request user to trade
+func createRequestCard(cardID uint) error {
+	// request swap: adding new transaction
+
+	tx := database.Begin()
+
+	// if err := tx.Create(&RequestCard).Error; err != nil {
+	if err := tx.Create(&RequestCard{CardIDTwo: ?}).Error; err != nil { // FIXME: should I use create 
+		tx.Rollback()
+		return err
 	}
 
-	return card, theError
+	return tx.Commit().Error
+
 }
 
-/********  Database setup *************/
+// Switch the user IDs when both parties agree to swap gift cards
+func swapGiftCards(userID1, userID2 uint) error {
+	// Begin a transaction
+	tx := database.Begin()
+
+	// Fetch user records by their IDs
+	var user1, user2 GiftCard
+	if err := tx.Where("id = ?", userID1).First(&user1).Error; err != nil {
+		// if there's an error, return the database into its original state
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Where("id = ?", userID2).First(&user2).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// Swap user IDs
+	user1.ID, user2.ID = user2.ID, user1.ID
+
+	if err := tx.Save(&user1).Error; err != nil {
+		// if there is no error, the new user ID of the gift card will be saved to the database
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Save(&user2).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// if there is no error, the changes made within the transaction are saved to the database permanently
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
+}
+
+func denyCardRequest() {
+
+}
+
+func deleteCardRequests() {
+	// deleting transaction, search for card = x
+
+}
+
+func getAllPendingUserRequests() {
+
+}
+
+func getAllPendingRequestsFromOthers() {
+
+}
+
+/*************************************** Database setup ***************************************/
 
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
