@@ -145,35 +145,45 @@
 
       <div class="mat-elevation-z8">
         <table mat-table [dataSource]="inboundRequestSource" matSort>
+
+          <!-- Requester column -->
+          <ng-container matColumnDef="requester">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Requester</th>
+            <td [attr.data-cy]="request[0].username" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[0].username}}
+            </td>
+          </ng-container>
+
           <!-- Company column -->
           <ng-container matColumnDef="company">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
-            <td [attr.data-cy]="card.company" mat-cell *matCellDef="let card" data-testid="company-data">
-              {{card.company}}
+            <td [attr.data-cy]="request[0].company" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[0].company}}
             </td>
           </ng-container>
 
           <!-- Amount column -->
           <ng-container matColumnDef="amount">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-            <td [attr.data-cy]="card.amount" mat-cell *matCellDef="let card" data-testid="amount-data">{{card.amount}}
+            <td [attr.data-cy]="request[0].amount" mat-cell *matCellDef="let request" data-testid="amount-data">
+              {{request[0].amount}}
             </td>
           </ng-container>
 
           <!-- Expiration date column -->
           <ng-container matColumnDef="expirationDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
-            <td mat-cell *matCellDef="let card">{{card.expirationDate}}</td>
+            <td mat-cell *matCellDef="let request">{{request[0].expirationDate}}</td>
           </ng-container>
 
-          <!-- UserID column -->
-          <ng-container matColumnDef="cardNumber">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Card Number</th>
-            <td [attr.data-cy]="card.cardNumber" mat-cell *matCellDef="let card">{{card.cardNumber}}</td>
+          <!-- Requested card num column -->
+          <ng-container matColumnDef="requested">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Requested Card</th>
+            <td [attr.data-cy]="request[1].cardNumber" mat-cell *matCellDef="let request">{{request[0].cardNumber}}</td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-          <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+          <tr mat-header-row *matHeaderRowDef="inboundColumnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let row; columns: inboundColumnsToDisplay"></tr>
 
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
@@ -194,35 +204,45 @@
 
       <div class="mat-elevation-z8">
         <table mat-table [dataSource]="outboundRequestSource" matSort>
+
+          <!-- Requested column -->
+          <ng-container matColumnDef="requested">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Requested</th>
+            <td [attr.data-cy]="request[1].username" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[1].username}}
+            </td>
+          </ng-container>
+
           <!-- Company column -->
           <ng-container matColumnDef="company">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
-            <td [attr.data-cy]="card.company" mat-cell *matCellDef="let card" data-testid="company-data">
-              {{card.company}}
+            <td [attr.data-cy]="request[1].company" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[1].company}}
             </td>
           </ng-container>
 
           <!-- Amount column -->
           <ng-container matColumnDef="amount">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-            <td [attr.data-cy]="card.amount" mat-cell *matCellDef="let card" data-testid="amount-data">{{card.amount}}
+            <td [attr.data-cy]="request[1].amount" mat-cell *matCellDef="let request" data-testid="amount-data">
+              {{request[1].amount}}
             </td>
           </ng-container>
 
           <!-- Expiration date column -->
           <ng-container matColumnDef="expirationDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
-            <td mat-cell *matCellDef="let card">{{card.expirationDate}}</td>
+            <td mat-cell *matCellDef="let request">{{request[1].expirationDate}}</td>
           </ng-container>
 
           <!-- UserID column -->
-          <ng-container matColumnDef="cardNumber">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Card Number</th>
-            <td [attr.data-cy]="card.cardNumber" mat-cell *matCellDef="let card">{{card.cardNumber}}</td>
+          <ng-container matColumnDef="offeredCard">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Offered Card</th>
+            <td [attr.data-cy]="request[0].cardNumber" mat-cell *matCellDef="let request">{{request[0].cardNumber}}</td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-          <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+          <tr mat-header-row *matHeaderRowDef="outboundColumnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let row; columns: outboundColumnsToDisplay"></tr>
 
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>

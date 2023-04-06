@@ -23,38 +23,44 @@ import { Card } from '../card';
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None,
 
-  
+
 })
 export class DashboardComponent {
-  user : User;
- cardData: Card;
+  user: User;
+  cardData: Card;
 
   cards = CARDS;
 
+  requests = [
+    CARDS, CARDS
+  ]
+
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
+  inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested'];
+  outboundColumnsToDisplay: string[] = ['requested', 'company', 'amount', 'expirationDate', 'offeredCard'];
   dataSource = new MatTableDataSource(CARDS);
-  inboundRequestSource = new MatTableDataSource(CARDS);
-  outboundRequestSource = new MatTableDataSource(CARDS);
+  inboundRequestSource = new MatTableDataSource(this.requests);
+  outboundRequestSource = new MatTableDataSource(this.requests);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
- 
 
-  constructor(private AuthService: AuthService, private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder)  {
+
+  constructor(private AuthService: AuthService, private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder) {
     AuthService.user$.subscribe(
       (user) =>
-        (this.user = user ?? {
-          email: '',
-          firstname: '',
-          lastname: '',
-          passWord: '',
-          username: '',
-        })
+      (this.user = user ?? {
+        email: '',
+        firstname: '',
+        lastname: '',
+        passWord: '',
+        username: '',
+      })
     );
   }
 
-  
+
 
 
   applyFilter(event: Event) {
@@ -62,7 +68,7 @@ export class DashboardComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  
+
 
   options = ['Starbuck', 'BestBuy', 'Target', 'Kohls'];
 
@@ -73,7 +79,7 @@ export class DashboardComponent {
       },
       (err) => alert('Error getting card for user: ' + "Anlaf")
     );
-
+      console.log(this.requests);
   }
 
   ngAfterViewInit() {
@@ -81,28 +87,28 @@ export class DashboardComponent {
     this.dataSource.sort = this.sort;
   }
 
- //add new gift card
- cardForm = this.formBuilder.group({
-  company: new FormControl('', Validators.required),
-  cardnumber: new FormControl('', Validators.required),
-  amount: new FormControl('', Validators.required),
-  expirationDate: new FormControl('', Validators.required),
-  username: new FormControl(
-    this.AuthService.user$.value?.username,
-    Validators.required
-  ),
-});
-onSubmit() {
-  this.AuthService.addNewGiftCard(this.cardForm.value as any as Card).subscribe(
-    (res) => {
-      console.log(res);
-      alert('Card added successfully');
-    },
-    (err) => {
-      console.error(err);
-      alert('Error while adding the card');
-    }
-  );
-}
+  //add new gift card
+  cardForm = this.formBuilder.group({
+    company: new FormControl('', Validators.required),
+    cardnumber: new FormControl('', Validators.required),
+    amount: new FormControl('', Validators.required),
+    expirationDate: new FormControl('', Validators.required),
+    username: new FormControl(
+      this.AuthService.user$.value?.username,
+      Validators.required
+    ),
+  });
+  onSubmit() {
+    this.AuthService.addNewGiftCard(this.cardForm.value as any as Card).subscribe(
+      (res) => {
+        console.log(res);
+        alert('Card added successfully');
+      },
+      (err) => {
+        console.error(err);
+        alert('Error while adding the card');
+      }
+    );
+  }
 
 }
