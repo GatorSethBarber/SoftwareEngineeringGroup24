@@ -53,15 +53,6 @@ export class DashboardComponent {
     );
   }
 
-  //add new gift card 
-  add(){
-    this.AuthService.addNewGiftCard(this.user, this.cardData).subscribe(
-      (res) =>{
-        console.log(res)
-       }
-    )
-      }
-
   
 
 
@@ -89,5 +80,28 @@ export class DashboardComponent {
     this.dataSource.sort = this.sort;
   }
 
+ //add new gift card
+ cardForm = this.formBuilder.group({
+  company: new FormControl('', Validators.required),
+  cardnumber: new FormControl('', Validators.required),
+  amount: new FormControl('', Validators.required),
+  expirationDate: new FormControl('', Validators.required),
+  username: new FormControl(
+    this.AuthService.user$.value?.username,
+    Validators.required
+  ),
+});
+onSubmit() {
+  this.AuthService.addNewGiftCard(this.cardForm.value as any as Card).subscribe(
+    (res) => {
+      console.log(res);
+      alert('Card added successfully');
+    },
+    (err) => {
+      console.error(err);
+      alert('Error while adding the card');
+    }
+  );
+}
 
 }
