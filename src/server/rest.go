@@ -554,7 +554,7 @@ func deleteSwap(swapToDelete *frontEndSwap) {
 	i := 0
 	for i < len(swapSlice) {
 		if swapSlice[i].CardIDOne == swapToDelete.CardIDOne &&
-			swapSlice[i].CardIDTwo == swapToDelete.CardIDOne {
+			swapSlice[i].CardIDTwo == swapToDelete.CardIDTwo {
 			swapSlice = append(swapSlice[:i], swapSlice[i+1:]...)
 			return
 		} else {
@@ -634,8 +634,125 @@ func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
 
 	deleteSwap(&frontEndSwapInfo)
 }
-func getRequestedByUser(writer http.ResponseWriter, request *http.Request)   {}
-func getRequestedByOthers(writer http.ResponseWriter, request *http.Request) {}
+
+func tempGetByUserIDOne(userID uint) []backEndSwap {
+	var got []backEndSwap
+	for _, el := range swapSlice {
+		if el.UserIDOne == userID {
+			got = append(got, el)
+		}
+	}
+	return got
+}
+
+func tempGetByUserIDTwo(userID uint) []backEndSwap {
+	var got []backEndSwap
+	for _, el := range swapSlice {
+		if el.UserIDTwo == userID {
+			got = append(got, el)
+		}
+	}
+	return got
+}
+
+func backEndSwapToCards(swaps *[]backEndSwap) ([][2]jsonCard, bool) {
+	var translated [][2]GiftCard
+	var translatedFront [][2]jsonCard
+
+	for _, el := range *swaps {
+		var newList [2]GiftCard
+		cardOne, errCardOne := databaseGetCardByCardID(el.CardIDOne)
+		cardTwo, errCardTwo := databaseGetCardByCardID(el.CardIDTwo)
+		if errCardOne != nil || errCardTwo != nil {
+			return translatedFront, false
+		}
+
+		newList[0] = cardOne
+		newList[1] = cardTwo
+
+		translated = append(translated, newList)
+	}
+
+	for _, el := range translated {
+		var newList [2]jsonCard
+		cardOne, errOne := cardBackToFront(&el[0], true)
+		cardTwo, errTwo := cardBackToFront(&el[1], true)
+		if errOne != nil || errTwo != nil {
+			return translatedFront, false
+		}
+		newList[0] = cardOne
+		newList[1] = cardTwo
+		translatedFront = append(translatedFront, newList)
+	}
+	return translatedFront, true
+}
+
+func encodeToJSONAndSend(writer http.ResponseWriter, toSend interface{}) {
+	writer.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(writer).Encode(toSend); err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		panic("Cannot encode")
+	} else {
+		writer.WriteHeader(http.StatusOK)
+	}
+}
+
+func getRequestedByUser(writer http.ResponseWriter, request *http.Request) {
+	user, isOk := cookieGetUserByCookie(request)
+	if !isOk {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	gotSwaps := tempGetByUserIDOne(user.ID)
+	cards, cardsOk := backEndSwapToCards(&gotSwaps)
+	if !cardsOk {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Mask card numbers
+	for index, _ := range cards {
+		cards[index][1].CardNumber = ""
+	}
+	fmt.Println("Length of Cards: ", len(cards))
+	if len(cards) > 0 {
+		encodeToJSONAndSend(writer, cards)
+	} else {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusNotFound)
+		writer.Write([]byte("[]"))
+	}
+}
+
+func getRequestedByOthers(writer http.ResponseWriter, request *http.Request) {
+	user, isOk := cookieGetUserByCookie(request)
+	if !isOk {
+		fmt.Println("By others: User not logged in")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	gotSwaps := tempGetByUserIDTwo(user.ID)
+	cards, cardsOk := backEndSwapToCards(&gotSwaps)
+	if !cardsOk {
+		fmt.Println("By others: Trouble transferring stored cards")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	for index, _ := range cards {
+		cards[index][0].CardNumber = ""
+	}
+
+	if len(cards) > 0 {
+		encodeToJSONAndSend(writer, cards)
+	} else {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusNotFound)
+		writer.Write([]byte("[]"))
+	}
+}
 
 // Cookies
 // TODO: test the following two functions below
