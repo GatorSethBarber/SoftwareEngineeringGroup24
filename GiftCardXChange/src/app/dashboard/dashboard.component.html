@@ -26,7 +26,7 @@
     <p>
       <mat-form-field>
         <mat-label>Password</mat-label>
-        <input data-cy="password-input" matInput [ngModel]="user.passWord"/>
+        <input data-cy="password-input" matInput [ngModel]="user.passWord" />
       </mat-form-field>
     </p>
     <!-- Email -->
@@ -96,41 +96,40 @@
   <!-- Add new card to user wallet -->
   <mat-tab label="Add New Card">
     <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
-    <!-- <h3>Please Enter Your Card</h3>
+      <!-- <h3>Please Enter Your Card</h3>
     Company Name -->
-    <p style="margin-top: 30px;">
-      <mat-form-field>
-        <mat-label>Company Name</mat-label>
-        <mat-select  formControlName="company">
-          <mat-option
-           *ngFor="let option of options" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </p>
-    <!-- Card Number -->
-    <p>
-      <mat-form-field>
-        <mat-label>Card Number</mat-label>
-        <input formControlName="cardnumber" matInput placeholder="Enter your card" />
-      </mat-form-field>
-    </p>
-    <!-- Amount -->
-    <p>
-      <mat-form-field>
-        <mat-label>Amount</mat-label>
-        <input formControlName="amount" matInput placeholder="$"  type="number"/>
-      </mat-form-field>
-    </p>
-    <!-- Expiration Date -->
-    <p>
-      <mat-form-field>
-        <mat-label>Expiration Date</mat-label>
-        <input formControlName="expirationDate"  matInput placeholder="YYYY-MM" />
-      </mat-form-field>
-    </p>
-    <button type="submit" >Add Card</button>
+      <p style="margin-top: 30px;">
+        <mat-form-field>
+          <mat-label>Company Name</mat-label>
+          <mat-select formControlName="company">
+            <mat-option *ngFor="let option of options" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <!-- Card Number -->
+      <p>
+        <mat-form-field>
+          <mat-label>Card Number</mat-label>
+          <input formControlName="cardnumber" matInput placeholder="Enter your card" />
+        </mat-form-field>
+      </p>
+      <!-- Amount -->
+      <p>
+        <mat-form-field>
+          <mat-label>Amount</mat-label>
+          <input formControlName="amount" matInput placeholder="$" type="number" />
+        </mat-form-field>
+      </p>
+      <!-- Expiration Date -->
+      <p>
+        <mat-form-field>
+          <mat-label>Expiration Date</mat-label>
+          <input formControlName="expirationDate" matInput placeholder="YYYY-MM" />
+        </mat-form-field>
+      </p>
+      <button type="submit">Add Card</button>
 
     </form>
   </mat-tab>
@@ -138,42 +137,112 @@
   <!-- User available requests -->
   <mat-tab data-cy="requests-link" label="My Requests">
     <div>
+      <h2>Inbound Requests</h2>
       <mat-form-field class="mt-3">
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Ex. 25" #input>
       </mat-form-field>
 
       <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="requestsSource" matSort>
+        <table mat-table [dataSource]="inboundRequestSource" matSort>
+
+          <!-- Requester column -->
+          <ng-container matColumnDef="requester">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Requester</th>
+            <td [attr.data-cy]="request[0].username" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[0].username}}
+            </td>
+          </ng-container>
+
           <!-- Company column -->
           <ng-container matColumnDef="company">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
-            <td [attr.data-cy]="card.company" mat-cell *matCellDef="let card" data-testid="company-data">
-              {{card.company}}
+            <td [attr.data-cy]="request[0].company" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[0].company}}
             </td>
           </ng-container>
 
           <!-- Amount column -->
           <ng-container matColumnDef="amount">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-            <td [attr.data-cy]="card.amount" mat-cell *matCellDef="let card" data-testid="amount-data">{{card.amount}}
+            <td [attr.data-cy]="request[0].amount" mat-cell *matCellDef="let request" data-testid="amount-data">
+              {{request[0].amount}}
             </td>
           </ng-container>
 
           <!-- Expiration date column -->
           <ng-container matColumnDef="expirationDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
-            <td mat-cell *matCellDef="let card">{{card.expirationDate}}</td>
+            <td mat-cell *matCellDef="let request">{{request[0].expirationDate}}</td>
+          </ng-container>
+
+          <!-- Requested card num column -->
+          <ng-container matColumnDef="requested">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Requested Card</th>
+            <td [attr.data-cy]="request[1].cardNumber" mat-cell *matCellDef="let request">{{request[0].cardNumber}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="inboundColumnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let row; columns: inboundColumnsToDisplay"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          </tr>
+
+          <!-- Pagination -->
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of cards"></mat-paginator>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h2>Outbound Requests</h2>
+      <mat-form-field class="mt-3">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. 25" #input>
+      </mat-form-field>
+
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="outboundRequestSource" matSort>
+
+          <!-- Requested column -->
+          <ng-container matColumnDef="requested">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Requested</th>
+            <td [attr.data-cy]="request[1].username" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[1].username}}
+            </td>
+          </ng-container>
+
+          <!-- Company column -->
+          <ng-container matColumnDef="company">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Company</th>
+            <td [attr.data-cy]="request[1].company" mat-cell *matCellDef="let request" data-testid="company-data">
+              {{request[1].company}}
+            </td>
+          </ng-container>
+
+          <!-- Amount column -->
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+            <td [attr.data-cy]="request[1].amount" mat-cell *matCellDef="let request" data-testid="amount-data">
+              {{request[1].amount}}
+            </td>
+          </ng-container>
+
+          <!-- Expiration date column -->
+          <ng-container matColumnDef="expirationDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
+            <td mat-cell *matCellDef="let request">{{request[1].expirationDate}}</td>
           </ng-container>
 
           <!-- UserID column -->
-          <ng-container matColumnDef="cardNumber">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Card Number</th>
-            <td [attr.data-cy]="card.cardNumber" mat-cell *matCellDef="let card">{{card.cardNumber}}</td>
+          <ng-container matColumnDef="offeredCard">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Offered Card</th>
+            <td [attr.data-cy]="request[0].cardNumber" mat-cell *matCellDef="let request">{{request[0].cardNumber}}</td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-          <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+          <tr mat-header-row *matHeaderRowDef="outboundColumnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let row; columns: outboundColumnsToDisplay"></tr>
 
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
