@@ -305,10 +305,28 @@ describe('Dashboard tests', () => {
     cy.url().should('include', '/dashboard');
 
 
-    cy.get('.mat-mdc-tab').contains('Wallet').click();
+    cy.get('.mat-mdc-tab').contains('My Wallet').click();
 
     cy.getByData('100').should('exist');
     cy.getByData('70').should('exist');
     cy.getByData('135').should('exist');
+  })
+
+  it('displays all requests for user', () => {
+    cy.getByData('login-link').click();
+    cy.url().should('include', '/login');
+
+    cy.getByData('username-input').type('Anlaf');
+    cy.getByData('username-input').should('have.value', 'Anlaf');
+
+    cy.getByData('password-input').type('password');
+    cy.getByData('password-input').should('have.value', 'password');
+
+    cy.getByData('login-button').click();
+
+    cy.url().should('include', '/dashboard');
+
+    cy.get('.mat-mdc-tab').contains('My Requests').click();
+
   })
 })
