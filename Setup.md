@@ -76,6 +76,10 @@ Should the user be new and not share data with existing users, a success code is
 an alert pops up with a failure message.
 
 ### Logging In
+Similar to signing up, logging in requires navigating to the log-in tab in the nav bar. Then, inputting valid credentials into the resulting form sends a backend request
+to check if they match. Should that be the case, the user is redirected to the home page and a cookie is created to save the login info of the user between sessions.
+Should the user log-in again, it would replace their current session with that of the new user. Invalid form inputs or trying to log in to an inxesitent user results in
+failure and an appropriate message.
 
 ### Dashboard
 
