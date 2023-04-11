@@ -70,6 +70,10 @@ The code for the Cypress tests is located in the *Cypress* folder. First, start 
 ### Viewing Available Cards
 
 ### Signing Up
+Signing up is done through the log-in tab on the navigation bar. Once the log-in page loads, there will be an option at the bottom to register instead.
+Clicking that will bring up the registration form, which after checking that each form input is filled, runs a query to the backend to register a new user.
+Should the user be new and not share data with existing users, a success code is sent back which then makes the page navigate to the login form. Otherwise,
+an alert pops up with a failure message.
 
 ### Logging In
 
