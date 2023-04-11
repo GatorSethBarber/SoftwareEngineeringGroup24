@@ -8,6 +8,7 @@ import { BRANDS } from '../mock-brands';
 import { filter } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { MatFormField } from '@angular/material/form-field';
+import { Card } from '../card';
 
 @Component({
   selector: 'app-cards',
@@ -23,7 +24,7 @@ export class CardsComponent {
 
   chosenBrand: import("../brand").Brand;
 
-  columnsToDisplay: string[] = ['username', 'amount', 'expirationDate'];
+  columnsToDisplay: string[] = ['username', 'amount', 'expirationDate', 'action'];
   dataSource = new MatTableDataSource(CARDS);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -61,6 +62,13 @@ export class CardsComponent {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+ 
+  card: Card
+  selectedUser : any
+  clickEvent(username: string){
+  this.selectedUser = this.card.username
+
   }
 
 }
