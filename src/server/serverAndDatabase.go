@@ -310,6 +310,7 @@ func databasePerformSwap(swapToDo *RequestCard) {
 		database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDTwo).Update("user_id", swapToDo.UserIDOne)
 	}
 
+	// FIXME below
 	// delete any pending swaps involving the two cards
 	deleteCardRequests(requestCard)
 }
