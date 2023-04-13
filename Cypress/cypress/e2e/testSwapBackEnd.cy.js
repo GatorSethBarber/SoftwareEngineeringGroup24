@@ -113,7 +113,7 @@ describe('Test Requesting Swap', () => {
     })
   })
   
-  it('Using invalid card numbers', () => {
+  it('Using invalid card id numbers', () => {
     login("SethTheBarber", "password")
     cy.request ({
       method: 'POST',
@@ -565,7 +565,7 @@ describe("Test get requested of user", () => {
     })
   })
 
-  it("Some requested by user", () => {
+  it("Some requested of user", () => {
     login("EricTheRed", "gr33nlandH0")
     cy.request({
       method: 'GET',
@@ -581,7 +581,7 @@ describe("Test get requested of user", () => {
 })
 
 describe("Delete swaps for testing views", () => {
-  it("Set up swaps for test", () => {
+  it("Delete remaining swaps for test", () => {
     login("SethTheBarber", "password")
     cy.request ({
       method: 'DELETE',
