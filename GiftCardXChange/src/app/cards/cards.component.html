@@ -37,7 +37,7 @@
                    <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
                     <td mat-cell *matCellDef="let card">
-                        <a class="btn btn-primary">Swap</a>
+                        <a class="btn btn-primary" (click)="openDialog()">Swap</a>
                     </td>
                 </ng-container>
 

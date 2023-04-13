@@ -9,6 +9,8 @@ import { filter } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { MatFormField } from '@angular/material/form-field';
 import { Card } from '../card';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoptionComponent } from '../dialogoption/dialogoption.component';
 
 @Component({
   selector: 'app-cards',
@@ -39,7 +41,8 @@ export class CardsComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private AuthService: AuthService
+    private AuthService: AuthService,
+    private dialogRef: MatDialog
   ) {  }
 
   ngOnInit() {
@@ -64,11 +67,8 @@ export class CardsComponent {
     this.dataSource.sort = this.sort;
   }
  
-  card: Card
-  selectedUser : any
-  clickEvent(username: string){
-  this.selectedUser = this.card.username
-
+  openDialog(){
+    this.dialogRef.open(DialogoptionComponent, {width: '300px',height:'300px'});
   }
 
 }

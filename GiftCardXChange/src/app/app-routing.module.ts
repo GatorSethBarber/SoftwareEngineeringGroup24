@@ -7,6 +7,7 @@ import { CardsComponent } from './cards/cards.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuardService } from './auth-guard.service';
 
+
 const routes: Routes = [
   { path: 'brand', component: BrandComponent },
   { path: 'login', component: LoginComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
     path: '',
     canActivate: [AuthGuardService],
     children: [{ path: 'dashboard', component: DashboardComponent }],
+
   },
 ];
 
