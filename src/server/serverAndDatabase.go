@@ -38,12 +38,10 @@ type GiftCard struct {
 }
 
 type RequestCard struct {
-	//gorm.Model
-	UserIDOne uint   `json:"-"`
-	UserIDTwo uint   `json:"-"`
-	CardIDOne uint   `gorm:"primaryKey"`
-	CardIDTwo uint   `gorm:"primaryKey"`
-	Status    string `gorm:"default:'pending'"` // initially pending to later change to accepted or denied
+	UserIDOne uint `json:"-"`
+	UserIDTwo uint `json:"-"`
+	CardIDOne uint `gorm:"primaryKey"`
+	CardIDTwo uint `gorm:"primaryKey"`
 }
 
 func main() {
@@ -238,25 +236,23 @@ func databaseCreateRequest(newRequest *RequestCard) error {
 	return nil
 }
 
-func getPendingUserRequests(cardID1 uint) (RequestCard, error) {
-	var userCardRequest RequestCard
+func getPendingUserRequests(userID1 uint) ([]RequestCard, error) {
+	var userCardRequest []RequestCard
 	var theError error
 
-	// if err := database.Where("card_id_one = ? AND card_id_two = ?")
-	if err := database.Where("card_id_one = ?", cardID1).Find(&userCardRequest).Error; err != nil {
-		theError = err
+	if err := database.Where("card_id_one = ?", userID1).Find(&userCardRequest).Error; err != nil {
+		return nil, err
 	}
 
 	return userCardRequest, theError
 }
 
-func getPendingRequestsFromOthers(cardID2 uint) (RequestCard, error) {
-	var othersCardRequest RequestCard
+func getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error) {
+	var othersCardRequest []RequestCard
 	var theError error
 
-	// if err := database.Where("card_id_one = ? AND card_id_two = ?")
-	if err := database.Where("card_id_two = ?", cardID2).Find(&othersCardRequest).Error; err != nil {
-		theError = err
+	if err := database.Where("user_id_two = ?", userID2).Find(&othersCardRequest).Error; err != nil {
+		return nil, err
 	}
 
 	return othersCardRequest, theError
@@ -271,18 +267,11 @@ func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
 	return swap, true
 }
 
-func denyCardRequest(cardID2 uint) error {
+func denyCardRequest(swap RequestCard) error {
 	var requestCard RequestCard
 
-	if err := database.Where("card_id_two = ?", cardID2).Find(&requestCard).Error; err != nil {
+	if err := database.Where("card_id_one = ? AND card_id_two = ?", swap.CardIDOne, swap.CardIDTwo).Delete(&requestCard).Error; err != nil {
 		return err
-	}
-
-	if requestCard.CardIDTwo != cardID2 {
-		requestCard.Status = "denied"
-		if err := database.Save(&requestCard).Error; err != nil {
-			return fmt.Errorf("Failed to save to database: %v", err)
-		}
 	}
 
 	return nil
@@ -291,12 +280,14 @@ func denyCardRequest(cardID2 uint) error {
 func deleteCardRequests(request RequestCard) error {
 
 	// Delete all gift card requests that are not accepted or denied for the given swap
-	err := database.Where("card_id_one = ? AND card_id_two = ? AND status = ?", request.CardIDOne, request.CardIDTwo, "pending").Delete(&RequestCard{}).Error
+	err := database.Where("card_id_one = ? OR card_id_two = ? OR card_id_one = ? OR card_id_two = ?",
+		request.CardIDOne, request.CardIDTwo, request.CardIDOne, request.CardIDTwo).Delete(&RequestCard{}).Error
+
 	if err != nil {
 		return err
 	}
-	return nil
 
+	return nil
 }
 
 func databasePerformSwap(swapToDo *RequestCard) {
@@ -304,13 +295,10 @@ func databasePerformSwap(swapToDo *RequestCard) {
 	// User IDs should be swapped; error checking done before call
 	var requestCard RequestCard
 
-	// User IDs are swapped when both parties agree to exchanging gift cards
-	if requestCard.Status != "denied" {
-		database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDOne).Update("user_id", swapToDo.UserIDTwo)
-		database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDTwo).Update("user_id", swapToDo.UserIDOne)
-	}
+	// User IDs are swapped when both parties agree to exchange gift cards
+	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDOne).Update("user_id", swapToDo.UserIDTwo)
+	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDTwo).Update("user_id", swapToDo.UserIDOne)
 
-	// FIXME below
 	// delete any pending swaps involving the two cards
 	deleteCardRequests(requestCard)
 }
