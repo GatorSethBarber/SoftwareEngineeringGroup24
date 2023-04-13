@@ -82,6 +82,9 @@ Should the user log-in again, it would replace their current session with that o
 failure and an appropriate message.
 
 ### Dashboard
+Accessing the dashboard is only available to a logged-in user that has a cookie containing their information. The dashboard presents a way to view information about the current user,
+including their account information, what cards they have in "My Wallet," and their inbound and outbout requests. The dashboard is all in one component, with each section being a mat-tab element,
+therefore, no redirection takes place and the dashboard is contained within a single page.
 
 #### Viewing User information
 
