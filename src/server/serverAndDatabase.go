@@ -229,6 +229,9 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 
 /************************************************************* Swapping Gift Cards *************************************************************/
 
+/*
+Add a new request for swapping cards to the database.
+*/
 func databaseCreateRequest(newRequest *RequestCard) error {
 	if err := database.Create(newRequest).Error; err != nil {
 		return err
@@ -236,17 +239,23 @@ func databaseCreateRequest(newRequest *RequestCard) error {
 	return nil
 }
 
+/*
+Get all pending requests made by the user indicated by the user ID
+*/
 func getPendingUserRequests(userID1 uint) ([]RequestCard, error) {
 	var userCardRequest []RequestCard
 	var theError error
 
-	if err := database.Where("card_id_one = ?", userID1).Find(&userCardRequest).Error; err != nil {
+	if err := database.Where("user_id_one = ?", userID1).Find(&userCardRequest).Error; err != nil {
 		return nil, err
 	}
 
 	return userCardRequest, theError
 }
 
+/*
+Get all pending requests made of the user indicated by the user ID
+*/
 func getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error) {
 	var othersCardRequest []RequestCard
 	var theError error
@@ -258,6 +267,9 @@ func getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error) {
 	return othersCardRequest, theError
 }
 
+/*
+Get a (back-end) swap from the database if it exists based on a passed in front-end swap
+*/
 func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
 	var swap RequestCard
 	if err := database.Where("card_id_one = ? AND card_id_two = ?", simpleSwap.CardIDOne, simpleSwap.CardIDTwo).First(&swap).Error; err != nil {
@@ -267,21 +279,27 @@ func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
 	return swap, true
 }
 
-func denyCardRequest(swap RequestCard) error {
-	var requestCard RequestCard
+/*
+Deny a request (delete a single request)
+*/
+func denyCardRequest(swap *RequestCard) error {
+	// var requestCard RequestCard
 
-	if err := database.Where("card_id_one = ? AND card_id_two = ?", swap.CardIDOne, swap.CardIDTwo).Delete(&requestCard).Error; err != nil {
+	if err := database.Where("card_id_one = ? AND card_id_two = ?", swap.CardIDOne, swap.CardIDTwo).Delete(&RequestCard{}).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func deleteCardRequests(request RequestCard) error {
-
+/*
+Delete all pending requests involving the cards specified in the request
+*/
+func deleteCardRequests(request *RequestCard) error {
+	fmt.Println("DELETING REQUESTS")
 	// Delete all gift card requests that are not accepted or denied for the given swap
 	err := database.Where("card_id_one = ? OR card_id_two = ? OR card_id_one = ? OR card_id_two = ?",
-		request.CardIDOne, request.CardIDTwo, request.CardIDOne, request.CardIDTwo).Delete(&RequestCard{}).Error
+		request.CardIDOne, request.CardIDOne, request.CardIDTwo, request.CardIDTwo).Delete(&RequestCard{}).Error
 
 	if err != nil {
 		return err
@@ -290,19 +308,25 @@ func deleteCardRequests(request RequestCard) error {
 	return nil
 }
 
+/*
+Perform a swap by swapping the cards between the owners and deleting all (pending)
+requests made involving those cards
+*/
 func databasePerformSwap(swapToDo *RequestCard) {
 
 	// User IDs should be swapped; error checking done before call
-	var requestCard RequestCard
 
 	// User IDs are swapped when both parties agree to exchange gift cards
 	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDOne).Update("user_id", swapToDo.UserIDTwo)
 	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDTwo).Update("user_id", swapToDo.UserIDOne)
 
 	// delete any pending swaps involving the two cards
-	deleteCardRequests(requestCard)
+	deleteCardRequests(swapToDo)
 }
 
+/*
+Get a gift card from the database based on its indicated card ID
+*/
 func databaseGetCardByCardID(cardID uint) (GiftCard, error) {
 	var card GiftCard
 	var theError error

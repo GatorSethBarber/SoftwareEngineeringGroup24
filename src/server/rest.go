@@ -76,13 +76,6 @@ type frontEndSwap struct {
 	CardIDTwo uint `json:"cardIDTwo"`
 }
 
-type backEndSwap struct {
-	UserIDOne uint
-	UserIDTwo uint
-	CardIDOne uint
-	CardIDTwo uint
-}
-
 /*
 Parse a YYYY-MM string to time.Time
 */
@@ -451,6 +444,7 @@ func requestLogout(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusOK)
 }
 
+/************ Swaps ****************/
 // Swaps
 // TODO: test these functions below (if not already tested)
 /*
@@ -472,8 +466,6 @@ func decodeJSON(writer http.ResponseWriter, request *http.Request, object interf
 	}
 	return true
 }
-
-var swapSlice []backEndSwap
 
 func requestSwap(writer http.ResponseWriter, request *http.Request) {
 	var frontEndSwapInfo frontEndSwap
@@ -507,60 +499,28 @@ func requestSwap(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// Otherwise, everythin is OK and do translation
-	backEndSwap := backEndSwap{
+	// Otherwise, everything is OK and do translation
+	backEndSwap := RequestCard{
 		cardOne.UserID,
 		cardTwo.UserID,
 		frontEndSwapInfo.CardIDOne,
 		frontEndSwapInfo.CardIDTwo,
 	}
 
-	// FIXME: Add to swaps instead
-	_, isPresent := getSwapIfValid(&frontEndSwapInfo)
-	if isPresent {
+	// Add to swaps
+	if err := databaseCreateRequest(&backEndSwap); err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		fmt.Println("Already stored")
-		return
 	}
-	swapSlice = append(swapSlice, backEndSwap)
+	// _, isPresent := getSwapIfValid(&frontEndSwapInfo)
+	// if isPresent {
+	// 	writer.WriteHeader(http.StatusBadRequest)
+	// 	fmt.Println("Already stored")
+	// 	return
+	// }
 
 	writer.WriteHeader(http.StatusCreated)
 	fmt.Printf("CREATED SWAP: %v\n", frontEndSwapInfo)
-}
-
-func getSwapIfValid(swap *frontEndSwap) (backEndSwap, bool) {
-	for _, beswap := range swapSlice {
-		if swap.CardIDOne == beswap.CardIDOne && swap.CardIDTwo == beswap.CardIDTwo {
-			return beswap, true
-		}
-	}
-
-	return backEndSwap{}, false
-}
-
-func doSwapAndDelete(swap *frontEndSwap) {
-	i := 0
-	for i < len(swapSlice) {
-		if swapSlice[i].CardIDOne == swap.CardIDOne ||
-			swapSlice[i].CardIDTwo == swap.CardIDOne ||
-			swapSlice[i].CardIDOne == swap.CardIDTwo ||
-			swapSlice[i].CardIDTwo == swap.CardIDTwo {
-			swapSlice = append(swapSlice[:i], swapSlice[i+1:]...)
-		}
-	}
-}
-
-func deleteSwap(swapToDelete *frontEndSwap) {
-	i := 0
-	for i < len(swapSlice) {
-		if swapSlice[i].CardIDOne == swapToDelete.CardIDOne &&
-			swapSlice[i].CardIDTwo == swapToDelete.CardIDTwo {
-			swapSlice = append(swapSlice[:i], swapSlice[i+1:]...)
-			return
-		} else {
-			i = i + 1
-		}
-	}
 }
 
 func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
@@ -569,8 +529,8 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// FIXME: Fix the following with a database function
-	_, exists := getSwapIfValid(&frontEndSwapInfo)
+	// Get swap from database
+	swapFromBackEnd, exists := databaseGetSwapIfValid(&frontEndSwapInfo)
 	if !exists {
 		fmt.Printf("This swap does not exist: %v\n", frontEndSwapInfo)
 		writer.WriteHeader(http.StatusBadRequest)
@@ -600,8 +560,8 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// FIXME: Change this to final database function
-	doSwapAndDelete(&frontEndSwapInfo)
+	// Peform actual swap database function
+	databasePerformSwap(&swapFromBackEnd)
 
 	fmt.Printf("REDEEEMED SWAP %v", frontEndSwapInfo)
 }
@@ -632,30 +592,11 @@ func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	deleteSwap(&frontEndSwapInfo)
+	formatted := RequestCard{CardIDOne: frontEndSwapInfo.CardIDOne, CardIDTwo: frontEndSwapInfo.CardIDTwo}
+	denyCardRequest(&formatted)
 }
 
-func tempGetByUserIDOne(userID uint) []backEndSwap {
-	var got []backEndSwap
-	for _, el := range swapSlice {
-		if el.UserIDOne == userID {
-			got = append(got, el)
-		}
-	}
-	return got
-}
-
-func tempGetByUserIDTwo(userID uint) []backEndSwap {
-	var got []backEndSwap
-	for _, el := range swapSlice {
-		if el.UserIDTwo == userID {
-			got = append(got, el)
-		}
-	}
-	return got
-}
-
-func backEndSwapToCards(swaps *[]backEndSwap) ([][2]jsonCard, bool) {
+func backEndSwapToCards(swaps *[]RequestCard) ([][2]jsonCard, bool) {
 	var translated [][2]GiftCard
 	var translatedFront [][2]jsonCard
 
@@ -704,7 +645,11 @@ func getRequestedByUser(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	gotSwaps := tempGetByUserIDOne(user.ID)
+	gotSwaps, err := getPendingUserRequests(user.ID)
+	if err != nil {
+		gotSwaps = []RequestCard{}
+	}
+
 	cards, cardsOk := backEndSwapToCards(&gotSwaps)
 	if !cardsOk {
 		writer.WriteHeader(http.StatusBadRequest)
@@ -733,7 +678,11 @@ func getRequestedByOthers(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	gotSwaps := tempGetByUserIDTwo(user.ID)
+	gotSwaps, err := getPendingRequestsFromOthers(user.ID)
+	if err != nil {
+		gotSwaps = []RequestCard{}
+	}
+
 	cards, cardsOk := backEndSwapToCards(&gotSwaps)
 	if !cardsOk {
 		fmt.Println("By others: Trouble transferring stored cards")
@@ -755,7 +704,11 @@ func getRequestedByOthers(writer http.ResponseWriter, request *http.Request) {
 }
 
 // Cookies
-// TODO: test the following two functions below
+// Note: The following are tested using functional testing
+
+/*
+Get the user information from the cookie, if the cookie exists
+*/
 func cookieGetUserByCookie(request *http.Request) (User, bool) {
 	username, cookieExists := cookieExtractUsername(request)
 	if !cookieExists {
@@ -770,6 +723,9 @@ func cookieGetUserByCookie(request *http.Request) (User, bool) {
 	return user, true
 }
 
+/*
+Extract the username from the info stored concerning a cookie if possible.
+*/
 func cookieExtractUsername(request *http.Request) (string, bool) {
 	session, err := store.Get(request, "session-gcex")
 	if err != nil {
@@ -784,6 +740,9 @@ func cookieExtractUsername(request *http.Request) (string, bool) {
 	return gotName.(string), true
 }
 
+/*
+See if user is authorized to access information of indicated user
+*/
 func authSessionForUser(request *http.Request, username string) bool {
 	session, err := store.Get(request, "session-gcex")
 	if err != nil {
@@ -811,6 +770,9 @@ func authSessionForUser(request *http.Request, username string) bool {
 	return true
 }
 
+/*
+Make a session cookie
+*/
 func makeSession(writer http.ResponseWriter, request *http.Request, username string, hash string) {
 	session, err := store.Get(request, "session-gcex")
 	if err != nil {
@@ -838,6 +800,9 @@ func makeSession(writer http.ResponseWriter, request *http.Request, username str
 	}
 }
 
+/*
+Delete a session cookie
+*/
 func deleteSession(writer http.ResponseWriter, request *http.Request) {
 	session, err := store.Get(request, "session-gcex")
 	if err != nil {
