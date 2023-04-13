@@ -87,6 +87,8 @@ including their account information, what cards they have in "My Wallet," and th
 therefore, no redirection takes place and the dashboard is contained within a single page.
 
 #### Viewing User information
+Viewing user information can be done so through the dashboard via a logged-in user with a cookie. It is the first tab, and the one that opens when the redirect initially happens.
+It has infromation about the user that they input during their registering process which matches what is utilized in the back-end. Data is obtained by decoding the cookie through a back-end query.
 
 #### Veiwing Your Cards in MyWallet
 
