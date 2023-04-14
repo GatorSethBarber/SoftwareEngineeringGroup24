@@ -579,14 +579,15 @@ func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	cardOne, errCardOne := databaseGetCardByCardID(frontEndSwapInfo.CardIDOne)
 	cardTwo, errCardTwo := databaseGetCardByCardID(frontEndSwapInfo.CardIDTwo)
-	if errCardTwo != nil {
+	if errCardTwo != nil || errCardOne != nil {
 		fmt.Printf("Card Two is invalid for %v\n", frontEndSwapInfo)
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if user.ID != cardTwo.UserID {
+	if user.ID != cardTwo.UserID && user.ID != cardOne.ID {
 		fmt.Printf("User doesn't own card 2 for %v\n", frontEndSwapInfo)
 		writer.WriteHeader(http.StatusBadRequest)
 		return

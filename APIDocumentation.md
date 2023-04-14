@@ -217,7 +217,7 @@ Response:
 
 ### Deny Swap
 
-Deletes a single swap. (No cascading.)
+Deletes a single swap. (No cascading.) Can be initiated by the iniatator or receiver of a request.
 
 Verb: DELETE
 
