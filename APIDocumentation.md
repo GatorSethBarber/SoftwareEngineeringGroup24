@@ -217,7 +217,7 @@ Response:
 
 ### Deny Swap
 
-Deletes a single swap. (No cascading.)
+Deletes a single swap. (No cascading.) Can be initiated by the iniatator or receiver of a request.
 
 Verb: DELETE
 
@@ -230,7 +230,7 @@ Get all the pending requested the user initiated
 
 Verb: GET
 
-URL: swaps/get/pending/requested
+URL: swaps/get/pending/requested/user
 
 Response Body: [
     [{cardOne}, {cardTwo}]
@@ -241,10 +241,8 @@ Get all the pending requests others initiated with the user
 
 Verb: GET
 
-URL: swaps/get/pending/requested
+URL: swaps/get/pending/requested/others
 
 Response Body: [
     [{cardOne}, {cardTwo}]
 ]
-
-Verb: PUT

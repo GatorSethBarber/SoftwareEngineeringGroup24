@@ -104,7 +104,8 @@ func databaseCreateUser(newUser *User) error {
 	return returnError
 }
 
-// Get user information from database
+/******************************************************* User Information From Database *******************************************************/
+
 // Returns the user and the error that occurred (if no error, nil)
 func getUserInformation(username string, password string) (User, error) {
 	fmt.Println("Getting with", username, "and", password)
@@ -129,7 +130,7 @@ func newGetUserInformation(username string) (User, error) {
 	return user, theError
 }
 
-// Get the username based on the id stored in the database.
+// Get the username based on the ID stored in the database.
 func getUserName(userID uint) (string, error) {
 	var user User
 	var theError error
@@ -140,6 +141,20 @@ func getUserName(userID uint) (string, error) {
 
 	return user.Username, theError
 }
+
+// Get the userID from username stored in the database
+func getUserID(username string) (uint, error) {
+	var user User
+	var usernameError error
+	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
+		fmt.Println(err)
+		usernameError = err
+	}
+
+	return user.ID, usernameError
+}
+
+/************************************************************** Encrypt Password **************************************************************/
 
 // Returns the bcrypt hash of the user's password
 func HashPassword(password string) (string, error) {
@@ -171,6 +186,8 @@ func getUserExistsPassword(username, password string) (User, bool) {
 	return user, true
 }
 
+/*************************************************** Gift Card Information From Database ***************************************************/
+
 func databaseCreateCard(giftcard *GiftCard) error {
 	// var result := db.Create(&GiftCard)
 
@@ -195,18 +212,6 @@ func databaseGetCardsByCompany(companyName string) ([]GiftCard, error) {
 	return cards, theError
 }
 
-// Get the userID from username stored in the database
-func getUserID(username string) (uint, error) {
-	var user User
-	var usernameError error
-	if err := database.Where("username = ?", username).First(&user).Error; err != nil {
-		fmt.Println(err)
-		usernameError = err
-	}
-
-	return user.ID, usernameError
-}
-
 // Get all the cards from the user based on the userID stored in the database
 func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	var cards []GiftCard
@@ -222,24 +227,10 @@ func databaseGetCardsFromUser(username string) ([]GiftCard, error) {
 	return cards, theError
 }
 
-/***************************************** Swapping Gift Cards ******************************************/
+/************************************************************* Swapping Gift Cards *************************************************************/
 
-// request user to trade
 /*
-func createRequestCard() error {
-	// request swap: adding new transaction
-
-	tx := database.Begin()
-
-	// if err := tx.Create(&RequestCard).Error; err != nil {
-	if err := tx.Create(&RequestCard{CardIDTwo: ?}).Error; err != nil { // FIXME: should I use create
-		tx.Rollback()
-		return err
-	}
-
-	return tx.Commit().Error
-
-}
+Add a new request for swapping cards to the database.
 */
 func databaseCreateRequest(newRequest *RequestCard) error {
 	if err := database.Create(newRequest).Error; err != nil {
@@ -248,6 +239,37 @@ func databaseCreateRequest(newRequest *RequestCard) error {
 	return nil
 }
 
+/*
+Get all pending requests made by the user indicated by the user ID
+*/
+func getPendingUserRequests(userID1 uint) ([]RequestCard, error) {
+	var userCardRequest []RequestCard
+	var theError error
+
+	if err := database.Where("user_id_one = ?", userID1).Find(&userCardRequest).Error; err != nil {
+		return nil, err
+	}
+
+	return userCardRequest, theError
+}
+
+/*
+Get all pending requests made of the user indicated by the user ID
+*/
+func getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error) {
+	var othersCardRequest []RequestCard
+	var theError error
+
+	if err := database.Where("user_id_two = ?", userID2).Find(&othersCardRequest).Error; err != nil {
+		return nil, err
+	}
+
+	return othersCardRequest, theError
+}
+
+/*
+Get a (back-end) swap from the database if it exists based on a passed in front-end swap
+*/
 func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
 	var swap RequestCard
 	if err := database.Where("card_id_one = ? AND card_id_two = ?", simpleSwap.CardIDOne, simpleSwap.CardIDTwo).First(&swap).Error; err != nil {
@@ -257,81 +279,54 @@ func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
 	return swap, true
 }
 
-// Switch the user IDs when both parties agree to swap gift cards
 /*
-func swapGiftCards(userID1, userID2 uint) error {
-	// Begin a transaction
-	tx := database.Begin()
+Deny a request (delete a single request)
+*/
+func denyCardRequest(swap *RequestCard) error {
+	// var requestCard RequestCard
 
-	// Fetch user records by their IDs
-	var user1, user2 GiftCard
-	if err := tx.Where("id = ?", userID1).First(&user1).Error; err != nil {
-		// if there's an error, return the database into its original state
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Where("id = ?", userID2).First(&user2).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	// Swap user IDs
-	user1.ID, user2.ID = user2.ID, user1.ID
-
-	if err := tx.Save(&user1).Error; err != nil {
-		// if there is no error, the new user ID of the gift card will be saved to the database
-		tx.Rollback()
-		return err
-	}
-	if err := tx.Save(&user2).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	// if there is no error, the changes made within the transaction are saved to the database permanently
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
+	if err := database.Where("card_id_one = ? AND card_id_two = ?", swap.CardIDOne, swap.CardIDTwo).Delete(&RequestCard{}).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
+
+/*
+Delete all pending requests involving the cards specified in the request
 */
-func databasePerformSwap(swapToDo *RequestCard) {
-	// User IDs should be swapped; error checking done before call
-	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDOne).Update("user_id", swapToDo.UserIDTwo)
-	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDTwo).Update("user_id", swapToDo.UserIDOne)
-}
+func deleteCardRequests(request *RequestCard) error {
+	fmt.Println("DELETING REQUESTS")
+	// Delete all gift card requests that are not accepted or denied for the given swap
+	err := database.Where("card_id_one = ? OR card_id_two = ? OR card_id_one = ? OR card_id_two = ?",
+		request.CardIDOne, request.CardIDOne, request.CardIDTwo, request.CardIDTwo).Delete(&RequestCard{}).Error
 
-func denyCardRequest() {
+	if err != nil {
+		return err
+	}
 
+	return nil
 }
 
 /*
-	func deleteCardRequests(gcardID uint) {
-		tx := db.Begin()
-
-		if err := tx.Where("id = ?", gcardID).Delete(&RequestCard{}).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		if err := tx.Commit().Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		return nil
-	}
+Perform a swap by swapping the cards between the owners and deleting all (pending)
+requests made involving those cards
 */
-func getAllPendingUserRequests() {
+func databasePerformSwap(swapToDo *RequestCard) {
 
+	// User IDs should be swapped; error checking done before call
+
+	// User IDs are swapped when both parties agree to exchange gift cards
+	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDOne).Update("user_id", swapToDo.UserIDTwo)
+	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDTwo).Update("user_id", swapToDo.UserIDOne)
+
+	// delete any pending swaps involving the two cards
+	deleteCardRequests(swapToDo)
 }
 
-func getAllPendingRequestsFromOthers() {
-
-}
-
+/*
+Get a gift card from the database based on its indicated card ID
+*/
 func databaseGetCardByCardID(cardID uint) (GiftCard, error) {
 	var card GiftCard
 	var theError error
@@ -343,7 +338,7 @@ func databaseGetCardByCardID(cardID uint) (GiftCard, error) {
 	return card, theError
 }
 
-/******************************************** Database setup ********************************************/
+/******************************************************************** Database Setup **********************************************************/
 
 func initialSetup(database *gorm.DB) {
 	//database.AutoMigrate(&User{})
@@ -353,6 +348,7 @@ func initialSetup(database *gorm.DB) {
 
 	makeTestUsers(database)
 	populateGiftCards(database)
+	createSwaps(database)
 
 	fmt.Println("Initial set up complete.")
 }
@@ -380,18 +376,6 @@ func makeTestUsers(database *gorm.DB) {
 	database.CreateInBatches(&users, 50)
 }
 
-/*
-type GiftCard struct {
-	gorm.Model
-	UserID            uint       `gorm:"not null"`
-	CompanyName       string     `gorm:"unique"`
-	CardNumber        uint32     `gorm:"primary_key"`
-	Amount            float32    `gorm:"not null"` // an amount must be displayed
-	Expiration        time.Time
-	AvailabilityCount uint       `gorm:"not null"`
-}
-*/
-
 func populateGiftCards(database *gorm.DB) {
 	useDate := time.Date(2027, 12, 12, 0, 0, 0, 0, time.UTC)
 	giftcards := []GiftCard{
@@ -413,4 +397,22 @@ func populateGiftCards(database *gorm.DB) {
 	}
 
 	database.CreateInBatches(&giftcards, 100)
+}
+
+func createSwaps(database *gorm.DB) {
+	requests := []RequestCard{
+		{UserIDOne: 1, UserIDTwo: 3, CardIDOne: 1, CardIDTwo: 9},
+		{UserIDOne: 1, UserIDTwo: 2, CardIDOne: 2, CardIDTwo: 5},
+		{UserIDOne: 2, UserIDTwo: 1, CardIDOne: 5, CardIDTwo: 3},
+		// {UserIDOne: 2, UserIDTwo: 4, CardIDOne: 6, CardIDTwo: 10},
+		// {UserIDOne: 2, UserIDTwo: 5, CardIDOne: 8, CardIDTwo: 15},
+		// {UserIDOne: 3, UserIDTwo: 2, CardIDOne: 9, CardIDTwo: 5},
+		// {UserIDOne: 4, UserIDTwo: 3, CardIDOne: 11, CardIDTwo: 9},
+		// {UserIDOne: 4, UserIDTwo: 5, CardIDOne: 12, CardIDTwo: 14},
+		// {UserIDOne: 5, UserIDTwo: 3, CardIDOne: 13, CardIDTwo: 9},
+		// {UserIDOne: 5, UserIDTwo: 1, CardIDOne: 14, CardIDTwo: 3},
+		// {UserIDOne: 5, UserIDTwo: 4, CardIDOne: 15, CardIDTwo: 10},
+	}
+
+	database.CreateInBatches(&requests, 50)
 }
