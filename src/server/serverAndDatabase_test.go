@@ -444,3 +444,145 @@ func TestInvalidDatabaseGetCardByCardID(t *testing.T) {
 		t.Fatalf("Wanted an error, but got %v", gotCard)
 	}
 }
+
+/********************************* Testing Swapping Functions *********************************/
+func TestCreateRequest(t *testing.T) {
+	database = ConnectToDatabase()
+
+	newCardRequest := RequestCard{
+		UserIDOne: 5,
+		UserIDTwo: 3,
+		CardIDOne: 13,
+		CardIDTwo: 9,
+	}
+
+	// call the function
+	err := databaseCreateRequest(&newCardRequest)
+
+	if err != nil {
+		t.Errorf("databaseCreateCard() function failed: expected an error to be returned")
+	}
+}
+
+func TestGetPendingUserRequests(t *testing.T) {
+	database = ConnectToDatabase()
+
+	var userID1 uint = 1
+	expectedRequest := []RequestCard{
+		{
+			UserIDOne: 1,
+			UserIDTwo: 3,
+			CardIDOne: 1,
+			CardIDTwo: 9,
+		},
+
+		{
+			UserIDOne: 1,
+			UserIDTwo: 2,
+			CardIDOne: 2,
+			CardIDTwo: 5,
+		},
+	}
+
+	// Call the function
+	actualRequest, err := getPendingUserRequests(userID1)
+
+	// Check the results
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
+
+	// check length
+	if len(actualRequest) != len(expectedRequest) {
+		t.Errorf("unexpected result: expected=%v, actual=%v", expectedRequest, actualRequest)
+	}
+}
+
+func TestGetPendingRequestsFromOthers(t *testing.T) {
+	database = ConnectToDatabase()
+
+	var userID1 uint = 1
+	expectedRequest := []RequestCard{
+		{
+			UserIDOne: 1,
+			UserIDTwo: 3,
+			CardIDOne: 1,
+			CardIDTwo: 9,
+		},
+
+		{
+			UserIDOne: 1,
+			UserIDTwo: 2,
+			CardIDOne: 2,
+			CardIDTwo: 5,
+		},
+	}
+
+	actualRequest, err := getPendingRequestsFromOthers(userID1)
+
+	// Check the results
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
+
+	if len(actualRequest) != len(expectedRequest) {
+		t.Errorf("unexpected result: expected=%v, actual=%v", expectedRequest, actualRequest)
+	}
+}
+
+func TestGetSwapIfValid(t *testing.T) {
+
+}
+
+func TestDenyCardRequest(t *testing.T) {
+	database = ConnectToDatabase()
+
+	testRequestCard := RequestCard{
+		UserIDOne: 3,
+		UserIDTwo: 2,
+		CardIDOne: 9,
+		CardIDTwo: 5,
+	}
+
+	// call the function
+	err := denyCardRequest(testRequestCard)
+
+	if err != nil {
+		t.Errorf("denyCardRequest() function failed: expected an error to be returned")
+	}
+
+	var result RequestCard
+	if err := database.Where("card_id_one = ? AND card_id_two = ?", testRequestCard.CardIDOne, testRequestCard.CardIDTwo).First(&result).Error; err == nil {
+		t.Errorf("expected requested card to be deleted from the database")
+	}
+
+}
+
+func TestDeleteCardRequests(t *testing.T) {
+	database = ConnectToDatabase()
+
+	cardRequests := RequestCard{
+		UserIDOne: 4,
+		UserIDTwo: 3,
+		CardIDOne: 11,
+		CardIDTwo: 9,
+	}
+
+	// call the function
+	err := deleteCardRequests(cardRequests)
+
+	if err != nil {
+		t.Errorf("deleteCardRequests() function failed: expected an error to be returned")
+	}
+
+	var result RequestCard
+	if err := database.Where("card_id_one = ? OR card_id_two = ? OR card_id_one = ? OR card_id_two = ?", cardRequests.CardIDOne, cardRequests.CardIDTwo).First(&result).Error; err == nil {
+		t.Errorf("expected requested card to be deleted from the database")
+	}
+
+}
+
+func TestPerformSwap(t *testing.T) {
+	database = ConnectToDatabase()
+
+}
