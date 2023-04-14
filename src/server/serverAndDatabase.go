@@ -348,6 +348,7 @@ func initialSetup(database *gorm.DB) {
 
 	makeTestUsers(database)
 	populateGiftCards(database)
+	createSwaps(database)
 
 	fmt.Println("Initial set up complete.")
 }
