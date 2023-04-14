@@ -403,14 +403,14 @@ func createSwaps(database *gorm.DB) {
 		{UserIDOne: 1, UserIDTwo: 3, CardIDOne: 1, CardIDTwo: 9},
 		{UserIDOne: 1, UserIDTwo: 2, CardIDOne: 2, CardIDTwo: 5},
 		{UserIDOne: 2, UserIDTwo: 1, CardIDOne: 5, CardIDTwo: 3},
-		{UserIDOne: 2, UserIDTwo: 4, CardIDOne: 6, CardIDTwo: 10},
-		{UserIDOne: 2, UserIDTwo: 5, CardIDOne: 8, CardIDTwo: 15},
-		{UserIDOne: 3, UserIDTwo: 2, CardIDOne: 9, CardIDTwo: 5},
-		{UserIDOne: 4, UserIDTwo: 3, CardIDOne: 11, CardIDTwo: 9},
-		{UserIDOne: 4, UserIDTwo: 5, CardIDOne: 12, CardIDTwo: 14},
-		{UserIDOne: 5, UserIDTwo: 3, CardIDOne: 13, CardIDTwo: 9},
-		{UserIDOne: 5, UserIDTwo: 1, CardIDOne: 14, CardIDTwo: 3},
-		{UserIDOne: 5, UserIDTwo: 4, CardIDOne: 15, CardIDTwo: 10},
+		// {UserIDOne: 2, UserIDTwo: 4, CardIDOne: 6, CardIDTwo: 10},
+		// {UserIDOne: 2, UserIDTwo: 5, CardIDOne: 8, CardIDTwo: 15},
+		// {UserIDOne: 3, UserIDTwo: 2, CardIDOne: 9, CardIDTwo: 5},
+		// {UserIDOne: 4, UserIDTwo: 3, CardIDOne: 11, CardIDTwo: 9},
+		// {UserIDOne: 4, UserIDTwo: 5, CardIDOne: 12, CardIDTwo: 14},
+		// {UserIDOne: 5, UserIDTwo: 3, CardIDOne: 13, CardIDTwo: 9},
+		// {UserIDOne: 5, UserIDTwo: 1, CardIDOne: 14, CardIDTwo: 3},
+		// {UserIDOne: 5, UserIDTwo: 4, CardIDOne: 15, CardIDTwo: 10},
 	}
 
 	database.CreateInBatches(&requests, 50)

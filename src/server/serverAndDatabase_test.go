@@ -3,8 +3,17 @@ package main
 import (
 	"testing"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
+// Added sprint 4
+func doDatabaseAndSwapsForTest() {
+	database = ConnectToDatabase()
+	createSwaps(database)
+}
+
+// First part for a previous sprint
 // test databaseCreateUser
 
 func TestCreateWithAlreadyTakenEmail(t *testing.T) {
@@ -366,7 +375,6 @@ func TestInvalidGetCardsFromUser(t *testing.T) {
 	}
 }
 
-/*
 func TestValidBcryptPassword(t *testing.T) {
 	password := "mypassword"
 
@@ -388,23 +396,26 @@ func TestInvalidBcryptPassword(t *testing.T) {
 	if errTwo != nil {
 		t.Fatalf("Unexpected error %v", otherEncrypt)
 	}
-	err := bcrypt.CompareHashAndPassword([]byte(otherEncrypt), []byte(notPass))
-	if err != bcrypt.ErrMismatchedHashAndPassword {
+	err := CheckPassword(string(otherEncrypt), notPass)
+	if err == nil {
 		t.Errorf("%v and %s should be mismatched", otherEncrypt, notPass)
 	}
 }
 
 func TestComparePasswordAndHash(t *testing.T) {
-	pass := "allmine"
-	expectedHash := "$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga"
+	password := "allmine"
+	hashed, errOne := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
-	err := CheckPassword(pass, expectedHash)
+	if errOne != nil {
+		t.Fatalf("Encountered error while hashing: %v", errOne)
+	}
+
+	err := CheckPassword(password, string(hashed))
 	if err != nil {
-		t.Errorf("unexpected error: got %q, want %q", err, CheckPassword)
+		t.Fatalf("Expected nil, got %q", err)
 	}
 
 }
-*/
 
 // Sprint 4
 func TestValidDatabaseGetCardByCardID(t *testing.T) {
@@ -444,3 +455,137 @@ func TestInvalidDatabaseGetCardByCardID(t *testing.T) {
 		t.Fatalf("Wanted an error, but got %v", gotCard)
 	}
 }
+
+// Test databaseCreateRequest(newRequest *RequestCard) error
+// Note: No testing for invalid card numbers, etc., because that is handled elsewhere
+
+func TestValidDatabaseCreateRequest(t *testing.T) {
+	database = ConnectToDatabase()
+	newRequest := RequestCard{
+		UserIDOne: 5,
+		UserIDTwo: 1,
+		CardIDOne: 14,
+		CardIDTwo: 3,
+	}
+
+	err := databaseCreateRequest(&newRequest)
+	if err != nil {
+		t.Fatalf("Expected to create request, but got %v", err)
+	}
+
+	if errTwo := denyCardRequest(&newRequest); errTwo != nil {
+		t.Fatalf("Error in deleting from database")
+	}
+}
+
+func TestDuplicateDatabaseCreateRequest(t *testing.T) {
+	database = ConnectToDatabase()
+	newRequest := RequestCard{
+		UserIDOne: 5,
+		UserIDTwo: 1,
+		CardIDOne: 14,
+		CardIDTwo: 3,
+	}
+
+	errOne := databaseCreateRequest(&newRequest)
+	if errOne != nil {
+		t.Fatalf("Expected to not get error for first, but got %v", errOne)
+	}
+
+	errTwo := databaseCreateRequest(&newRequest)
+	if errTwo == nil {
+		t.Fatalf("Expected to get error for duplicate, but did not")
+	}
+
+	if err := denyCardRequest(&newRequest); err != nil {
+		t.Fatalf("Error in deleting from database")
+	}
+}
+
+// Test denyCardRequest(swap *RequestCard) error
+func TestValidDenyCardRequest(t *testing.T) {
+	database = ConnectToDatabase() // Added for completeness
+	doDatabaseAndSwapsForTest()
+
+	newRequest := RequestCard{
+		UserIDOne: 1,
+		UserIDTwo: 3,
+		CardIDOne: 1,
+		CardIDTwo: 9,
+	}
+
+	if err := denyCardRequest(&newRequest); err != nil {
+		t.Fatalf("Expected success, got %v", err)
+	}
+
+}
+
+// Test getPendingUserRequests(userID1 uint) ([]RequestCard, error)
+func TestNonEmptyValidGetPendingUserRequests(t *testing.T) {
+	doDatabaseAndSwapsForTest()
+	var useUserID uint = 1
+	gotSwaps, err := getPendingUserRequests(useUserID)
+	if err != nil {
+		t.Fatalf("Expected to get swaps, got %v", err)
+	}
+
+	if len(gotSwaps) < 1 {
+		t.Fatalf("Expected to get one or more swaps, got 0")
+	}
+
+	if gotSwaps[0].UserIDOne != useUserID {
+		t.Fatalf("Expected to get requests made by user, got requests made by someone else")
+	}
+}
+
+func TestEmptyValidGetPendingUserRequests(t *testing.T) {
+	doDatabaseAndSwapsForTest()
+	var useUserID uint = 0
+	gotSwaps, err := getPendingUserRequests(useUserID)
+	if err != nil {
+		t.Fatalf("Expected empty list, got %v", err)
+	}
+
+	if len(gotSwaps) != 0 {
+		t.Fatalf("Expected to get empty list, got %v", gotSwaps)
+	}
+}
+
+// Test getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error)
+// Test databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool)
+func TestValidDatabaseGetSwapIfValid(t *testing.T) {
+	doDatabaseAndSwapsForTest()
+
+	frontEnd := frontEndSwap{
+		CardIDOne: 2,
+		CardIDTwo: 5,
+	}
+
+	want := RequestCard{UserIDOne: 1, UserIDTwo: 2, CardIDOne: 2, CardIDTwo: 5}
+
+	got, exists := databaseGetSwapIfValid(&frontEnd)
+	if !exists {
+		t.Fatalf("Wanted %v, got does not exist", want)
+	}
+
+	if want != got {
+		t.Fatalf("Wanted %v, got %v", want, got)
+	}
+}
+
+func TestInvalidDatabaseGetSwapIfValid(t *testing.T) {
+	doDatabaseAndSwapsForTest()
+
+	frontEnd := frontEndSwap{
+		CardIDOne: 1,
+		CardIDTwo: 5,
+	}
+
+	got, exists := databaseGetSwapIfValid(&frontEnd)
+	if exists {
+		t.Fatalf("Wanted does not exit, got %v", got)
+	}
+}
+
+// Test deleteCardRequests(request *RequestCard) error
+// Test databasePerformSwap(swapToDo *RequestCard)
