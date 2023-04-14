@@ -545,7 +545,7 @@ func TestDenyCardRequest(t *testing.T) {
 	}
 
 	// call the function
-	err := denyCardRequest(testRequestCard)
+	err := denyCardRequest(&testRequestCard)
 
 	if err != nil {
 		t.Errorf("denyCardRequest() function failed: expected an error to be returned")
@@ -569,7 +569,7 @@ func TestDeleteCardRequests(t *testing.T) {
 	}
 
 	// call the function
-	err := deleteCardRequests(cardRequests)
+	err := deleteCardRequests(&cardRequests)
 
 	if err != nil {
 		t.Errorf("deleteCardRequests() function failed: expected an error to be returned")
