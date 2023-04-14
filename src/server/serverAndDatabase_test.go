@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // test databaseCreateUser.
@@ -371,7 +373,6 @@ func TestInvalidGetCardsFromUser(t *testing.T) {
 	}
 }
 
-/*
 func TestValidBcryptPassword(t *testing.T) {
 	password := "mypassword"
 
@@ -393,23 +394,26 @@ func TestInvalidBcryptPassword(t *testing.T) {
 	if errTwo != nil {
 		t.Fatalf("Unexpected error %v", otherEncrypt)
 	}
-	err := bcrypt.CompareHashAndPassword([]byte(otherEncrypt), []byte(notPass))
-	if err != bcrypt.ErrMismatchedHashAndPassword {
+	err := CheckPassword(string(otherEncrypt), notPass)
+	if err == nil {
 		t.Errorf("%v and %s should be mismatched", otherEncrypt, notPass)
 	}
 }
 
 func TestComparePasswordAndHash(t *testing.T) {
-	pass := "allmine"
-	expectedHash := "$2a$10$XajjQvNhvvRt5GSeFk1xFeyqRrsxkhBkUiQeg0dt.wU1qD4aFDcga"
+	password := "allmine"
+	hashed, errOne := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
-	err := CheckPassword(pass, expectedHash)
+	if errOne != nil {
+		t.Fatalf("Encountered error while hashing: %v", errOne)
+	}
+
+	err := CheckPassword(password, string(hashed))
 	if err != nil {
-		t.Errorf("unexpected error: got %q, want %q", err, CheckPassword)
+		t.Fatalf("Expected nil, got %q", err)
 	}
 
 }
-*/
 
 // Sprint 4
 func TestValidDatabaseGetCardByCardID(t *testing.T) {
