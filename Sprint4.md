@@ -39,7 +39,7 @@ Important HTTP status codes (see https://developer.mozilla.org/en-US/docs/Web/HT
 * 400 bad request: Use for bad syntax in POST (creation)
 * 404 not found: Will use for error in GET or POST requests
 
-## Available Routes:
+## Currently Available Routes:
 The following routes are currently available for use. They are discussed further below.
 
 ### User
@@ -107,7 +107,7 @@ Status Codes:
 
 Note: As no error is thrown if a logged-out user calls this again, the response status code is always 200.
 
-### User Information Access (with Cookie)
+### User Information Access (Current)
 
 Get the information associated with a given username. If the user is logged in with the username (which is unique per user), then gets all information. If not, then personally identifiable information, such as email, password, firstName, and lastName, are replaced with empty strings.
 
@@ -192,6 +192,68 @@ Response:
 * Header: application/JSON
 * JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
 
+## Swap Cards
+
+Below, the user requesting the swap has control of card 1. The user who has the swap requested of them has control card 2.
+
+### Request Swap
+
+Verb: POST
+
+URL: swaps/request
+
+Body: {CardIDOne, CardIDTwo}
+
+Response: 
+* 201 if successful
+* 400 if bad request (missing information, does not own card one, owns card two)
+
+### Confirm Swap
+Confirms specified swap. Additionally, all pending swaps associated with either card number are automatically deleted (made by previous owners of the cards, not the current ones).
+
+Verb: PUT
+
+URL: swaps/confirm
+
+Body: {CardIdOne, CardIDTwo}
+
+Response:
+* 200 if successful
+* 404 if swap does not exist
+* 400 if bad request
+
+### Deny Swap
+
+Deletes a single swap. (No cascading.)
+
+Verb: DELETE
+
+URL: swaps/deny
+
+Body: {CardIDOne, CardIDTwo}
+
+### Get All Pending Swaps User Requested
+Get all the pending requested the user initiated
+
+Verb: GET
+
+URL: swaps/get/pending/requested/user
+
+Response Body: [
+    [{cardOne}, {cardTwo}]
+]
+
+### Get All Pending Swaps User Received
+Get all the pending requests others initiated with the user
+
+Verb: GET
+
+URL: swaps/get/pending/requested/others
+
+Response Body: [
+    [{cardOne}, {cardTwo}]
+]
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Testings
@@ -206,13 +268,134 @@ Response:
 
 
 ## Back End
-* Describe below (optional)
+Tests for the back end are split into two major groups: Unit tests ran using Go, and tests ran using Cypress
 
 ### Unit Tests in Go
-* List below  
+The testing of all functionality outside of router paths is done in Go. There are two files that contain unit tests, both of which are in src/server/
+* rest_test.go: This tests the functions associated with the processing of information.
+  * From Sprint 3:
+    * TestBcryptingIsCorrect: Tests working of bcrypt
 
-### Testing  in Cypress
-* List below
+  * From Sprint 2:
+    * TestValidCardInput: Test checkCardNumberAndAmount with valid input. Function should return true.
+    * TestMissingCardNumber: Test checkCardNumberAndAmount with a missing/blank card number. Function should return false.
+    * TestNegativeAmount: Test checkCardNumberAndAmount with a negative value for amount. Function should return false.
+    * TestZeroAmount: Test checkCardNumberAndAmount with a value of 0 for amount. Function should return false.
+    * Test_from_YYYY_MM_DD: Test stringToDate to ensure valid date properly converted.
+    * Test_from_YYYY_MM: Test stringToDate with invalid date string.
+    * Test_to_YYYY_MM: Test dateToString to ensure valid date properly converted to string
+    * TestValidCardBackToFrontWithNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct used for converting to JSON
+    * TestValidCardBackToFrontWithoutNumber: Test cardBackToFront to ensure valid card as stored in database is properly converted to struct for converting to JSON while hiding card number.
+    * TestInvalidUserBackToFrontWithoutNumber: Sanity check for cardBackToFront to ensure invalid data is handled properly.
+    * TestCompleteData: Test checkUserInfo to ensure it returns true when passed complete data
+    * TestIncompleteData: Test checkUserInfo to ensure it returns false when passed incomplete data
+* serverAndDatabase_test.go: These tests test the functionality of the database.
+  * From Sprint 3:
+    * TestValidGetUserExistsPassword: Tests that a user exists for a given valid username and password combination and that the correct user information is returned.
+    * TestInvaldGetUserExistsPassword: Tests that a user does not exist for a given invalid username and password combination.
+    * TestValidNewGetUserInformation: Tests that getting user information by username with a valid username gets the correct user from the database.
+    * TestInvalidNewGetUserInformation: Tests that getting user information by username with a non-existent username causes an error to be thrown by the database.
+    * TestValidGetUserID: Tests that getting a user id with a valid username returns the correct user id (via getUserID)
+    * TestInvalidGetUserID: Tests that getter a user id with an invalid username returns an error (via getUserID)
+    * TestValidGetCardsFromUser: Tests that cards are gotten (using databaseGetCardsFromUser) when a valid username is supplied
+    * TestInvalidGetCardsFromUser: Tests that an error is gotten when an invalid username is supplied to databaseGetCardsFromUser
+    * TestValidBcryptPassword: Tests that HashPassword and CheckPassword work together correctly
+    * TestInvalidBcryptPassword: Tests that HashPassword works correctly.
+    * TestComparePasswordAndHash: Tests that CheckPassword correctly checks hashes to be equal.
+  * From Sprint 2: 
+    * TestCreateWithAlreadyTakenEmail: Test that emails cannot be duplicated
+    * TestCreateWithAlreadyTakenUsername: Test that usernames cannot be duplicated
+    * TestCreateNewUser: Test that it is possible to create a new user
+    * TestValidGetUserInformation: Test getUserInformation to make sure it returns the correct information for valid username and password combination.
+    * TestInvalidGetUserInformation: Test getUserInformation to make sure it returns an error when called with an invalid username and password combination.
+    * TestValidGetUserName: Test getUserName to ensure that it gets the correct name when called with a valid userID.
+    * TestInvalidUserIdGetUserName: Test getUserName to ensure that it returns an error when called with an invalid userID.
+    * TestValidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct gift cards are gotten when called with a specific companyName.
+    * TestInvalidGiftCardsByCompany: Test databaseGetCardsByCompany to ensure that the correct affect happens when databaseGetCardsByCompany is called with a not-present companyName.
+    * TestInvalidDuplicateCardNumber: Test that duplicate card numbers are not allowed
+    * TestValidCrateCard: Create a new card for the database
+
+### Testing the REST API in Cypress
+This is done through an end-to-end Cypress spec. The tests are stored in the end to end specs spec.cy.js and testBackEndWithCookie.cy.js.
+* testSwapBackEnd.cy.js (from Sprint 4):
+  * Test Requesting Swap: Test that the route for requesting a swap is working correctly
+    * Without Login: If user is not logged in, return a 400 error code
+    * Logged in to different account: If user is logged into different account than that of the card owner (for the card being offered), return a 400 error code
+    * Logged into same account: User is correctly logged in to try swap: return a 201 to signify the swap was created
+    * Own both cards: User cannot create a swap when they own both cards; return a 400
+    * Try making duplicate request: Return a 400
+    * Using invalid card id numbers: This tests several attempts at using invalid card ids (card ids must be positive integers); return 400 for each attempt
+  * Test confirm swap: Test that the route for confirming swaps is working correctly
+    * Not logged in: Return a 400
+    * Logged in to different account: Do not have authorization to confirm swap; return a 400
+    * Logged in to correct account: Have authorization: return a 200 to indicate the swap has successfully taken place
+    * Try to confirm nonexistent swap: This request should return a 400
+    * Using invalid card numbers: Similar to above; return 400 for each attempt
+    * Create request for the following: Not a test; this sets up a swap for the next test;
+    * Try making duplicate request: The first attempt should be a 200 because confirming a swap, next 400 because the pending swap no longer exists
+  * Test deny swap: Test that the route for denying a single request is working correctly
+    * Make valid request for setup: Not a test: Is setting up for subsequent tests
+    * Not logged in: Return a 400
+    * Logged into different account: Return a 400 (user does not have appropritate authorization)
+    * Valid: Delete the swap and return 200 to indicate deletion successful
+    * Delete swap a second time: Returns a 200 (effectively deleting nonexistent swap)
+    * Delete with invalid card number one: Return a 400 (impossible for that card to exist)
+  * Setup for viewing swaps: Not a test: Sets up for the following tests
+    * Setup for viewing swaps
+  * Test get requested by user: Tests that the route for getting the potential card swaps requested by the user works
+    * Withoug login: Return a 400 (not authorized to do swapping)
+    * None requested by user: Return a 404 and an empty JSON array
+    * Some requested by user: Return a 200 and a JSON array containing the cards in pairs of [requester's card, wanted card] where the card number of the requester's card is not masked (user owns the card) but that of the wanted card is (user does not own that card)
+  * Test get requested of user: Test that the route for getting the potential card swaps requested of the user works
+    * Withoug login: Return a 400 (not authorized to do swapping)
+    * None requested of user: Return a 404 and an empty JSON array
+    * Some requested of user: Return a 200 and a JSON array containing the cards in pairs of [requester's card, wanted card] where the card number of the requester's card is masked (user does not own the card) but that of the wanted card is not (user owns that card)
+  * Delete swaps for testing views: Not a test: Cleans up remaining pending swaps from the test
+    * Delete remaining swaps for test
+* testBackEndWithCookie.cy.js (from Sprint 3):
+  * BasicLoginAndLogout: Test basic log in and log out
+    * Basic Login: Login without having previously logged in or logged out.
+    * Basic Logout: Logout after logging in.
+  * Multiple Logins and Logouts: Test multiple log ins and log outs
+    * Logout before login: Tests that logging out before loggin in does not throw error.
+    * Login with invalid user credentials: Tests that logging in with invalid credentials results in a 404 error.
+    * Login twice with valid credentials: Tests that logging in with valid user credentials without logging out between the log ins does not throw an error.
+    * Logout: Final logout (actually repeat of basic logout due to way Cypress tests work)
+  * Test new GET User information: Tests the new version of getting user information
+    * GET without login: Verifies that getting user information without being logged in masks personally identifiable values
+    * GET with same login: Verifies that user has access to needed information about their account when they are logged in.
+    * GET with different login: Verifies personally identifiable information about a user is masked from other users.
+    * GET nonexistent user without login: Verifies that attempts to access the information for a nonexistent user results in a 404 error.
+    * GET nonexistent user while logged in: Verifies that attempts to access the information for a nonexistent user results in a 404 error.
+  * Test new create Card
+    * Attempt to create without being logged in: Verifies that this case results in a 400 status code for the response
+    * Attempt to create with already taken gift card number: Should result in a 400 status code
+    * POST with missing card number: Should result in a 400 status code
+    * POST with valid new card: Should successfully create.
+  * Test get cards for user
+    * Get with invalid username (not logged in): Tests that 404 and body corresponding to empty list returned for request to get all cards associated with an invalid username when user is not logged in.
+    * Get with invalid username (logged in): Same as previous, but with user logged in
+    * Get with valid username (not logged in): Tests that the cards associated with username are gotten, but the actual card numbers are masked (by checking first card)
+    * Get with valid username (logged in): Tests that the cards associated with the username that the user is logged in as are gotten, with the actual card numbers not masked (by checking the first card)
+    * Get with valid username (logged in to different account): Same as *Get with valid username (not logged in)*, but with user logged in to a different account than that with the request's username.
+    * Get from user without any cards: Tests that getting the cards for a user that does not have any cards returns an empty list (an a 404 error)
+* spec.cy.js (from Sprint 2):
+  * Test GET User information: Tests that the /user/get/{username}/{password} route operates correctly
+    * GET with correct username and password: Tests valid username and password combination has response status code of 200.
+    * GET with incorrect password: Tests that invalid username and password combination has response status code of 404.
+  * Test POST User: Tests that the /user/new route operates correctly
+    * POST with already taken username: Tests that attempt to create new user with already taken username has a response status code of 400
+    * POST with already taken email: Tests that attempt to create new user with already taken email has a response status code of 400
+    * POST with missing info: Tests that attempt to create new user while not fully specifying needed data has a response status code of 400.
+    * POST with valid info: Tests that successful creation of user has status code of 201
+  * Test GET gift card information: Tests if the correct information is returned when requesting for a particular company name
+    * GET with correct company name: Tests that a 200 status code is the response when requesting for a valid company name
+    * GET without passing parameter: Tests that a 400 status code is the response to a request missing the *companyName* query parameter.
+    * Get with unkown company: Tests that a 404 status code is the response to a request with a *companyName* not present in the database.
+  * Test POST GiftCard: Tests if the gift card is successfully created
+    * POST with already taken card number: Tests that a 400 status code is the response when creating a gift card that has the same number as another gift card
+    * POST with missing card number: Tests that a 400 status code is the response when creating a gift card without its card number
+    * POST with valid new card: Tests that succesful creation of a new card has a response status code of 201
  
 # Conclusion
 * Describe below

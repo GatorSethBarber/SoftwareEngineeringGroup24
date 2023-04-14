@@ -11,7 +11,6 @@ const login = (username="Anlaf", password="password") => {
 }
 
 describe('Test Requesting Swap', () => {
-  
   it('Without login', () => {
     cy.request ({
       method: 'POST',
@@ -45,6 +44,7 @@ describe('Test Requesting Swap', () => {
       expect(response.status).to.equal(400)
     })
   })
+  
   it('Logged into same account', () => {
     login("SethTheBarber", "password")
     cy.request ({
@@ -62,6 +62,7 @@ describe('Test Requesting Swap', () => {
       expect(response.status).to.equal(201)
     })
   })
+  
   it('Own both cards', () => {
     login("SethTheBarber", "password")
     cy.request ({
@@ -80,7 +81,6 @@ describe('Test Requesting Swap', () => {
     })
   })
 
-  
   it('Try making duplicate request', () => {
     login("SethTheBarber", "password")
     cy.request ({
@@ -113,7 +113,7 @@ describe('Test Requesting Swap', () => {
     })
   })
   
-  it('Using invalid card numbers', () => {
+  it('Using invalid card id numbers', () => {
     login("SethTheBarber", "password")
     cy.request ({
       method: 'POST',
@@ -199,7 +199,7 @@ describe("Test confirm swap", () => {
       expect(response.status).to.equal(400)
     })
   })
-
+  
   it("Logged in to correct account", () => {
     login("Welthow", "password")
     cy.request ({
@@ -217,7 +217,7 @@ describe("Test confirm swap", () => {
       expect(response.status).to.equal(200)
     })
   })
-
+  
   it("Try to confirm nonexistent swap", () => {
     login()
     cy.request ({
@@ -267,15 +267,14 @@ describe("Test confirm swap", () => {
       expect(response.status).to.equal(400)
     })
   })
-
-  
-  it("Create request for follwowing", () => {
+    
+  it("Create request for following", () => {
     login("SethTheBarber", "password")
     cy.request ({
       method: 'POST',
       url: 'http://localhost:8080/swaps/request',
       body: {
-        "cardIDOne": 1,
+        "cardIDOne": 2,
         "cardIDTwo": 9
       },
       headers: {
@@ -294,7 +293,7 @@ describe("Test confirm swap", () => {
       method: 'PUT',
       url: 'http://localhost:8080/swaps/confirm',
       body: {
-        "cardIDOne": 1,
+        "cardIDOne": 2,
         "cardIDTwo": 9
       },
       headers: {
@@ -308,7 +307,7 @@ describe("Test confirm swap", () => {
       method: 'PUT',
       url: 'http://localhost:8080/swaps/confirm',
       body: {
-        "cardIDOne": 1,
+        "cardIDOne": 2,
         "cardIDTwo": 9
       },
       headers: {
@@ -319,6 +318,7 @@ describe("Test confirm swap", () => {
       expect(response.status).to.equal(400)
     })
   })
+  
 })
 
 
@@ -340,6 +340,7 @@ describe("Test deny swap", () => {
       expect(response.status).to.equal(201)
     })
   })
+  
   it("Not logged in", () => {
     cy.request({
       method: 'DELETE',
@@ -373,6 +374,7 @@ describe("Test deny swap", () => {
       expect(response.status).to.equal(400)
     })
   })
+  
   it("Valid", () => {
     login()
     cy.request({
@@ -425,6 +427,7 @@ describe("Test deny swap", () => {
     })
   })
 
+  
   it("Delete with invalid card number one", () => {
     login()
     cy.request({
@@ -442,6 +445,7 @@ describe("Test deny swap", () => {
       expect(response.status).to.equal(200)
     })
   })
+  
 })
 
 
@@ -561,7 +565,7 @@ describe("Test get requested of user", () => {
     })
   })
 
-  it("Some requested by user", () => {
+  it("Some requested of user", () => {
     login("EricTheRed", "gr33nlandH0")
     cy.request({
       method: 'GET',
@@ -577,8 +581,8 @@ describe("Test get requested of user", () => {
 })
 
 describe("Delete swaps for testing views", () => {
-  it("Set up swaps for test", () => {
-    login("LiefTheLucky", "bjarn3S@w1t")
+  it("Delete remaining swaps for test", () => {
+    login("SethTheBarber", "password")
     cy.request ({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny',

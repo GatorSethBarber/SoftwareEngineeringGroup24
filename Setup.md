@@ -82,10 +82,17 @@ Should the user log-in again, it would replace their current session with that o
 failure and an appropriate message.
 
 ### Dashboard
+Accessing the dashboard is only available to a logged-in user that has a cookie containing their information. The dashboard presents a way to view information about the current user,
+including their account information, what cards they have in "My Wallet," and their inbound and outbout requests. The dashboard is all in one component, with each section being a mat-tab element,
+therefore, no redirection takes place and the dashboard is contained within a single page.
 
 #### Viewing User information
+Viewing user information can be done so through the dashboard via a logged-in user with a cookie. It is the first tab, and the one that opens when the redirect initially happens.
+It has infromation about the user that they input during their registering process which matches what is utilized in the back-end. Data is obtained by decoding the cookie through a back-end query.
 
 #### Veiwing Your Cards in MyWallet
+Viewing your cards follows the same parameters as viewing user information; however, it is the second tab in the dashboard. Upon navigating to it, a table is displayed containing all
+the cards that are owned by the user in the database. This is done through a back-end call utilziing the current cookie to check userID from log-in info to sort the main database of all cards.
 
 ### Adding a New Card
 
