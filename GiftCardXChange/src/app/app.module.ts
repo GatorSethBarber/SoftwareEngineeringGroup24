@@ -21,6 +21,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import {MatTabsModule} from '@angular/material/tabs'; 
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DialogoptionComponent } from './dialogoption/dialogoption.component';
+
 
 
 @NgModule({
@@ -31,7 +34,8 @@ import { MatSelectModule } from '@angular/material/select';
     LoginComponent,
     RegisterComponent,
     CardsComponent,
-    DashboardComponent, 
+    DashboardComponent,
+    DialogoptionComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatSortModule,
     MatTabsModule,
     MatOptionModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDialogModule
     ],
 
   exports: [

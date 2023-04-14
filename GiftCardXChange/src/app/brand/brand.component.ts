@@ -4,6 +4,7 @@ import { BRANDS } from '../mock-brands'
 import { AuthService } from '../auth.service';
 import { HttpClient } from '@angular/common/http';
 import { any } from 'cypress/types/bluebird';
+
 @Component({
   selector: 'app-brand',
   templateUrl: './brand.component.html',
@@ -17,7 +18,8 @@ export class BrandComponent {
 
   constructor(
     private AuthService: AuthService, 
-    private http: HttpClient
+    private http: HttpClient,
+    
   ) { }
 
   ngOnInit() {
@@ -35,6 +37,7 @@ export class BrandComponent {
     });
 
   }
+
   
 
 }
