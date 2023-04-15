@@ -18,6 +18,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Card } from '../card';
 import { CancelDialogComponent } from '../cancel-dialog/cancel-dialog.component';
+import { RejectDialogComponent } from '../reject-dialog/reject-dialog.component';
+import { AcceptDialogComponent } from '../accept-dialog/accept-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,7 +41,7 @@ export class DashboardComponent {
 
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
-  inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested'];
+  inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested', 'action'];
   outboundColumnsToDisplay: string[] = ['requested', 'company', 'amount', 'expirationDate', 'offeredCard', 'action'];
   dataSource = new MatTableDataSource(CARDS);
   inboundRequestSource = new MatTableDataSource(this.requests);
@@ -138,4 +140,11 @@ export class DashboardComponent {
     this.dialogRef.open(CancelDialogComponent, { width: '300px', height: '300px' });
   }
 
+  openDenyDialog() {
+    this.dialogRef.open(RejectDialogComponent, { width: '300px', height: '300px' });
+  }
+
+  openAcceptDialog() {
+    this.dialogRef.open(AcceptDialogComponent, { width: '300px', height: '300px' });
+  }
 }
