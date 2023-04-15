@@ -23,6 +23,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DialogoptionComponent } from './dialogoption/dialogoption.component';
+import { CancelDialogComponent } from './cancel-dialog/cancel-dialog.component';
 
 
 
@@ -36,6 +37,7 @@ import { DialogoptionComponent } from './dialogoption/dialogoption.component';
     CardsComponent,
     DashboardComponent,
     DialogoptionComponent,
+    CancelDialogComponent,
   ],
   imports: [
     BrowserModule,
