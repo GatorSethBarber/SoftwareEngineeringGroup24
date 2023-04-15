@@ -86,13 +86,21 @@ export class DashboardComponent {
       (res) => {
         this.outboundRequestSource = res;
       },
-      (err) => alert('Error getting requests initated by user: ' + this.user.username)
+      (err) => {
+        if (err.status != 404) {
+          alert('Error getting requests initialized by user: ' + this.user.username);
+        }
+      }
     );
     this.AuthService.userRequestsRecieved().subscribe(
       (res) => {
         this.inboundRequestSource = res;
       },
-      (err) => alert('Error getting requests of user: ' + this.user.username)
+      (err) => {
+        if (err.status != 404) {
+          alert('Error getting requests of user: ' + this.user.username);
+        }
+      }
     );
     console.log(this.requests);
   }

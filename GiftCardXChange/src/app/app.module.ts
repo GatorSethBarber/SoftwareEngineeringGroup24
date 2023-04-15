@@ -24,6 +24,8 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DialogoptionComponent } from './dialogoption/dialogoption.component';
 import { CancelDialogComponent } from './cancel-dialog/cancel-dialog.component';
+import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
+import { RejectDialogComponent } from './reject-dialog/reject-dialog.component';
 
 
 
@@ -38,6 +40,8 @@ import { CancelDialogComponent } from './cancel-dialog/cancel-dialog.component';
     DashboardComponent,
     DialogoptionComponent,
     CancelDialogComponent,
+    AcceptDialogComponent,
+    RejectDialogComponent,
   ],
   imports: [
     BrowserModule,
