@@ -77,9 +77,21 @@ export class DashboardComponent {
       (res) => {
         this.dataSource = res;
       },
-      (err) => alert('Error getting card for user: ' + "Anlaf")
+      (err) => alert('Error getting card for user: ' + this.user.username)
     );
-      console.log(this.requests);
+    this.AuthService.userRequestsInitiated().subscribe(
+      (res) => {
+        this.outboundRequestSource = res;
+      },
+      (err) => alert('Error getting requests initated by user: ' + this.user.username)
+    );
+    this.AuthService.userRequestsRecieved().subscribe(
+      (res) => {
+        this.inboundRequestSource = res;
+      },
+      (err) => alert('Error getting requests of user: ' + this.user.username)
+    );
+    console.log(this.requests);
   }
 
   ngAfterViewInit() {
