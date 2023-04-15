@@ -241,6 +241,14 @@
             <td [attr.data-cy]="request[0].cardNumber" mat-cell *matCellDef="let request">{{request[0].cardNumber}}</td>
           </ng-container>
 
+          <!-- Action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+            <td mat-cell *matCellDef="let card">
+              <a class="btn btn-primary" (click)="openOutboundDialog()">Cancel</a>
+            </td>
+          </ng-container>
+
           <tr mat-header-row *matHeaderRowDef="outboundColumnsToDisplay"></tr>
           <tr mat-row *matRowDef="let row; columns: outboundColumnsToDisplay"></tr>
 

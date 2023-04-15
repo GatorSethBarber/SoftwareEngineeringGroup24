@@ -15,7 +15,9 @@ import {
 } from '@angular/forms';
 import { VirtualTimeScheduler } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
 import { Card } from '../card';
+import { CancelDialogComponent } from '../cancel-dialog/cancel-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,7 +40,7 @@ export class DashboardComponent {
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
   inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested'];
-  outboundColumnsToDisplay: string[] = ['requested', 'company', 'amount', 'expirationDate', 'offeredCard'];
+  outboundColumnsToDisplay: string[] = ['requested', 'company', 'amount', 'expirationDate', 'offeredCard', 'action'];
   dataSource = new MatTableDataSource(CARDS);
   inboundRequestSource = new MatTableDataSource(this.requests);
   outboundRequestSource = new MatTableDataSource(this.requests);
@@ -47,7 +49,8 @@ export class DashboardComponent {
   @ViewChild(MatSort) sort: MatSort;
 
 
-  constructor(private AuthService: AuthService, private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder) {
+  constructor(private AuthService: AuthService, private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder, private dialogRef: MatDialog
+  ) {
     AuthService.user$.subscribe(
       (user) =>
       (this.user = user ?? {
@@ -121,6 +124,10 @@ export class DashboardComponent {
         alert('Error while adding the card');
       }
     );
+  }
+
+  openOutboundDialog() {
+    this.dialogRef.open(CancelDialogComponent, { width: '300px', height: '300px' });
   }
 
 }
