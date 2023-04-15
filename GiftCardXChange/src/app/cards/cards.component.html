@@ -14,11 +14,11 @@
         <div class="mat-elevation-z8">
             <table mat-table [dataSource]="dataSource" matSort>
 
-                
+
                 <!-- Amount column -->
                 <ng-container matColumnDef="amount">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-                    <td mat-cell *matCellDef="let card" data-testid="amount-data" >{{card.amount}}</td>
+                    <td mat-cell *matCellDef="let card" data-testid="amount-data">{{card.amount}}</td>
                 </ng-container>
 
                 <!-- Expiration date column -->
@@ -30,11 +30,11 @@
                 <!-- UserID column -->
                 <ng-container matColumnDef="username">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
-                    <td [attr.data-cy]="card.username" mat-cell *matCellDef="let card" >{{card.username}}</td>
+                    <td [attr.data-cy]="card.username" mat-cell *matCellDef="let card">{{card.username}}</td>
                 </ng-container>
-<!-- 
-                   Action -->
-                   <ng-container matColumnDef="action">
+                
+                <!-- Action -->
+                <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
                     <td mat-cell *matCellDef="let card">
                         <a class="btn btn-primary" (click)="openDialog()">Request Swap</a>
