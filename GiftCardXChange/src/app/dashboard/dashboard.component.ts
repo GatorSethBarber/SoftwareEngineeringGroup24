@@ -15,7 +15,11 @@ import {
 } from '@angular/forms';
 import { VirtualTimeScheduler } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
 import { Card } from '../card';
+import { CancelDialogComponent } from '../cancel-dialog/cancel-dialog.component';
+import { RejectDialogComponent } from '../reject-dialog/reject-dialog.component';
+import { AcceptDialogComponent } from '../accept-dialog/accept-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,8 +41,8 @@ export class DashboardComponent {
 
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
-  inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested'];
-  outboundColumnsToDisplay: string[] = ['requested', 'company', 'amount', 'expirationDate', 'offeredCard'];
+  inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested', 'action'];
+  outboundColumnsToDisplay: string[] = ['requested', 'company', 'amount', 'expirationDate', 'offeredCard', 'action'];
   dataSource = new MatTableDataSource(CARDS);
   inboundRequestSource = new MatTableDataSource(this.requests);
   outboundRequestSource = new MatTableDataSource(this.requests);
@@ -47,7 +51,8 @@ export class DashboardComponent {
   @ViewChild(MatSort) sort: MatSort;
 
 
-  constructor(private AuthService: AuthService, private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder) {
+  constructor(private AuthService: AuthService, private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder, private dialogRef: MatDialog
+  ) {
     AuthService.user$.subscribe(
       (user) =>
       (this.user = user ?? {
@@ -77,9 +82,29 @@ export class DashboardComponent {
       (res) => {
         this.dataSource = res;
       },
-      (err) => alert('Error getting card for user: ' + "Anlaf")
+      (err) => alert('Error getting card for user: ' + this.user.username)
     );
-      console.log(this.requests);
+    this.AuthService.userRequestsInitiated().subscribe(
+      (res) => {
+        this.outboundRequestSource = res;
+      },
+      (err) => {
+        if (err.status != 404) {
+          alert('Error getting requests initialized by user: ' + this.user.username);
+        }
+      }
+    );
+    this.AuthService.userRequestsRecieved().subscribe(
+      (res) => {
+        this.inboundRequestSource = res;
+      },
+      (err) => {
+        if (err.status != 404) {
+          alert('Error getting requests of user: ' + this.user.username);
+        }
+      }
+    );
+    console.log(this.requests);
   }
 
   ngAfterViewInit() {
@@ -111,4 +136,15 @@ export class DashboardComponent {
     );
   }
 
+  openOutboundDialog() {
+    this.dialogRef.open(CancelDialogComponent, { width: '300px', height: '300px' });
+  }
+
+  openDenyDialog() {
+    this.dialogRef.open(RejectDialogComponent, { width: '300px', height: '300px' });
+  }
+
+  openAcceptDialog() {
+    this.dialogRef.open(AcceptDialogComponent, { width: '300px', height: '300px' });
+  }
 }

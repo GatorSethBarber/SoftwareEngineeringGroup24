@@ -16,7 +16,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
     try {
       this.user$.next(JSON.parse(localStorage.getItem('user') ?? 'null'));
-    } catch {}
+    } catch { }
   }
 
   getToken() {
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
 
-//register  
+  //register  
   register(
     userInfor: { userName: string; passWord: string } | any
   ): Observable<any> {
@@ -48,8 +48,8 @@ export class AuthService {
 
 
 
-  
-//login
+
+  //login
   login(
     userInfor: { userName: string; passWord: string } | any
   ): Observable<any> {
@@ -59,12 +59,12 @@ export class AuthService {
         `http://localhost:8080/user/get/${userInfor.userName}/${userInfor.passWord}`,
         { headers }
       ).pipe(map(r => {
-        if(r){
+        if (r) {
           localStorage.setItem('currentuser', JSON.stringify(r));
           this.user$.next(r);
-      }
-      return r
-    }));
+        }
+        return r
+      }));
   }
 
 
@@ -86,21 +86,21 @@ export class AuthService {
     const headers = this.makeRequestHeader();
     return this.http.get<any>(
       `http://localhost:8080/user/logout`,
-      { 
+      {
         headers,
         withCredentials: true
       }
     );
   }
 
-  
-//user logout
+
+  //user logout
   userlogOut(): Observable<any> {
     const headers = this.makeRequestHeader();
     localStorage.removeItem('user');
     this.user$.next(null);
     return this.http
-      .get<any>(`http://localhost:8080/user/logout`, { headers, withCredentials:true });
+      .get<any>(`http://localhost:8080/user/logout`, { headers, withCredentials: true });
   }
 
 
@@ -115,18 +115,18 @@ export class AuthService {
 
   // https://github.com/angular/angular/issues/31373
   userCards(
-    userInfo: { username: string} | any
+    userInfo: { username: string } | any
   ): Observable<any> {
     let headers = this.makeRequestHeader();
     return this.http.get<any>(
       `http://localhost:8080/card/get/${userInfo.username}`,
       {
-        withCredentials:true,
+        withCredentials: true,
       }
     );
   }
 
-// add card
+  // add card
   // router.HandleFunc("/card/new/{username}", newRequestCreateCard).Methods("POST")
   addNewGiftCard(cardInfo: Card): Observable<any> {
     // console.log(this.user$.next(User['use']))
@@ -150,6 +150,35 @@ export class AuthService {
     })
   }
 
-  
+  // send the request
+  //router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
+  sendRequest():Observable<any[]>{
+    let headers = this.makeRequestHeader();
+    return this.http.post<any>(`http://localhost:8080/swaps/request`,{
+      headers
+    })
+  }
 
+  
+  // get initiated requests
+  userRequestsInitiated(): Observable<any> {
+    let headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/swaps/get/pending/requested/user`,
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  // get recieved requests
+  userRequestsRecieved(): Observable<any> {
+    let headers = this.makeRequestHeader();
+    return this.http.get<any>(
+      `http://localhost:8080/swaps/get/pending/requested/others`,
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }
