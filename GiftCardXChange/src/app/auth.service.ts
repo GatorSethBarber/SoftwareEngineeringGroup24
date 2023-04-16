@@ -150,14 +150,7 @@ export class AuthService {
     })
   }
 
-  // send the request
-  //router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
-  sendRequest():Observable<any[]>{
-    let headers = this.makeRequestHeader();
-    return this.http.post<any>(`http://localhost:8080/swaps/request`,{
-      headers
-    })
-  }
+
 
   
   // get initiated requests
