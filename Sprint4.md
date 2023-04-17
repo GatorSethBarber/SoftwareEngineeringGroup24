@@ -7,23 +7,28 @@ We planned to create a fully functional web application by the end of Sprint 4. 
 The exact details of our functionalities for Sprint 4 is described below in the user stories.  
 
 ## User Stories
-1.
-2.
-3.
+1. As a user, I want to add a card to my account so I can use it to trade.
+2. As a registered user looking to trade, I want to request another user to trade one (or more) of their cards with mine.
+3. As a user who had a swap request, I want to be able to confirm it.
 
 # What We Accomplished
-* Describe below
+The tasks and goals that we accomplished in this sprint are detailed below.
 
 ## Front End
 * List below
 
 ## Back End
-* List below
+* Added functionality for registered users to create a request to swap with another user
+* Added functionality for registered users to either accept or deny a swap request from a list of pending requests
+* Added functionality to switch ownership of the gift card once both users agree to swap 
+* Added route for creating a card request to swap 
+* Added routes for accepting and denying a card request
+* Added routes for getting all pending card requests from the user and others 
+* Created and tested unit and Cypress tests for all of the implemented functions
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Back End API Documentation 
-* Updates are in progress
 
 ## Important Notes:
 
