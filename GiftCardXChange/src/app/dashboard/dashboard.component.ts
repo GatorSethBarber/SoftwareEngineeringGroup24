@@ -141,11 +141,11 @@ export class DashboardComponent {
     this.dialogRef.open(CancelDialogComponent, { width: '300px', height: '300px', data: { offeredID: offeredID, requestedID: requestedID } });
   }
 
-  openDenyDialog() {
-    this.dialogRef.open(RejectDialogComponent, { width: '300px', height: '300px' });
+  openDenyDialog(offeredID: number, requestedID: number) {
+    this.dialogRef.open(RejectDialogComponent, { width: '300px', height: '300px', data: { offeredID: offeredID, requestedID: requestedID } });
   }
 
-  openAcceptDialog() {
-    this.dialogRef.open(AcceptDialogComponent, { width: '300px', height: '300px' });
+  openAcceptDialog(offeredID: number, requestedID: number) {
+    this.dialogRef.open(AcceptDialogComponent, { width: '300px', height: '300px', data: { offeredID: offeredID, requestedID: requestedID } });
   }
 }
