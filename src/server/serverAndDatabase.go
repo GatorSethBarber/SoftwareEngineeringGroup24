@@ -270,13 +270,16 @@ func getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error) {
 /*
 Get a (back-end) swap from the database if it exists based on a passed in front-end swap
 */
-func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
+// func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
+func databaseGetSwapIfValid(simpleSwap *frontEndSwap) error {
 	var swap RequestCard
 	if err := database.Where("card_id_one = ? AND card_id_two = ?", simpleSwap.CardIDOne, simpleSwap.CardIDTwo).First(&swap).Error; err != nil {
-		return swap, false
+		// return swap, false
+		return err
 	}
 
-	return swap, true
+	// return swap, true
+	return nil
 }
 
 /*
@@ -312,9 +315,7 @@ func deleteCardRequests(request *RequestCard) error {
 Perform a swap by swapping the cards between the owners and deleting all (pending)
 requests made involving those cards
 */
-func databasePerformSwap(swapToDo *RequestCard) {
-
-	// User IDs should be swapped; error checking done before call
+func databasePerformSwap(swapToDo *RequestCard) error {
 
 	// User IDs are swapped when both parties agree to exchange gift cards
 	database.Model(&GiftCard{}).Where("gift_cards.id = ?", swapToDo.CardIDOne).Update("user_id", swapToDo.UserIDTwo)
@@ -322,6 +323,8 @@ func databasePerformSwap(swapToDo *RequestCard) {
 
 	// delete any pending swaps involving the two cards
 	deleteCardRequests(swapToDo)
+
+	return nil
 }
 
 /*
