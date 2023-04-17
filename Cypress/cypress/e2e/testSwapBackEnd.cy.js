@@ -88,7 +88,7 @@ describe('Test Requesting Swap', () => {
       url: 'http://localhost:8080/swaps/request',
       body: {
         "cardIDOne": 1,
-        "cardIDTwo": 9
+        "cardIDTwo": 11
       },
       headers: {
         "content-type": "application/json"
@@ -102,7 +102,7 @@ describe('Test Requesting Swap', () => {
       url: 'http://localhost:8080/swaps/request',
       body: {
         "cardIDOne": 1,
-        "cardIDTwo": 9
+        "cardIDTwo": 11
       },
       headers: {
         "content-type": "application/json"
@@ -442,7 +442,7 @@ describe("Test deny swap", () => {
       },
       failOnStatusCode: false
     }).then(response => {
-      expect(response.status).to.equal(200)
+      expect(response.status).to.equal(400)
     })
   })
   

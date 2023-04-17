@@ -461,10 +461,10 @@ func TestCreateRequest(t *testing.T) {
 	database = ConnectToDatabase()
 
 	newCardRequest := RequestCard{
-		UserIDOne: 1,
-		UserIDTwo: 3,
-		CardIDOne: 1,
-		CardIDTwo: 9,
+		UserIDOne: 5,
+		UserIDTwo: 4,
+		CardIDOne: 15,
+		CardIDTwo: 10,
 	}
 
 	// call the function
@@ -605,8 +605,8 @@ func TestGetSwapIfValid(t *testing.T) {
 	database = ConnectToDatabase()
 
 	testSwapCard := frontEndSwap{
-		CardIDOne: 12,
-		CardIDTwo: 14,
+		CardIDOne: 5,
+		CardIDTwo: 3,
 	}
 
 	_, exists := databaseGetSwapIfValid(&testSwapCard)
