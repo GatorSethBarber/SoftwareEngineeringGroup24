@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"sort"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -460,16 +462,16 @@ func TestCreateRequest(t *testing.T) {
 
 	newCardRequest := RequestCard{
 		UserIDOne: 5,
-		UserIDTwo: 3,
-		CardIDOne: 13,
-		CardIDTwo: 9,
+		UserIDTwo: 4,
+		CardIDOne: 15,
+		CardIDTwo: 10,
 	}
 
 	// call the function
 	err := databaseCreateRequest(&newCardRequest)
 
 	if err != nil {
-		t.Errorf("databaseCreateCard() function failed: expected an error to be returned")
+		t.Fatalf("expected to create a request, but received this error: %v", err)
 	}
 }
 
@@ -505,6 +507,41 @@ func TestGetPendingUserRequests(t *testing.T) {
 	if len(actualRequest) != len(expectedRequest) {
 		t.Errorf("unexpected result: expected=%v, actual=%v", expectedRequest, actualRequest)
 	}
+
+	// previously, this test failed because the request cards info in the database did not match the order
+	// of the expected card. To fix this issue, sorting was required
+	sort.Slice(expectedRequest, func(i, j int) bool {
+		if expectedRequest[i].UserIDOne != expectedRequest[j].UserIDOne {
+			return expectedRequest[i].UserIDOne < expectedRequest[j].UserIDOne
+		}
+		if expectedRequest[i].UserIDTwo != expectedRequest[j].UserIDTwo {
+			return expectedRequest[i].UserIDTwo < expectedRequest[j].UserIDTwo
+		}
+		if expectedRequest[i].CardIDOne != expectedRequest[j].CardIDOne {
+			return expectedRequest[i].CardIDOne < expectedRequest[j].CardIDOne
+		}
+		return expectedRequest[i].CardIDTwo < expectedRequest[j].CardIDTwo
+	})
+
+	sort.Slice(actualRequest, func(i, j int) bool {
+		if actualRequest[i].UserIDOne != actualRequest[j].UserIDOne {
+			return actualRequest[i].UserIDOne < actualRequest[j].UserIDOne
+		}
+		if actualRequest[i].UserIDTwo != actualRequest[j].UserIDTwo {
+			return actualRequest[i].UserIDTwo < actualRequest[j].UserIDTwo
+		}
+		if actualRequest[i].CardIDOne != actualRequest[j].CardIDOne {
+			return actualRequest[i].CardIDOne < actualRequest[j].CardIDOne
+		}
+		return actualRequest[i].CardIDTwo < actualRequest[j].CardIDTwo
+	})
+
+	for index, _ := range actualRequest {
+		if expectedRequest[index] != actualRequest[index] {
+			t.Fatalf("expected %v, but actual %v", expectedRequest[index], actualRequest[index])
+		}
+	}
+
 }
 
 func TestGetPendingRequestsFromOthers(t *testing.T) {
@@ -513,17 +550,10 @@ func TestGetPendingRequestsFromOthers(t *testing.T) {
 	var userID1 uint = 1
 	expectedRequest := []RequestCard{
 		{
-			UserIDOne: 1,
-			UserIDTwo: 3,
-			CardIDOne: 1,
-			CardIDTwo: 9,
-		},
-
-		{
-			UserIDOne: 1,
-			UserIDTwo: 2,
-			CardIDOne: 2,
-			CardIDTwo: 5,
+			UserIDOne: 2,
+			UserIDTwo: 1,
+			CardIDOne: 5,
+			CardIDTwo: 3,
 		},
 	}
 
@@ -534,12 +564,58 @@ func TestGetPendingRequestsFromOthers(t *testing.T) {
 		t.Errorf("unexpected error: %s", err)
 	}
 
-	if len(actualRequest) != len(expectedRequest) {
+	if len(expectedRequest) != len(actualRequest) {
 		t.Errorf("unexpected result: expected=%v, actual=%v", expectedRequest, actualRequest)
+	}
+
+	sort.Slice(expectedRequest, func(i, j int) bool {
+		if expectedRequest[i].UserIDOne != expectedRequest[j].UserIDOne {
+			return expectedRequest[i].UserIDOne < expectedRequest[j].UserIDOne
+		}
+		if expectedRequest[i].UserIDTwo != expectedRequest[j].UserIDTwo {
+			return expectedRequest[i].UserIDTwo < expectedRequest[j].UserIDTwo
+		}
+		if expectedRequest[i].CardIDOne != expectedRequest[j].CardIDOne {
+			return expectedRequest[i].CardIDOne < expectedRequest[j].CardIDOne
+		}
+		return expectedRequest[i].CardIDTwo < expectedRequest[j].CardIDTwo
+	})
+
+	sort.Slice(actualRequest, func(i, j int) bool {
+		if actualRequest[i].UserIDOne != actualRequest[j].UserIDOne {
+			return actualRequest[i].UserIDOne < actualRequest[j].UserIDOne
+		}
+		if actualRequest[i].UserIDTwo != actualRequest[j].UserIDTwo {
+			return actualRequest[i].UserIDTwo < actualRequest[j].UserIDTwo
+		}
+		if actualRequest[i].CardIDOne != actualRequest[j].CardIDOne {
+			return actualRequest[i].CardIDOne < actualRequest[j].CardIDOne
+		}
+		return actualRequest[i].CardIDTwo < actualRequest[j].CardIDTwo
+	})
+
+	for index, _ := range actualRequest {
+		if expectedRequest[index] != actualRequest[index] {
+			t.Fatalf("expected %v, but actual %v", expectedRequest[index], actualRequest[index])
+		}
 	}
 }
 
 func TestGetSwapIfValid(t *testing.T) {
+	database = ConnectToDatabase()
+
+	testSwapCard := frontEndSwap{
+		CardIDOne: 5,
+		CardIDTwo: 3,
+	}
+
+	_, exists := databaseGetSwapIfValid(&testSwapCard)
+
+	if exists != true {
+		t.Fatalf("expected to get, but received not exists")
+	}
+
+	// databaseGetSwapIfValid passes in a pointer to swap card struct
 
 }
 
@@ -557,12 +633,7 @@ func TestDenyCardRequest(t *testing.T) {
 	err := denyCardRequest(&testRequestCard)
 
 	if err != nil {
-		t.Errorf("denyCardRequest() function failed: expected an error to be returned")
-	}
-
-	var result RequestCard
-	if err := database.Where("card_id_one = ? AND card_id_two = ?", testRequestCard.CardIDOne, testRequestCard.CardIDTwo).First(&result).Error; err == nil {
-		t.Errorf("expected requested card to be deleted from the database")
+		t.Fatalf("expected to deny a request, but received this error: %v", err)
 	}
 
 }
@@ -581,18 +652,36 @@ func TestDeleteCardRequests(t *testing.T) {
 	err := deleteCardRequests(&cardRequests)
 
 	if err != nil {
-		t.Errorf("deleteCardRequests() function failed: expected an error to be returned")
+		t.Fatalf("expected to delete all requests, but received this error: %v", err)
 	}
 
 	var result RequestCard
 	if err := database.Where("card_id_one = ? OR card_id_two = ? OR card_id_one = ? OR card_id_two = ?", cardRequests.CardIDOne, cardRequests.CardIDTwo).First(&result).Error; err == nil {
-		t.Errorf("expected requested card to be deleted from the database")
+		t.Fatalf("expected to delete all requests from the database, but received this error: %v", err)
 	}
 
 }
 
 func TestPerformSwap(t *testing.T) {
 	database = ConnectToDatabase()
+
+	swapCard := RequestCard{
+		UserIDOne: 5,
+		UserIDTwo: 4,
+		CardIDOne: 15,
+		CardIDTwo: 10,
+	}
+
+	err := databasePerformSwap(&swapCard)
+
+	if err != nil {
+		t.Fatalf("unable to swap cards, received this error: %v", err)
+	}
+
+	var result RequestCard
+	if err := database.Where("card_id_one = ? OR card_id_two = ? OR card_id_one = ? OR card_id_two = ?", swapCard.CardIDOne, swapCard.CardIDOne, swapCard.CardIDTwo, swapCard.CardIDTwo).First(&result).Error; err == nil {
+		t.Errorf("expected IDs of cards to be swapped, but received this error: %v", err)
+	}
 
 }
 

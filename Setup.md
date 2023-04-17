@@ -90,19 +90,23 @@ therefore, no redirection takes place and the dashboard is contained within a si
 Viewing user information can be done so through the dashboard via a logged-in user with a cookie. It is the first tab, and the one that opens when the redirect initially happens.
 It has infromation about the user that they input during their registering process which matches what is utilized in the back-end. Data is obtained by decoding the cookie through a back-end query.
 
-#### Veiwing Your Cards in MyWallet
+#### Viewing Your Cards in MyWallet
 Viewing your cards follows the same parameters as viewing user information; however, it is the second tab in the dashboard. Upon navigating to it, a table is displayed containing all
 the cards that are owned by the user in the database. This is done through a back-end call utilziing the current cookie to check userID from log-in info to sort the main database of all cards.
 
 ### Adding a New Card
+The user's dashboard displays an *Add Card* button that allows the user to add a new gift card to their wallet. The user enters the card information, such as the brand name, amount, card number, which is only accessible to the gift card holder, and expiration date. Once the information is successfully entered, the new gift card will appear in the user's *My Wallet*. The database will reflect the newly created gift card in the back end.
 
 ### Swapping Cards
 
 #### Requesting Swap
+There are a variety of different brands displayed on the homepage. Once a user clicks on one of the brand's logos, a new page appears showcasing all the owners of the brands available for swapping. Each line of the card list contains a "Request Swap" button at the end. After clicking this button, another box appears, asking the user which of their cards they would like to swap with. After the user selects the card with the "Submit" button, this information is sent to the back end to identify which two cards will potentially swap. 
 
 #### Accepting Swap
+In the user's dashboard, there are two categories of swap requests: one made by the user addressed in the *Outbound Requests* and the second made by others addressed in the *Inbound Requests*. Each card request in the *Outbound Requests* contains a *Deny* or *Accept* option. If the user is satisfied with the swap request, they can click on *Accept* and both parties will own different gift cards. The database updates the new owner's card information.
 
 ### Logging Out
+After the user finish using the web application, they can log out with the button labeled "Log out" from the drop-down of the arrow next to the "Hi [username]" message on the top. The cookie session will end as well. 
 
 # Troubleshooting and Potential Problems
 

@@ -70,7 +70,7 @@ export class CardsComponent {
   }
  
   openDialog(){
-    this.dialogRef.open(DialogoptionComponent, {width: '300px',height:'300px'});
+    this.dialogRef.open(DialogoptionComponent, {width: '1000px',height:'350px'});
   }
 
 }
