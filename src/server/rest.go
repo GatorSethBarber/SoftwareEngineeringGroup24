@@ -54,7 +54,7 @@ func httpHandler() http.Handler {
 			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization",
 				"DNT", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
 				"Cache-Control", "Content-Range", "Range", "Access-Control-Allow-origin"}),
-			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"}),
 			handlers.AllowedOrigins([]string{"http://localhost:8080", "http://localhost:4200"}),
 			handlers.ExposedHeaders([]string{"DNT", "Keep-Alive", "User-Agent",
 				"X-Requested-With", "If-Modified-Since", "Cache-Control", "Access-Control-Allow-origin",
