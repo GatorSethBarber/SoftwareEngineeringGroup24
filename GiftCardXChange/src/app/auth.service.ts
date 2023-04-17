@@ -143,22 +143,23 @@ export class AuthService {
 
   // send the request
   //router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
-  sendRequest():Observable<any[]>{
+  sendRequest(): Observable<any[]> {
     let headers = this.makeRequestHeader();
-    return this.http.post<any>(`http://localhost:8080/swaps/request`,{
+    return this.http.post<any>(`http://localhost:8080/swaps/request`, {
       headers
     })
   }
 
 
 
-  
+
   // get initiated requests
   userRequestsInitiated(): Observable<any> {
     let headers = this.makeRequestHeader();
     return this.http.get<any>(
       `http://localhost:8080/swaps/get/pending/requested/user`,
       {
+        headers,
         withCredentials: true,
       }
     );
@@ -170,6 +171,32 @@ export class AuthService {
     return this.http.get<any>(
       `http://localhost:8080/swaps/get/pending/requested/others`,
       {
+        headers,
+        withCredentials: true,
+      }
+    );
+  }
+
+  // deny swap
+  denySwap(cardID1: number, cardID2: number): Observable<any> {
+    let headers = this.makeRequestHeader();
+    return this.http.delete<any>(
+      `http://localhost:8080/swaps/deny`,
+      {
+        headers,
+        withCredentials: true,
+      }
+    );
+  }
+
+  // accept swap
+  acceptSwap(cardID1: number, cardID2: number): Observable<any> {
+    let headers = this.makeRequestHeader();
+    return this.http.put<any>(
+      `http://localhost:8080/swaps/confirm`,
+      {cardID1, cardID2},
+      {
+        headers,
         withCredentials: true,
       }
     );

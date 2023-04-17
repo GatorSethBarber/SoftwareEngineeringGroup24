@@ -57,6 +57,8 @@ export class CardsComponent {
     this.AuthService.brandCards({CompanyName: this.chosenBrand.name.replace(/\s+/g, '')}).subscribe(
       (res) => {
         this.dataSource = res;
+        console.log(this.dataSource);
+
       },
       (err) => alert('Error getting card for brand: ' + this.chosenBrand.name)
     )
