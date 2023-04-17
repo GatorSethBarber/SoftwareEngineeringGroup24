@@ -290,6 +290,22 @@ The testing of all functionality outside of router paths is done in Go. There ar
     * TestCompleteData: Test checkUserInfo to ensure it returns true when passed complete data
     * TestIncompleteData: Test checkUserInfo to ensure it returns false when passed incomplete data
 * serverAndDatabase_test.go: These tests test the functionality of the database.
+  * From Sprint 4:
+    * TestCreateRequest: Test that a user is able to create a card request to swap with another user
+    * TestGetPendingUserRequests: Test to retrieve all pending requests made by the user
+    * TestGetPendingRequestsFromOthers: Test to retrieve all pending requests made by others
+    * TestGetSwapIfValid: Test that the cards are valid for swapping to occur
+    * TestDenyCardRequest: Test that a user can deny a request which will delete the request from the database
+    * TestDeleteCardRequests: Test the deletion of all other requests once the user has confirmed a swap with another user
+    * TestPerformSwap: Test that the IDs of the cards are properly switched to the new owner after swapping has occurred
+    * TestValidDatabaseCreateRequest: Test that a valid request is created
+    * TestDuplicateDatabaseCreateRequest: Test that creating a duplicate request is not allowed and returns an error as a result
+    * TestValidDenyCardRequest: Test for the deletion of a valid card request
+    * TestNonEmptyValidGetPendingUserRequests: Test to retrieve all valid requests made only by the user
+    * TestEmptyValidGetPendingUserRequests: Test to retrieve an empty list when no requests are made by the user
+    * TestValidDatabaseGetSwapIfValid: Test that only a valid swap can occur
+    * TestInvalidDatabaseGetSwapIfValid: Test that an invalid swap does not exists
+
   * From Sprint 3:
     * TestValidGetUserExistsPassword: Tests that a user exists for a given valid username and password combination and that the correct user information is returned.
     * TestInvaldGetUserExistsPassword: Tests that a user does not exist for a given invalid username and password combination.
