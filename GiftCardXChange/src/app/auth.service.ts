@@ -178,10 +178,10 @@ export class AuthService {
   }
 
   // deny swap
-  denySwap(cardID1: number, cardID2: number): Observable<any> {
+  denySwap(cardIDOne: number, cardIDTwo: number): Observable<any> {
     let headers = this.makeRequestHeader();
     return this.http.delete<any>(
-      `http://localhost:8080/swaps/deny`,
+      `http://localhost:8080/swaps/deny/${cardIDOne}/${cardIDTwo}`,
       {
         headers,
         withCredentials: true,

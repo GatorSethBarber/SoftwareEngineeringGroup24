@@ -11,16 +11,17 @@ import { AuthService } from '../auth.service';
 export class CancelDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { requestedID: number, offeredID: number }, private AuthService: AuthService) { }
 
-  // cancelSwap() {
-  //   this.AuthService.denySwap([]).subscribe(
-  //     (res) => {
-  //       console.log(res);
-  //       alert('Card added successfully');
-  //     },
-  //     (err) => {
-  //       console.error(err);
-  //       alert('Error while adding the card');
-  //     }
-  //   );
-  // }
+  denySwap() {
+    this.AuthService.denySwap(this.data.offeredID, this.data.requestedID).subscribe(
+      (res) => {
+        console.log(res);
+        alert('Card swap denied successfully');
+        location.reload();
+      },
+      (err) => {
+        console.error(err);
+        alert('Error while denying card swap');
+      }
+    );
+  }
 }
