@@ -33,11 +33,9 @@ export class DashboardComponent {
   user: User;
   cardData: Card;
 
-  cards = CARDS;
+  cards = [];
 
-  requests = [
-    CARDS, CARDS
-  ]
+  requests = [];
 
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];

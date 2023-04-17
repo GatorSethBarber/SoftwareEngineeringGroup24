@@ -17,6 +17,7 @@ export class AcceptDialogComponent {
       (res) => {
         console.log(res);
         alert('Cards swapped successfully');
+        location.reload();
       },
       (err) => {
         console.error(err);
