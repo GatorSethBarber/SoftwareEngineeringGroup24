@@ -270,16 +270,15 @@ func getPendingRequestsFromOthers(userID2 uint) ([]RequestCard, error) {
 /*
 Get a (back-end) swap from the database if it exists based on a passed in front-end swap
 */
-// func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
-func databaseGetSwapIfValid(simpleSwap *frontEndSwap) error {
+func databaseGetSwapIfValid(simpleSwap *frontEndSwap) (RequestCard, bool) {
 	var swap RequestCard
 	if err := database.Where("card_id_one = ? AND card_id_two = ?", simpleSwap.CardIDOne, simpleSwap.CardIDTwo).First(&swap).Error; err != nil {
 		// return swap, false
-		return err
+		return swap, false
 	}
 
 	// return swap, true
-	return nil
+	return swap, true
 }
 
 /*

@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
 	"sort"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // test databaseCreateUser.
@@ -603,17 +604,15 @@ func TestGetPendingRequestsFromOthers(t *testing.T) {
 func TestGetSwapIfValid(t *testing.T) {
 	database = ConnectToDatabase()
 
-	testSwapCard := RequestCard{
-		UserIDOne: 4,
-		UserIDTwo: 5,
+	testSwapCard := frontEndSwap{
 		CardIDOne: 12,
 		CardIDTwo: 14,
 	}
 
-	err := databaseGetSwapIfValid(&testSwapCard)
+	_, exists := databaseGetSwapIfValid(&testSwapCard)
 
-	if err != nil {
-		t.Fatalf("expected to swap, but received this error: %v", err)
+	if exists != true {
+		t.Fatalf("expected to get, but received not exists")
 	}
 
 	// databaseGetSwapIfValid passes in a pointer to swap card struct
