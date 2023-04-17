@@ -229,13 +229,17 @@ Response:
 
 ### Deny Swap
 
-Deletes a single swap. (No cascading.)
+Deletes a single swap. (No cascading.) Can be initiated by the iniatator or receiver of a request. A DELETE verb is used for this request. As DELETE cannot use a body, unlike the other swap associated commands, the card IDs are passed in the URL.
 
 Verb: DELETE
 
-URL: swaps/deny
+URL: swaps/deny/{CardIDOne}/{CardIDTwo}
 
-Body: {CardIDOne, CardIDTwo}
+Example: swaps/deny/1/9 to swap cards 1 and 9, where 1 is the card ID of the card offered by the requester, 9 is the card ID of the card that the requester wanted (or wants).
+
+Response:
+* 200: successful (including deleting non-existent, but potentially valid, requests)
+* 400: error with request
 
 ### Get All Pending Swaps User Requested
 Get all the pending requested the user initiated
@@ -248,6 +252,11 @@ Response Body: [
     [{cardOne}, {cardTwo}]
 ]
 
+Response codes:
+* 200: success
+* 400: error occurred
+* 404: No pending requests initiated by the user
+
 ### Get All Pending Swaps User Received
 Get all the pending requests others initiated with the user
 
@@ -258,6 +267,11 @@ URL: swaps/get/pending/requested/others
 Response Body: [
     [{cardOne}, {cardTwo}]
 ]
+
+Response codes:
+* 200: success
+* 400: error occurred
+* 404: No pending requests initiated with the user
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
