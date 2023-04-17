@@ -221,7 +221,7 @@ Deletes a single swap. (No cascading.) Can be initiated by the iniatator or rece
 
 Verb: DELETE
 
-URL: swaps/deny
+URL: swaps/deny/{CardIDOne}/{CardIDTwo}
 
 Body: {CardIDOne, CardIDTwo}
 
