@@ -527,7 +527,7 @@ func requestSwap(writer http.ResponseWriter, request *http.Request) {
 func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 	var frontEndSwapInfo frontEndSwap
 	if !decodeJSON(writer, request, &frontEndSwapInfo) {
-		fmt.Println("Cannot decode the body")
+		fmt.Println("Request Confirm Swap: Could not decode body.")
 		return
 	}
 
@@ -536,7 +536,7 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 	// Get swap from database
 	swapFromBackEnd, exists := databaseGetSwapIfValid(&frontEndSwapInfo)
 	if !exists {
-		fmt.Printf("This swap does not exist: %v\n", frontEndSwapInfo)
+		fmt.Printf("Request Confirm Swap: This swap does not exist: %v\n", frontEndSwapInfo)
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -544,7 +544,7 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 	// Check if user owns the backEndCard
 	user, isOk := cookieGetUserByCookie(request)
 	if !isOk {
-		fmt.Println("Not signed in")
+		fmt.Println("Request Confirm Swap: Not signed in")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -552,14 +552,14 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 	_, errCardOne := databaseGetCardByCardID(frontEndSwapInfo.CardIDOne)
 	cardTwo, errCardTwo := databaseGetCardByCardID(frontEndSwapInfo.CardIDTwo)
 	if errCardOne != nil || errCardTwo != nil {
-		fmt.Println("Card One or Card Two is bad")
+		fmt.Println("Request Confirm Swap: Card One or Card Two is bad (DNE in database)")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// If user does not own cardTwo, throw an error (already guaranteed does not own cardOne)
 	if cardTwo.UserID != user.ID {
-		fmt.Println("Don't own this card")
+		fmt.Println("Request Confirm Swap: Don't own this card")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -567,28 +567,29 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 	// Peform actual swap database function
 	databasePerformSwap(&swapFromBackEnd)
 
-	fmt.Printf("REDEEEMED SWAP %v", frontEndSwapInfo)
+	fmt.Printf("Request Confirm Swap: REDEEEMED SWAP %v", frontEndSwapInfo)
 }
 
 func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(request)
 
-	intCardIDOne, errOne := strconv.Atoi(params["cardIDOne"])
-	intCardIDTwo, errTwo := strconv.Atoi(params["cardIDTwo"])
+	cardIDOne, errOne := strconv.Atoi(params["cardIDOne"])
+	cardIDTwo, errTwo := strconv.Atoi(params["cardIDTwo"])
 
 	if errOne != nil || errTwo != nil {
-		fmt.Println("Cannot decode to integers")
+		fmt.Println("COULD NOT DECODE TO INTEGER")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if intCardIDOne < 0 || intCardIDTwo < 0 {
-		fmt.Println("Cannot take in negative numbers")
+	if cardIDOne < 0 || cardIDTwo < 0 {
+		fmt.Println("ONE IS LESS THAN 0")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	frontEndSwapInfo := frontEndSwap{CardIDOne: uint(intCardIDOne), CardIDTwo: uint(intCardIDTwo)}
+	frontEndSwapInfo := frontEndSwap{CardIDOne: uint(cardIDOne), CardIDTwo: uint(cardIDTwo)}
 
 	user, isOk := cookieGetUserByCookie(request)
 	if !isOk {
