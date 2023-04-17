@@ -13,7 +13,7 @@ export class AcceptDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { requestedID: number, offeredID: number }, private AuthService: AuthService) { }
 
   acceptSwap() {
-    this.AuthService.acceptSwap(this.data.requestedID, this.data.offeredID).subscribe(
+    this.AuthService.acceptSwap(this.data.offeredID, this.data.requestedID).subscribe(
       (res) => {
         console.log(res);
         alert('Cards swapped successfully');

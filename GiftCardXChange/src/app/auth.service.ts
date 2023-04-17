@@ -190,11 +190,11 @@ export class AuthService {
   }
 
   // accept swap
-  acceptSwap(cardID1: number, cardID2: number): Observable<any> {
+  acceptSwap(cardIDOne: number, cardIDTwo: number): Observable<any> {
     let headers = this.makeRequestHeader();
     return this.http.put<any>(
       `http://localhost:8080/swaps/confirm`,
-      {cardID1, cardID2},
+      {cardIDOne, cardIDTwo},
       {
         headers,
         withCredentials: true,
