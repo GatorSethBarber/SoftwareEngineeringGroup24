@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -37,7 +38,7 @@ func httpHandler() http.Handler {
 	// Routes for swap card
 	router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
 	router.HandleFunc("/swaps/confirm", requestConfirmSwap).Methods("PUT")
-	router.HandleFunc("/swaps/deny", requestDenySwap).Methods("DELETE")
+	router.HandleFunc("/swaps/deny/{cardIDOne}/{cardIDTwo}", requestDenySwap).Methods("DELETE")
 	router.HandleFunc("/swaps/get/pending/requested/user", getRequestedByUser).Methods("GET")
 	router.HandleFunc("/swaps/get/pending/requested/others", getRequestedByOthers).Methods("GET")
 
@@ -526,8 +527,11 @@ func requestSwap(writer http.ResponseWriter, request *http.Request) {
 func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 	var frontEndSwapInfo frontEndSwap
 	if !decodeJSON(writer, request, &frontEndSwapInfo) {
+		fmt.Println("Cannot decode the body")
 		return
 	}
+
+	fmt.Println("Got as the body: ", frontEndSwapInfo)
 
 	// Get swap from database
 	swapFromBackEnd, exists := databaseGetSwapIfValid(&frontEndSwapInfo)
@@ -567,10 +571,24 @@ func requestConfirmSwap(writer http.ResponseWriter, request *http.Request) {
 }
 
 func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
-	var frontEndSwapInfo frontEndSwap
-	if !decodeJSON(writer, request, &frontEndSwapInfo) {
+	params := mux.Vars(request)
+
+	intCardIDOne, errOne := strconv.Atoi(params["cardIDOne"])
+	intCardIDTwo, errTwo := strconv.Atoi(params["cardIDTwo"])
+
+	if errOne != nil || errTwo != nil {
+		fmt.Println("Cannot decode to integers")
+		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	if intCardIDOne < 0 || intCardIDTwo < 0 {
+		fmt.Println("Cannot take in negative numbers")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	frontEndSwapInfo := frontEndSwap{CardIDOne: uint(intCardIDOne), CardIDTwo: uint(intCardIDTwo)}
 
 	user, isOk := cookieGetUserByCookie(request)
 	if !isOk {
