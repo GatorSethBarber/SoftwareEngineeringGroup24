@@ -344,11 +344,7 @@ describe("Test deny swap", () => {
   it("Not logged in", () => {
     cy.request({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 12,
-        "cardIDTwo": 13
-      },
+      url: 'http://localhost:8080/swaps/deny/12/13',
       headers: {
         "content-type": "application/json"
       },
@@ -361,11 +357,7 @@ describe("Test deny swap", () => {
     login("SethTheBarber", "password")
     cy.request({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 12,
-        "cardIDTwo": 13
-      },
+      url: 'http://localhost:8080/swaps/deny/12/13',
       headers: {
         "content-type": "application/json"
       },
@@ -379,11 +371,7 @@ describe("Test deny swap", () => {
     login()
     cy.request({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 12,
-        "cardIDTwo": 13
-      },
+      url: 'http://localhost:8080/swaps/deny/12/13',
       headers: {
         "content-type": "application/json"
       },
@@ -396,11 +384,7 @@ describe("Test deny swap", () => {
     login()
     cy.request({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 1,
-        "cardIDTwo": 13
-      },
+      url: 'http://localhost:8080/swaps/deny/1/13',
       headers: {
         "content-type": "application/json"
       },
@@ -413,11 +397,7 @@ describe("Test deny swap", () => {
     login()
     cy.request({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 12,
-        "cardIDTwo": 13
-      },
+      url: 'http://localhost:8080/swaps/deny/12/13',
       headers: {
         "content-type": "application/json"
       },
@@ -432,11 +412,7 @@ describe("Test deny swap", () => {
     login()
     cy.request({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 0,
-        "cardIDTwo": 13
-      },
+      url: 'http://localhost:8080/swaps/deny/0/13',
       headers: {
         "content-type": "application/json"
       },
@@ -585,11 +561,7 @@ describe("Delete swaps for testing views", () => {
     login("SethTheBarber", "password")
     cy.request ({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 8,
-        "cardIDTwo": 9
-      },
+      url: 'http://localhost:8080/swaps/deny/8/9',
       headers: {
         "content-type": "application/json"
       },
@@ -601,11 +573,7 @@ describe("Delete swaps for testing views", () => {
     login("Anlaf", "password")
     cy.request ({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 7,
-        "cardIDTwo": 15
-      },
+      url: 'http://localhost:8080/swaps/deny/7/15',
       headers: {
         "content-type": "application/json"
       },
@@ -617,11 +585,7 @@ describe("Delete swaps for testing views", () => {
     login("EricTheRed", "gr33nlandH0")
     cy.request ({
       method: 'DELETE',
-      url: 'http://localhost:8080/swaps/deny',
-      body: {
-        "cardIDOne": 4,
-        "cardIDTwo": 5
-      },
+      url: 'http://localhost:8080/swaps/deny/4/5',
       headers: {
         "content-type": "application/json"
       },
