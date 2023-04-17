@@ -75,7 +75,7 @@ export class DashboardComponent {
 
 
 
-  options = ['Starbuck', 'BestBuy', 'Target', 'Kohls'];
+  options = ['Starbucks', 'BestBuy', 'Target', 'Kohls'];
 
   ngOnInit() {
     this.AuthService.userCards(this.user).subscribe(
