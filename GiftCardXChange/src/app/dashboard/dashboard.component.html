@@ -256,8 +256,8 @@
           <!-- Action -->
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
-            <td mat-cell *matCellDef="let card">
-              <a class="btn btn-danger" (click)="openOutboundDialog()">Cancel</a>
+            <td mat-cell *matCellDef="let request">
+              <a class="btn btn-danger" (click)="openOutboundDialog(request[0].cardID, request[1].cardID)">Cancel</a>
             </td>
           </ng-container>
 

@@ -87,6 +87,7 @@ export class DashboardComponent {
     this.AuthService.userRequestsInitiated().subscribe(
       (res) => {
         this.outboundRequestSource = res;
+        console.log(this.outboundRequestSource);
       },
       (err) => {
         if (err.status != 404) {
@@ -136,8 +137,8 @@ export class DashboardComponent {
     );
   }
 
-  openOutboundDialog() {
-    this.dialogRef.open(CancelDialogComponent, { width: '300px', height: '300px' });
+  openOutboundDialog(offeredID: number, requestedID: number) {
+    this.dialogRef.open(CancelDialogComponent, { width: '300px', height: '300px', data: { offeredID: offeredID, requestedID: requestedID } });
   }
 
   openDenyDialog() {
