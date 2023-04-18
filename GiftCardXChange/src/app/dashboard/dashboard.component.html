@@ -98,7 +98,7 @@
     <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
       <!-- <h3>Please Enter Your Card</h3>
     Company Name -->
-      <p style="margin-top: 30px;">
+      <p style="margin-top: 30px; margin-left: 45%;">
         <mat-form-field>
           <mat-label>Company Name</mat-label>
           <mat-select formControlName="company">
@@ -109,27 +109,27 @@
         </mat-form-field>
       </p>
       <!-- Card Number -->
-      <p>
+      <p style="margin-left: 45%;">
         <mat-form-field>
           <mat-label>Card Number</mat-label>
           <input formControlName="cardnumber" matInput placeholder="Enter your card" />
         </mat-form-field>
       </p>
       <!-- Amount -->
-      <p>
+      <p style="margin-left: 45%;">
         <mat-form-field>
           <mat-label>Amount</mat-label>
           <input formControlName="amount" matInput placeholder="$" type="number" />
         </mat-form-field>
       </p>
       <!-- Expiration Date -->
-      <p>
+      <p style="margin-left: 45%;">
         <mat-form-field>
           <mat-label>Expiration Date</mat-label>
           <input formControlName="expirationDate" matInput placeholder="YYYY-MM" />
         </mat-form-field>
       </p>
-      <button type="submit">Add Card</button>
+      <button type="submit" style="margin-left: 52.5%;">Add Card</button>
 
     </form>
   </mat-tab>
