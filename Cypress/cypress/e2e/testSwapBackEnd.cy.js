@@ -345,9 +345,6 @@ describe("Test deny swap", () => {
     cy.request({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny/12/13',
-      headers: {
-        "content-type": "application/json"
-      },
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(400)
@@ -358,36 +355,52 @@ describe("Test deny swap", () => {
     cy.request({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny/12/13',
-      headers: {
-        "content-type": "application/json"
-      },
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(400)
     })
   })
   
-  it("Valid", () => {
+  it("Valid with user 2", () => {
     login()
     cy.request({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny/12/13',
-      headers: {
-        "content-type": "application/json"
-      },
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(200)
     })
   })
+
+  it("Valid with user 1", () => {
+    login("Welthow", "password")
+    cy.request({
+      method: 'POST',
+      url: 'http://localhost:8080/swaps/request',
+      body: {
+        "cardIDOne": 12,
+        "cardIDTwo": 13
+      },
+      headers: {
+        "content-type": "application/json"
+      },
+      failOnStatusCode: false
+    })
+    login("Welthow", "password")
+    cy.request({
+      method: 'DELETE',
+      url: 'http://localhost:8080/swaps/deny/12/13',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(200)
+    })
+  })
+
   it("Delete nonexistent swap", () => {
     login()
     cy.request({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny/1/13',
-      headers: {
-        "content-type": "application/json"
-      },
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(200)
@@ -398,9 +411,6 @@ describe("Test deny swap", () => {
     cy.request({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny/12/13',
-      headers: {
-        "content-type": "application/json"
-      },
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(200)
@@ -413,15 +423,38 @@ describe("Test deny swap", () => {
     cy.request({
       method: 'DELETE',
       url: 'http://localhost:8080/swaps/deny/0/13',
-      headers: {
-        "content-type": "application/json"
-      },
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+
+    cy.request({
+      method: 'DELETE',
+      url: 'http://localhost:8080/swaps/deny/b/13',
       failOnStatusCode: false
     }).then(response => {
       expect(response.status).to.equal(400)
     })
   })
-  
+
+  it("Delete with invalid card number two", () => {
+    login()
+    cy.request({
+      method: 'DELETE',
+      url: 'http://localhost:8080/swaps/deny/13/0',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+
+    cy.request({
+      method: 'DELETE',
+      url: 'http://localhost:8080/swaps/deny/13/a',
+      failOnStatusCode: false
+    }).then(response => {
+      expect(response.status).to.equal(400)
+    })
+  })
 })
 
 
@@ -488,7 +521,7 @@ describe("Test get requested by user", () => {
   }),
 
   it("None requested by user", () => {
-    login()
+    login('KingCanute', 'password')
     cy.request({
       method: 'GET',
       url: 'http://localhost:8080/swaps/get/pending/requested/user',

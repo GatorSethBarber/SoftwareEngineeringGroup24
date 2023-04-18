@@ -372,9 +372,11 @@ This is done through an end-to-end Cypress spec. The tests are stored in the end
     * Make valid request for setup: Not a test: Is setting up for subsequent tests
     * Not logged in: Return a 400
     * Logged into different account: Return a 400 (user does not have appropritate authorization)
-    * Valid: Delete the swap and return 200 to indicate deletion successful
+    * Valid with user 2: Delete the swap while signed in as user 2 and return 200 to indicate deletion successful
+    * Valid with user 1: Same as previous, but with user 1 instead
     * Delete swap a second time: Returns a 200 (effectively deleting nonexistent swap)
-    * Delete with invalid card number one: Return a 400 (impossible for that card to exist)
+    * Delete with invalid card number one: Return a 400 (card does not exist or not a number)
+    * Delete with invalid card number two: Return a 400 (card does not exist or not a number)
   * Setup for viewing swaps: Not a test: Sets up for the following tests
     * Setup for viewing swaps
   * Test get requested by user: Tests that the route for getting the potential card swaps requested by the user works
