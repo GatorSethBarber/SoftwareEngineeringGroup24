@@ -43,7 +43,7 @@ export class LoginComponent {
         // alert('Yay!!! Welcome');
         // this.loginForm.reset();
         localStorage.setItem('user', JSON.stringify(res));
-        this.router.navigate(['dashboard']);
+        this.router.navigate(['brand']);
       },
       (err) => alert('hmmhmm something wrong')
     );

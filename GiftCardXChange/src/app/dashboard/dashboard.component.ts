@@ -37,6 +37,8 @@ export class DashboardComponent {
 
   requests = [];
 
+  public dashTabIndex = 1;
+
 
   columnsToDisplay: string[] = ['company', 'cardNumber', 'amount', 'expirationDate'];
   inboundColumnsToDisplay: string[] = ['requester', 'company', 'amount', 'expirationDate', 'requested', 'action'];
@@ -76,6 +78,7 @@ export class DashboardComponent {
   options = ['Starbucks', 'BestBuy', 'Target', 'Kohls'];
 
   ngOnInit() {
+    this.dashTabIndex = 3;
     this.AuthService.userCards(this.user).subscribe(
       (res) => {
         this.dataSource = res;
@@ -85,7 +88,6 @@ export class DashboardComponent {
     this.AuthService.userRequestsInitiated().subscribe(
       (res) => {
         this.outboundRequestSource = res;
-        console.log(this.outboundRequestSource);
       },
       (err) => {
         if (err.status != 404) {
@@ -103,7 +105,6 @@ export class DashboardComponent {
         }
       }
     );
-    console.log(this.requests);
   }
 
   ngAfterViewInit() {
