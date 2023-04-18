@@ -1,43 +1,38 @@
 
+<div>
+  <form [formGroup]="cardRequestFrom" (ngSubmit)="onSubmitted()">
+<H4 style="margin-top: 20px; margin-left: 140px;">My Card</H4>
+  
+<p style="margin-top: 20px; margin-left: 90px;">
+<mat-form-field >
+ <mat-select formControlName="company" placeholder="Select Card Company*">
+   <mat-option *ngFor="let card of myCardd" [value]="card.company">
+     {{ card.company }}
+   </mat-option>
+ </mat-select>
+</mat-form-field>
+</p>
 
-   <H4 style="margin-top: 20px; margin-bottom: 20px; text-align: center;">My Card</H4>
- 
-  <div class="example-container mat-elevation-z8" >
-  <mat-table #table [dataSource]="dataSource" (ngSubmit)="requestSubmit()">
+<p style="margin-top: 20px; margin-left: 90px;">
+<mat-form-field>
+  <mat-select formControlName="cardnumber" placeholder="Select Card Number*">
+    <mat-option *ngFor="let card of myCardd; let i = index"  [value]="myCardd[i].cardID" >
+      {{ card.cardNumber }}
+    </mat-option>
+  </mat-select>
+ </mat-form-field>
+</p>
 
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
+<p style="margin-top: 20px; margin-left: 90px;">
+<mat-form-field>
+  <mat-select formControlName="amount" placeholder="Select Card Amount">
+    <mat-option *ngFor="let card of myCardd" [value]="card.amount">
+      {{ card.amount }}
+    </mat-option>
+  </mat-select>
+ </mat-form-field>
+</p>
 
-    <!-- Company Column -->
-    <ng-container matColumnDef="Company">
-      <mat-header-cell *matHeaderCellDef> Company </mat-header-cell>
-      <mat-cell *matCellDef="let card"> {{card.company}} </mat-cell>
-    </ng-container>
-
-    <!-- Card Number Column -->
-    <ng-container matColumnDef="Card Number">
-      <mat-header-cell *matHeaderCellDef> Card Number </mat-header-cell>
-      <mat-cell  *matCellDef="let card"> {{card.cardNumber}} </mat-cell>
-    </ng-container>
-
-    <!-- Amount Column -->
-    <ng-container matColumnDef="Amount">
-      <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
-      <mat-cell *matCellDef="let card"> {{card.amount}} </mat-cell>
-    </ng-container>
-
-    <!-- Action to submit -->
-    <ng-container matColumnDef="Action">
-      <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
-      <mat-cell *matCellDef="let card"> 
-        <a class="btn btn-primary" (click)="requestSubmit">Submit Request</a> 
-         </mat-cell>
-
-     
-    </ng-container>
-
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
+<button type="submit" class="btn btn-outline-dark" style="margin-left: 125px;">Submit Request</button>
+</form>
 </div>
