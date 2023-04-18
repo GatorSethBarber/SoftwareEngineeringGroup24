@@ -143,11 +143,15 @@ export class AuthService {
 
   // send the request
   //router.HandleFunc("/swaps/request", requestSwap).Methods("POST")
-  sendRequest(): Observable<any[]> {
+  sendRequest(cardIDOne: number, cardIDTwo:number): Observable<any> {
+    // const newBody = {cardIDOne: cardIDOne, cardIDTwo: cardIDTwo}
+    // console.log(newBody)
     let headers = this.makeRequestHeader();
-    return this.http.post<any>(`http://localhost:8080/swaps/request`, {
-      headers
+    return this.http.post<any>(`http://localhost:8080/swaps/request`,{cardIDOne, cardIDTwo}, {
+      headers,
+      withCredentials: true
     })
+    console.log(cardIDOne, cardIDTwo)
   }
 
 
