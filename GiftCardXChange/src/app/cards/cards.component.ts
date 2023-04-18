@@ -69,8 +69,14 @@ export class CardsComponent {
     this.dataSource.sort = this.sort;
   }
  
-  openDialog(){
-    this.dialogRef.open(DialogoptionComponent, {width: '400px',height:'450px'});
+  openDialog(cardID: number){
+
+    this.dialogRef.open(DialogoptionComponent, {width: '400px',height:'450px', 
+   
+    data: {
+      cardID: cardID
+    }
+   });
   }
 
 }
