@@ -51,7 +51,9 @@ an alert pops up with a failure message.
 
 ### Logging In
 
-https://user-images.githubusercontent.com/100868317/232808324-1269dd60-ddbe-4e4e-a068-38c55a2a96ae.mp4
+
+https://user-images.githubusercontent.com/100868317/232867337-3b81eaa0-817f-41c6-9cc9-5df5c604095d.mp4
+
 
 Similar to signing up, logging in requires navigating to the log-in tab in the nav bar. Then, inputting valid credentials into the resulting form sends a backend request
 to check if they match. Should that be the case, the user is redirected to the home page and a cookie is created to save the login info of the user between sessions.
@@ -75,6 +77,13 @@ Viewing your cards follows the same parameters as viewing user information; howe
 the cards that are owned by the user in the database. This is done through a back-end call utilziing the current cookie to check userID from log-in info to sort the main database of all cards.
 
 ### Adding a New Card
+
+
+
+https://user-images.githubusercontent.com/100868317/232838008-d46cf6b9-ae1f-43fa-b58d-334b7f48cfa5.mp4
+
+
+
 The user's dashboard displays an *Add Card* button that allows the user to add a new gift card to their wallet. The user enters the card information, such as the brand name, amount, card number, which is only accessible to the gift card holder, and expiration date. Once the information is successfully entered, the new gift card will appear in the user's *My Wallet*. The database will reflect the newly created gift card in the back end.
 
 ## Swapping Cards
@@ -84,7 +93,9 @@ There are a variety of different brands displayed on the homepage. Once a user c
 
 ### Accepting Swap
 
-https://user-images.githubusercontent.com/100868317/232808643-ceee8553-3ad7-494f-aad4-383410171df8.mp4
+
+https://user-images.githubusercontent.com/100868317/232836295-62ab8cf4-3a15-4742-8f51-825fcfbfd301.mp4
+
 
 In the user's dashboard, there are two categories of swap requests: one made by the user addressed in the *Outbound Requests* and the second made by others addressed in the *Inbound Requests*. Each card request in the *Outbound Requests* contains a *Deny* or *Accept* option. If the user is satisfied with the swap request, they can click on *Accept* and both parties will own different gift cards. The database updates the new owner's card information.
 
@@ -95,15 +106,13 @@ Additionally, accepting a swap deletes other pending swaps associated with the c
 If a user does not wish to accept a swap, they may deny it. The video below demonstrates this action.
 
 
-https://user-images.githubusercontent.com/100868317/232809428-49481012-956e-40a7-8f78-302f33a9c4d7.mp4
+https://user-images.githubusercontent.com/100868317/232836327-fd0f53d7-db53-4d68-b39c-607e9aa3b5bd.mp4
 
 
 Similarly, if a user decides to cancel a swap, they may do so. The video below demonstrates this action.
 
 
-
-https://user-images.githubusercontent.com/100868317/232809497-ace94195-2b34-49e2-b749-a11ea500cdcf.mp4
-
+https://user-images.githubusercontent.com/100868317/232836411-86eb8a8b-272b-4031-8b42-ed0c10e3995f.mp4
 
 
 ### Logging Out
