@@ -283,6 +283,8 @@ describe('Dashboard tests', () => {
 
     cy.url().should('include', '/dashboard');
 
+    cy.get('.mat-mdc-tab').contains('Profile').click();
+
     cy.getByData('firstName-input').should('have.value', 'Olaf');
     cy.getByData('lastName-input').should('have.value', 'Trygvasson');
     cy.getByData('username-input').should('have.value', 'Anlaf');
@@ -304,7 +306,6 @@ describe('Dashboard tests', () => {
 
     cy.url().should('include', '/dashboard');
 
-
     cy.get('.mat-mdc-tab').contains('My Wallet').click();
 
     cy.getByData('100').should('exist');
@@ -312,21 +313,46 @@ describe('Dashboard tests', () => {
     cy.getByData('135').should('exist');
   })
 
-  it('displays all requests for user', () => {
-    cy.getByData('login-link').click();
-    cy.url().should('include', '/login');
+  describe('Requests tests', () => {
+    it('displays all requests for user', () => {
+      cy.getByData('login-link').click();
+      cy.url().should('include', '/login');
+  
+      cy.getByData('username-input').type('SethTheBarber');
+      cy.getByData('username-input').should('have.value', 'SethTheBarber');
+  
+      cy.getByData('password-input').type('password');
+      cy.getByData('password-input').should('have.value', 'password');
+  
+      cy.getByData('login-button').click();
+  
+      cy.url().should('include', '/dashboard');
+  
+      cy.getByData('323456789').should('exist');
+      cy.getByData('123456789').should('exist');
+      cy.getByData('223456789').should('exist');
+    })
 
-    cy.getByData('username-input').type('Anlaf');
-    cy.getByData('username-input').should('have.value', 'Anlaf');
+    it('cancels outbound request', () => {
+      cy.getByData('login-link').click();
+      cy.url().should('include', '/login');
+  
+      cy.getByData('username-input').type('SethTheBarber');
+      cy.getByData('username-input').should('have.value', 'SethTheBarber');
+  
+      cy.getByData('password-input').type('password');
+      cy.getByData('password-input').should('have.value', 'password');
+  
+      cy.getByData('login-button').click();
+  
+      cy.url().should('include', '/dashboard');
 
-    cy.getByData('password-input').type('password');
-    cy.getByData('password-input').should('have.value', 'password');
+      cy.getByData('cancel-123456789').click();
 
-    cy.getByData('login-button').click();
+      cy.getByData('deny-button').click();
 
-    cy.url().should('include', '/dashboard');
-
-    cy.get('.mat-mdc-tab').contains('My Requests').click();
-
+      cy.getByData('123456789').should('not.exist');
+  
+    })
   })
 })
