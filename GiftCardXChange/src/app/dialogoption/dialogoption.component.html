@@ -4,17 +4,34 @@
 <H4 style="margin-top: 20px; margin-left: 140px;">My Card</H4>
   
 <p style="margin-top: 20px; margin-left: 90px;">
-<mat-form-field >
+<!-- <mat-form-field >
  <mat-select formControlName="company" placeholder="Select Card Company*">
    <mat-option *ngFor="let card of myCardd" [value]="card.company">
      {{ card.company }}
    </mat-option>
  </mat-select>
-</mat-form-field>
+</mat-form-field> -->
 </p>
 
 <p style="margin-top: 20px; margin-left: 90px;">
 <mat-form-field>
+  <mat-select formControlName="cardnumber" placeholder="Select card*">
+    <mat-option *ngFor="let card of myCardd; let i = index"  [value]="card.cardID" >
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+      <div>
+    {{ card.company }}
+      </div>
+      <div>
+       {{ card.cardNumber }}
+      </div>
+      <div>
+        {{ card.amount }}
+      </div>
+     </div>
+    </mat-option>
+  </mat-select>
+ </mat-form-field>
+<!-- <mat-form-field>
   <mat-select formControlName="cardnumber" placeholder="Select Card Number*">
     <mat-option *ngFor="let card of myCardd; let i = index"  [value]="myCardd[i].cardID" >
       {{ card.cardNumber }}
@@ -30,7 +47,7 @@
       {{ card.amount }}
     </mat-option>
   </mat-select>
- </mat-form-field>
+ </mat-form-field> -->
 </p>
 
 <button type="submit" class="btn btn-outline-dark" style="margin-left: 125px;">Submit Request</button>
