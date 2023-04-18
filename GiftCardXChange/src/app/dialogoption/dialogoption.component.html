@@ -15,8 +15,8 @@
 
 <p style="margin-top: 20px; margin-left: 90px;">
 <mat-form-field>
-  <mat-select formControlName="cardnumber" placeholder="Select card*">
-    <mat-option *ngFor="let card of myCardd; let i = index"  [value]="card.cardID" >
+  <mat-select data-cy="card-select" formControlName="cardnumber" placeholder="Select card*">
+    <mat-option [attr.data-cy]="'owned-' + card.cardNumber" *ngFor="let card of myCardd; let i = index"  [value]="card.cardID" >
       <div style="margin-top: 10px; margin-bottom: 10px;">
       <div>
     {{ card.company }}
@@ -50,7 +50,7 @@
  </mat-form-field> -->
 </p>
 
-<button type="submit" class="btn btn-outline-dark" style="margin-left: 125px;">Submit Request</button>
+<button data-cy="submit-button" type="submit" class="btn btn-outline-dark" style="margin-left: 125px;">Submit Request</button>
 </form>
 
 <button mat-button class="btn btn-outline-dark" style="margin-left: 155px; margin-top: 20px;"(click)="onCloseClick()">Close</button>

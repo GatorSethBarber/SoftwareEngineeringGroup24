@@ -354,5 +354,86 @@ describe('Dashboard tests', () => {
       cy.getByData('123456789').should('not.exist');
   
     })
+
+    it('cancels inbound request', () => {
+      cy.getByData('login-link').click();
+      cy.url().should('include', '/login');
+  
+      cy.getByData('username-input').type('SethTheBarber');
+      cy.getByData('username-input').should('have.value', 'SethTheBarber');
+  
+      cy.getByData('password-input').type('password');
+      cy.getByData('password-input').should('have.value', 'password');
+  
+      cy.getByData('login-button').click();
+  
+      cy.url().should('include', '/dashboard');
+
+      cy.getByData('deny-323456789').click();
+
+      cy.getByData('deny-button').click();
+
+      cy.getByData('323456789').should('not.exist');
+  
+    })
+
+    it('accepts inbound request', () => {
+      cy.getByData('login-link').click();
+      cy.url().should('include', '/login');
+  
+      cy.getByData('username-input').type('SethTheBarber');
+      cy.getByData('username-input').should('have.value', 'SethTheBarber');
+  
+      cy.getByData('password-input').type('password');
+      cy.getByData('password-input').should('have.value', 'password');
+  
+      cy.getByData('login-button').click();
+  
+      cy.url().should('include', '/dashboard');
+
+      cy.getByData('accept-423456789').click();
+
+      cy.getByData('accept-button').click();
+
+      cy.getByData('423456789').should('not.exist');
+
+      cy.get('.mat-mdc-tab').contains('My Wallet').click();
+
+      cy.getByData('423456789').should('not.exist');
+      cy.getByData('143456789').should('exist');
+  
+    })
+
+    it('makes outbound request', () => {
+      cy.getByData('login-link').click();
+      cy.url().should('include', '/login');
+  
+      cy.getByData('username-input').type('SethTheBarber');
+      cy.getByData('username-input').should('have.value', 'SethTheBarber');
+  
+      cy.getByData('password-input').type('password');
+      cy.getByData('password-input').should('have.value', 'password');
+  
+      cy.getByData('login-button').click();
+  
+      cy.url().should('include', '/dashboard');
+
+      cy.getByData('brands-link').click();
+      cy.url().should('include', '/brand');
+  
+      cy.getByData('Starbucks').click();
+      cy.url().should('include', '/card');
+  
+      cy.getByData('brand-name-head').should('have.text', ' All Cards for Starbucks ');
+  
+      cy.getByData('11').should('exist');
+      cy.getByData('swap-11').click();
+
+      cy.getByData('card-select').click();
+
+      cy.getByData('owned-143456789').click();
+
+      cy.getByData('submit-button').click();
+    })
   })
 })
