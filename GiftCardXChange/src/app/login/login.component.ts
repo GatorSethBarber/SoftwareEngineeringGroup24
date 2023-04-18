@@ -42,8 +42,13 @@ export class LoginComponent {
         console.log(res);
         // alert('Yay!!! Welcome');
         // this.loginForm.reset();
-        localStorage.setItem('user', JSON.stringify(res));
-        this.router.navigate(['brand']);
+        (async () => {
+          localStorage.setItem('user', JSON.stringify(res));
+
+          await new Promise(f => setTimeout(f, 100));
+
+          this.router.navigate(['dashboard']);
+        })();
       },
       (err) => alert('hmmhmm something wrong')
     );
