@@ -89,7 +89,7 @@ onSubmitted(){
     cardID : this.cardRequestFrom.get('cardnumber')?.value
   }
   console.log(this.cardID)
-this.AuthService.sendRequest(this.cardID, myIDCARD.cardID).subscribe(
+this.AuthService.sendRequest(myIDCARD.cardID, this.cardID).subscribe(
   (res) => {
     alert('Request submitted successfully');
   },
