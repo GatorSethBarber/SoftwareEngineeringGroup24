@@ -52,7 +52,7 @@ an alert pops up with a failure message.
 ### Logging In
 
 
-https://user-images.githubusercontent.com/100868317/232836107-7e0545e2-2999-450b-a0ea-b17e02a4ad13.mp4
+https://user-images.githubusercontent.com/100868317/232867337-3b81eaa0-817f-41c6-9cc9-5df5c604095d.mp4
 
 
 Similar to signing up, logging in requires navigating to the log-in tab in the nav bar. Then, inputting valid credentials into the resulting form sends a backend request
