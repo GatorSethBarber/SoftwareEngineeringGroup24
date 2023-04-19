@@ -555,6 +555,13 @@ func TestGetPendingRequestsFromOthers(t *testing.T) {
 			CardIDOne: 5,
 			CardIDTwo: 3,
 		},
+
+		{
+			UserIDOne: 5,
+			UserIDTwo: 1,
+			CardIDOne: 14,
+			CardIDTwo: 3,
+		},
 	}
 
 	actualRequest, err := getPendingRequestsFromOthers(userID1)
@@ -692,9 +699,9 @@ func TestValidDatabaseCreateRequest(t *testing.T) {
 	database = ConnectToDatabase()
 	newRequest := RequestCard{
 		UserIDOne: 5,
-		UserIDTwo: 1,
-		CardIDOne: 14,
-		CardIDTwo: 3,
+		UserIDTwo: 3,
+		CardIDOne: 13,
+		CardIDTwo: 9,
 	}
 
 	err := databaseCreateRequest(&newRequest)
@@ -711,9 +718,9 @@ func TestDuplicateDatabaseCreateRequest(t *testing.T) {
 	database = ConnectToDatabase()
 	newRequest := RequestCard{
 		UserIDOne: 5,
-		UserIDTwo: 1,
-		CardIDOne: 14,
-		CardIDTwo: 3,
+		UserIDTwo: 3,
+		CardIDOne: 13,
+		CardIDTwo: 9,
 	}
 
 	errOne := databaseCreateRequest(&newRequest)

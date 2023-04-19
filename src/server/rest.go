@@ -606,8 +606,8 @@ func requestDenySwap(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if user.ID != cardTwo.UserID && user.ID != cardOne.ID {
-		fmt.Printf("User doesn't own card 2 for %v\n", frontEndSwapInfo)
+	if user.ID != cardTwo.UserID && user.ID != cardOne.UserID {
+		fmt.Printf("User doesn't own card 1 or card 2 for %v\n", frontEndSwapInfo)
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
