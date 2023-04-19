@@ -19,6 +19,8 @@ The tasks and goals that we accomplished in this sprint are detailed below.
 * Added tab "My Requests" to dashboard where user can see their request to another and the request from other to user
 * Added functionality for current user to create a swap request 
 * Added functionality for current user to add new gift card
+* Added functionality for current user to accept or deny the offered that they have
+* Added functionality for current user to cancel the request they have made if they want 
 * Added request swap button on card page for current user if they want to make a request with one of the user 
 
 
