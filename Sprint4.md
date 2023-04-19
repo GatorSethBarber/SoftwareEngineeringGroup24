@@ -277,13 +277,19 @@ Response codes:
 
 # Testings
 ## Front End
-* Describe below (optional)
+* Cypress testing added to all components of dashboard and swaps
 
 ### Unit Tests
 * List below 
 
 ### Cypress Tests
-* List below 
+* Checks that all requests for a user are displayed
+* Cancels outbound request
+* Cancels inbound request
+* Accepts inbound request
+* Makes an outbound request
+  * Tests functionality of making a new swap from brand cards page
+* Adds a new card for a user
 
 
 ## Back End
