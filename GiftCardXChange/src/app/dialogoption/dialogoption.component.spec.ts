@@ -36,7 +36,7 @@ describe('DialogoptionComponen', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('it shout create', () => {
     component.cardRequestForm.setValue({ company: '', cardnumber: '', amount: '' });
     expect(component).toBeTruthy();
   });
