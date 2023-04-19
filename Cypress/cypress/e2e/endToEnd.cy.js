@@ -458,7 +458,7 @@ describe('Dashboard tests', () => {
     cy.getByData('company-select').click();
     cy.getByData('Starbucks').click();
 
-    cy.wait(100);
+    cy.wait(500);
 
     cy.getByData('cardno-input').type('987654321');
     cy.getByData('amount-input').type('110');
