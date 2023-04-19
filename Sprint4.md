@@ -16,7 +16,7 @@ The tasks and goals that we accomplished in this sprint are detailed below.
 
 ## Front End
 * Added tab "Add New Card" to dashboard where user can add their new gift card to their wallet
-* Added tab "My Requests" to dashboard where user can see their request to another and the request from other to user
+* Added tab "My Requests" to dashboard where user can see their request to another user and the request from other user to current user
 * Added functionality for current user to create a swap request 
 * Added functionality for current user to add new gift card
 * Added functionality for current user to accept or deny the offered that they have
@@ -293,8 +293,9 @@ Response codes:
     * Angular component tests to check that each component displays and builds correctly
     * Basic testing to check that html element of each component
     * Test to check if card request form work when it valid and invalid
-  
-
+    * Test to check if add card form work when it valid and invalid
+    * Test to check if the function is called when the form is submitted 
+    * Test to check if the dialog close button work
 
 ### Cypress Tests
 * Checks that all requests for a user are displayed
