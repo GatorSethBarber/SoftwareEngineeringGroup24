@@ -87,11 +87,7 @@ the cards that are owned by the user in the database. This is done through a bac
 
 ### Adding a New Card
 
-
-
 https://user-images.githubusercontent.com/100868317/232838008-d46cf6b9-ae1f-43fa-b58d-334b7f48cfa5.mp4
-
-
 
 The user's dashboard displays an *Add Card* button that allows the user to add a new gift card to their wallet. The user enters the card information, such as the brand name, amount, card number, which is only accessible to the gift card holder, and expiration date. Once the information is successfully entered, the new gift card will appear in the user's *My Wallet*. The database will reflect the newly created gift card in the back end.
 
@@ -99,7 +95,11 @@ The user's dashboard displays an *Add Card* button that allows the user to add a
 
 ### Requesting Swap
 
-https://user-images.githubusercontent.com/100868317/232945300-87cea47e-6873-4f0d-9d72-eb3d3539936a.mp4
+
+
+https://user-images.githubusercontent.com/100868317/232948606-27c01465-f1c2-4601-b3e7-188fb97e9576.mp4
+
+
 
 There are a variety of different brands displayed on the homepage. Once a user clicks on one of the brand's logos, a new page appears showcasing all the owners of the brands available for swapping. Each line of the card list contains a "Request Swap" button at the end. After clicking this button, another box appears, asking the user which of their cards they would like to swap with. After the user selects the card with the "Submit" button, this information is sent to the back end to identify which two cards will potentially be swapped by the requested card's owner.
 
