@@ -92,6 +92,8 @@ onSubmitted(){
 this.AuthService.sendRequest(myIDCARD.cardID, this.cardID).subscribe(
   (res) => {
     alert('Request submitted successfully');
+    this.router.navigate(['card']);
+    this.dialogRef.close();
   },
   (err) => alert('hmmhmm something wrong')
   );
