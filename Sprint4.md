@@ -287,7 +287,14 @@ Response codes:
 * Cypress testing added to all components of dashboard and swaps
 
 ### Unit Tests
-* List below 
+* From Sprint 3:
+    * Tests if the router link work 
+* From Sprint 4:
+    * Angular component tests to check that each component displays and builds correctly
+    * Basic testing to check that html element of each component
+    * Test to check if card request form work when it valid and invalid
+  
+
 
 ### Cypress Tests
 * Checks that all requests for a user are displayed
