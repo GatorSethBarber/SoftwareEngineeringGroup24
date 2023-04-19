@@ -17,13 +17,9 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogRef } from '@angular/material/dialog';
-interface c {
-  cardID: number;
-  company: string;
-  username: string;
-  expirationDate: string;
-  amount: number;
-}
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+
 
 @Component({
   selector: 'app-dialogoption',
@@ -48,7 +44,7 @@ myCardd: any[] = []
  
 
 
-constructor(public dialogRef: MatDialogRef<DialogoptionComponent>,
+constructor(private dialogRef: MatDialogRef<DialogoptionComponent>,
   private formBuilder:FormBuilder,private AuthService: AuthService, private router: Router, 
   @Inject(MAT_DIALOG_DATA) public data: {cardID:number}) {
     this.cardID = data.cardID;
@@ -76,7 +72,7 @@ constructor(public dialogRef: MatDialogRef<DialogoptionComponent>,
 
 
 
-cardRequestFrom = this.formBuilder.group({
+cardRequestForm = this.formBuilder.group({
   company: ['', [Validators.required]],
   cardnumber: ['', [Validators.required]],
   amount: ['', [Validators.required]],
@@ -84,9 +80,9 @@ cardRequestFrom = this.formBuilder.group({
 
 //first Card is my card, and second one is other card
 onSubmitted(){
-  console.log(this.cardRequestFrom.get('cardnumber')?.value)
+  console.log(this.cardRequestForm.get('cardnumber')?.value)
   const myIDCARD: any = {
-    cardID : this.cardRequestFrom.get('cardnumber')?.value
+    cardID : this.cardRequestForm.get('cardnumber')?.value
   }
   console.log(this.cardID)
 this.AuthService.sendRequest(myIDCARD.cardID, this.cardID).subscribe(

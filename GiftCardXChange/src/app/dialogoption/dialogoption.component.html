@@ -1,6 +1,5 @@
-
-<div>
-  <form [formGroup]="cardRequestFrom" (ngSubmit)="onSubmitted()">
+<div class="container">
+  <form [formGroup]="cardRequestForm" (ngSubmit)="onSubmitted()">
 <H4 style="margin-top: 20px; margin-left: 140px;">My Card</H4>
   
 <p style="margin-top: 20px; margin-left: 90px;">
@@ -15,8 +14,8 @@
 
 <p style="margin-top: 20px; margin-left: 90px;">
 <mat-form-field>
-  <mat-select data-cy="card-select" formControlName="cardnumber" placeholder="Select card*">
-    <mat-option [attr.data-cy]="'owned-' + card.cardNumber" *ngFor="let card of myCardd; let i = index"  [value]="card.cardID" >
+  <mat-select data-cy="card-select" formControlName="cardnumber"  placeholder="Select card*">
+    <mat-option [attr.data-cy]="'owned-' + card.cardNumber" formControlName="cardnumber" *ngFor="let card of myCardd; let i = index"  [value]="card.cardID" >
       <div style="margin-top: 10px; margin-bottom: 10px;">
       <div>
     {{ card.company }}
@@ -39,7 +38,6 @@
   </mat-select>
  </mat-form-field>
 </p>
-
 <p style="margin-top: 20px; margin-left: 90px;">
 <mat-form-field>
   <mat-select formControlName="amount" placeholder="Select Card Amount">
