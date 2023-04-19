@@ -37,6 +37,15 @@ The use of these features is described below in the User Manual
 # Using the Application
 
 ## Viewing Available Cards
+Cards can be viewed by both logged in users and users who are not logged in. An example of browsing available cards is below.
+
+https://user-images.githubusercontent.com/100868317/232946305-61070e13-ea6a-49fc-afd7-28b071ba8c02.mp4
+
+
+If the user tries accessing the request functionality when not logged in, an error message is displayed (see below).
+
+
+https://user-images.githubusercontent.com/100868317/232946335-20e856f4-aeda-410c-9c85-23752ec1ae6f.mp4
 
 ## Getting Started
 
@@ -78,18 +87,25 @@ the cards that are owned by the user in the database. This is done through a bac
 
 ### Adding a New Card
 
-
-
 https://user-images.githubusercontent.com/100868317/232838008-d46cf6b9-ae1f-43fa-b58d-334b7f48cfa5.mp4
-
-
 
 The user's dashboard displays an *Add Card* button that allows the user to add a new gift card to their wallet. The user enters the card information, such as the brand name, amount, card number, which is only accessible to the gift card holder, and expiration date. Once the information is successfully entered, the new gift card will appear in the user's *My Wallet*. The database will reflect the newly created gift card in the back end.
 
 ## Swapping Cards
 
 ### Requesting Swap
-There are a variety of different brands displayed on the homepage. Once a user clicks on one of the brand's logos, a new page appears showcasing all the owners of the brands available for swapping. Each line of the card list contains a "Request Swap" button at the end. After clicking this button, another box appears, asking the user which of their cards they would like to swap with. After the user selects the card with the "Submit" button, this information is sent to the back end to identify which two cards will potentially swap. 
+
+
+
+https://user-images.githubusercontent.com/100868317/232948606-27c01465-f1c2-4601-b3e7-188fb97e9576.mp4
+
+
+
+There are a variety of different brands displayed on the homepage. Once a user clicks on one of the brand's logos, a new page appears showcasing all the owners of the brands available for swapping. Each line of the card list contains a "Request Swap" button at the end. After clicking this button, another box appears, asking the user which of their cards they would like to swap with. After the user selects the card with the "Submit" button, this information is sent to the back end to identify which two cards will potentially be swapped by the requested card's owner.
+
+If the user tries to make an invalid request, which are requesting a swap for a card they already own, making a duplicate request, and not being logged in when making the request, a message is shown. An example of this behavior is below.
+
+https://user-images.githubusercontent.com/100868317/232945503-f85cbac2-db27-47c1-80fe-5bc24e3a782c.mp4
 
 ### Accepting Swap
 
