@@ -16,6 +16,9 @@ The tasks and goals that we accomplished in this sprint are detailed below.
 
 ## Front End
 * Added tab "Add New Card" to dashboard where user can add their new gift card to their wallet
+* Added tab "My Requests" to dashboard where user can see their request to another and the request from other to user
+* Added functionality for current user to create a swap request 
+* Added functionality for current user to add new gift card
 
 ## Back End
 * Added functionality for registered users to create a request to swap with another user
