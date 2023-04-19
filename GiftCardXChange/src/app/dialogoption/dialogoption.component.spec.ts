@@ -1,5 +1,5 @@
 import { DialogoptionComponent } from './dialogoption.component'
-import { ReactiveFormsModule } from '@angular/forms'
+import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms'
 import { ComponentFixture, TestBed } from '@angular/core/testing';;
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -10,6 +10,7 @@ import { By } from '@angular/platform-browser';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { DialogRef } from '@angular/cdk/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormBuilder } from '@angular/forms';
 describe('DialogoptionComponen', () => {
   let component: DialogoptionComponent;
   let fixture: ComponentFixture<DialogoptionComponent>;
@@ -36,24 +37,34 @@ describe('DialogoptionComponen', () => {
   });
 
   it('should create', () => {
+    component.cardRequestForm.setValue({ company: '', cardnumber: '', amount: '' });
     expect(component).toBeTruthy();
   });
 
-
-  it('cardRequest form is invalid when it empty', ()=>{
-    component.cardRequestFrom.controls['company'].setValue('');
-    component.cardRequestFrom.controls['cardnumber'].setValue('');
-    component.cardRequestFrom.controls['amount'].setValue('');
-    expect(component.cardRequestFrom.valid).toBeFalsy();
+  it('cardRequest form is invalid when it empty', () => {
+    component.cardRequestForm.setValue({ company: '', cardnumber: '', amount: '' });
+    expect(component.cardRequestForm.valid).toBeFalsy();
   });
 
   it('cardRequest form is valid when it not empty', ()=>{
-    component.cardRequestFrom.controls['company'].setValue('Starbucks');
-    component.cardRequestFrom.controls['cardnumber'].setValue('133456789');
-    component.cardRequestFrom.controls['amount'].setValue('100.0');
-    expect(component.cardRequestFrom.valid).toBeTruthy();
+    component.cardRequestForm.setValue({ company: 'Starbucks', cardnumber: '133456789', amount: '100.0' });
+    expect(component.cardRequestForm.valid).toBeTruthy();
+
   });
 
+  it('call onSubmitted() when the form is submitted', ()=>{
+    let closeSpy = spyOn(component, 'onSubmitted');
+    let el = fixture.debugElement.query(By.css('button')).nativeElement;
+    el.click();
+    expect(closeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('call onCloseClick when the form is submitted', ()=>{
+    let closeSpy = spyOn(component, 'onCloseClick');
+    let el = fixture.debugElement.query(By.css('button')).nativeElement;
+    el.click();
+    expect(closeSpy).toHaveBeenCalledTimes(0);
+  });
 
 
   
