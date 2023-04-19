@@ -128,6 +128,7 @@ export class DashboardComponent {
       (res) => {
         console.log(res);
         alert('Card added successfully');
+        location.reload();
       },
       (err) => {
         console.error(err);

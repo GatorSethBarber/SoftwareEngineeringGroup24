@@ -412,7 +412,7 @@ func createSwaps(database *gorm.DB) {
 		// {UserIDOne: 4, UserIDTwo: 3, CardIDOne: 11, CardIDTwo: 9},
 		// {UserIDOne: 4, UserIDTwo: 5, CardIDOne: 12, CardIDTwo: 14},
 		// {UserIDOne: 5, UserIDTwo: 3, CardIDOne: 13, CardIDTwo: 9},
-		{UserIDOne: 5, UserIDTwo: 1, CardIDOne: 14, CardIDTwo: 3},
+		{UserIDOne: 5, UserIDTwo: 1, CardIDOne: 14, CardIDTwo: 4},
 		// {UserIDOne: 5, UserIDTwo: 4, CardIDOne: 15, CardIDTwo: 10},
 	}
 

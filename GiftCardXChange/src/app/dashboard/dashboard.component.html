@@ -101,8 +101,8 @@
       <p style="margin-top: 30px; margin-left: 45%;">
         <mat-form-field>
           <mat-label>Company Name</mat-label>
-          <mat-select formControlName="company">
-            <mat-option *ngFor="let option of options" [value]="option">
+          <mat-select data-cy="company-select" formControlName="company">
+            <mat-option [attr.data-cy]="option" *ngFor="let option of options" [value]="option">
               {{ option }}
             </mat-option>
           </mat-select>
@@ -111,25 +111,25 @@
       <!-- Card Number -->
       <p style="margin-left: 45%;">
         <mat-form-field>
-          <mat-label>Card Number</mat-label>
+          <mat-label data-cy="cardno-input">Card Number</mat-label>
           <input formControlName="cardnumber" matInput placeholder="Enter your card" />
         </mat-form-field>
       </p>
       <!-- Amount -->
       <p style="margin-left: 45%;">
         <mat-form-field>
-          <mat-label>Amount</mat-label>
+          <mat-label data-cy="amount-input">Amount</mat-label>
           <input formControlName="amount" matInput placeholder="$" type="number" />
         </mat-form-field>
       </p>
       <!-- Expiration Date -->
       <p style="margin-left: 45%;">
         <mat-form-field>
-          <mat-label>Expiration Date</mat-label>
+          <mat-label data-cy="date-input">Expiration Date</mat-label>
           <input formControlName="expirationDate" matInput placeholder="YYYY-MM" />
         </mat-form-field>
       </p>
-      <button type="submit" style="margin-left: 52.5%;">Add Card</button>
+      <button data-cy="submit-button" type="submit" style="margin-left: 52.5%;">Add Card</button>
 
     </form>
   </mat-tab>
