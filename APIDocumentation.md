@@ -31,6 +31,13 @@ The following routes are currently available for use. They are discussed further
 * Create gift card: /card/new/{username}
 * Get gift card: /card/get
 
+### Swaps
+* Request: swaps/request
+* Confirm: swaps/confirm
+* Deny: swaps/deny/{CardIDOne}/{CardIDTwo}
+* All pending by user: swaps/get/pending/requested/user
+* All pending of user:swaps/get/pending/requested/others
+
 ## Users
 
 All users must have a username, email, password, and full name consisting of a first and last name (or just last name if they have only one name). These are all provided by the user. Additionally, a userID is created in the back end, but this is never used by the user.
@@ -117,15 +124,6 @@ Response:
 
 If user does not exist, returns a 404 error code in the response.
 
-### Updating User Information (Unimplemented)
-
-Note: not finished.
-
-Verb: PUT
-
-URL: /user/update/{username}/{password}
-
-
 ## Gift Cards
 
 All gift cards have a gift card number, amount, company, owner, and, potentially, an expiration date.
@@ -179,13 +177,7 @@ Response:
 * JSON: [{username: ..., cardNumber: ..., company: ..., amount: ..., expirationDate: ...}, ...]
 
 
-### Redeeming Card (If we have time)
-
-Verb: DELETE
-
-URL: /card/redeem/cardID
-
-## Swap Cards (Implementation in Progress)
+## Swap Cards
 
 Below, the user requesting the swap has control of card 1. The user who has the swap requested of them has control card 2.
 
