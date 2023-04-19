@@ -15,7 +15,7 @@ The exact details of our functionalities for Sprint 4 is described below in the 
 The tasks and goals that we accomplished in this sprint are detailed below.
 
 ## Front End
-* List below
+* Added tab "Add New Card" to dashboard where user can add their new gift card to their wallet
 
 ## Back End
 * Added functionality for registered users to create a request to swap with another user
